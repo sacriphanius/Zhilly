@@ -1,0 +1,64 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#include "driver/gpio.h"
+
+// ── Display (ST7789 1.9" 320x170) ─────────────────────────────────────────────
+#define DISPLAY_SPI_MOSI_PIN GPIO_NUM_9
+#define DISPLAY_SPI_SCLK_PIN GPIO_NUM_11
+#define DISPLAY_SPI_MISO_PIN GPIO_NUM_NC
+#define DISPLAY_SPI_CS_PIN GPIO_NUM_41
+#define DISPLAY_DC_PIN GPIO_NUM_16
+#define DISPLAY_RST_PIN GPIO_NUM_NC
+#define DISPLAY_BACKLIGHT_PIN GPIO_NUM_21
+#define DISPLAY_BACKLIGHT_OUTPUT_INVERT false
+#define DISPLAY_WIDTH 320
+#define DISPLAY_HEIGHT 170
+
+// Display orientation
+#define DISPLAY_MIRROR_X false
+#define DISPLAY_MIRROR_Y true
+#define DISPLAY_SWAP_XY true
+
+// ── SD Card (TF Card Slot) ─────────────────────────────────────────────────────
+#define SD_CARD_CS_PIN GPIO_NUM_13
+#define SD_CARD_SCK_PIN GPIO_NUM_11
+#define SD_CARD_MOSI_PIN GPIO_NUM_9
+#define SD_CARD_MISO_PIN GPIO_NUM_10
+#define SDCARD_MOUNT_POINT "/sdcard"
+#define SDCARD_SPI_HOST SPI2_HOST  // shared bus with Display
+
+// ── LoRa (CC1101) ─────────────────────────────────────────────────────────────
+#define LORA_CS_PIN GPIO_NUM_12
+#define LORA_GDO0_PIN GPIO_NUM_3
+#define LORA_GDO2_PIN GPIO_NUM_38
+#define LORA_SW1_PIN GPIO_NUM_47
+#define LORA_SW0_PIN GPIO_NUM_48
+
+// ── Audio Sample Rates ─────────────────────────────────────────────────────────
+#define AUDIO_INPUT_SAMPLE_RATE 16000
+#define AUDIO_OUTPUT_SAMPLE_RATE 24000
+
+// ── Speaker (I2S) ─────────────────────────────────────────────────────────────
+#define AUDIO_I2S_SPK_BCLK GPIO_NUM_46
+#define AUDIO_I2S_SPK_WS GPIO_NUM_40
+#define AUDIO_I2S_SPK_DOUT GPIO_NUM_7
+
+// ── Microphone (PDM) ──────────────────────────────────────────────────────────
+#define AUDIO_I2S_MIC_CLK GPIO_NUM_39
+#define AUDIO_I2S_MIC_DATA GPIO_NUM_42
+
+// ── Power Enable ──────────────────────────────────────────────────────────────
+#define BOARD_PWR_EN_PIN GPIO_NUM_15
+
+// ── Buttons / Encoder ─────────────────────────────────────────────────────────
+#define BOOT_BUTTON_GPIO GPIO_NUM_0
+#define ENCODER_A_PIN GPIO_NUM_4
+#define ENCODER_B_PIN GPIO_NUM_5
+#define ENCODER_BTN_PIN GPIO_NUM_0
+
+// ── WS2812 RGB LED ────────────────────────────────────────────────────────────
+#define WS2812_LED_PIN GPIO_NUM_14
+#define WS2812_LED_COUNT 8
+
+#endif  // CONFIG_H

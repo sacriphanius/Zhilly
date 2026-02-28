@@ -509,6 +509,9 @@ choice BOARD_TYPE
     config BOARD_TYPE_HU_087
         bool "HU-087"
         depends on IDF_TARGET_ESP32S3
+    config BOARD_TYPE_LILYGO_T_EMBED
+        bool "LILYGO T-Embed"
+        depends on IDF_TARGET_ESP32S3
 endchoice
 
 choice
@@ -648,7 +651,7 @@ choice DISPLAY_STYLE
         bool "Emote animation style"
         depends on BOARD_TYPE_ESP_BOX || BOARD_TYPE_ESP_BOX_3 \
             || BOARD_TYPE_ECHOEAR || BOARD_TYPE_LICHUANG_DEV_S3 \
-            || BOARD_TYPE_ESP_SENSAIRSHUTTLE
+            || BOARD_TYPE_ESP_SENSAIRSHUTTLE || BOARD_TYPE_LILYGO_T_EMBED
 endchoice
 
 config USE_MULTILINE_CHAT_MESSAGE

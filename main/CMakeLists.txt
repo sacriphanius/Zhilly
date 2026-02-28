@@ -5,6 +5,7 @@ set(SOURCES "audio/audio_codec.cc"
             "audio/codecs/no_audio_codec.cc"
             "audio/codecs/box_audio_codec.cc"
             "audio/codecs/es8311_audio_codec.cc"
+            "audio/codecs/es7210_audio_codec.cc"
             "audio/codecs/es8374_audio_codec.cc"
             "audio/codecs/es8388_audio_codec.cc"
             "audio/codecs/es8389_audio_codec.cc"
@@ -708,10 +709,12 @@ elseif(CONFIG_BOARD_TYPE_AIPI_LITE)
     set(BUILTIN_TEXT_FONT font_puhui_basic_14_1)
     set(BUILTIN_ICON_FONT font_awesome_14_1)
     set(DEFAULT_EMOJI_COLLECTION twemoji_32)
-elseif(CONFIG_BOARD_TYPE_HU_087)
-    set(BOARD_TYPE "hu-087")
-    set(BUILTIN_TEXT_FONT font_puhui_basic_14_1)
-    set(BUILTIN_ICON_FONT font_awesome_14_1)
+elseif(CONFIG_BOARD_TYPE_LILYGO_T_EMBED)
+    set(BOARD_TYPE "t-embed")
+    set(BUILTIN_TEXT_FONT font_puhui_basic_16_4)
+    set(BUILTIN_ICON_FONT font_awesome_16_4)
+    set(EMOTE_RESOLUTION "320_240")
+    set(DEFAULT_EMOJI_COLLECTION twemoji_32)
 endif()
 
 if(MANUFACTURER)
@@ -726,6 +729,11 @@ else()
     )
 endif()
 list(APPEND SOURCES ${BOARD_SOURCES})
+if(MANUFACTURER)
+    list(APPEND INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/boards/${MANUFACTURER}/${BOARD_TYPE})
+else()
+    list(APPEND INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/boards/${BOARD_TYPE})
+endif()
 
 # Select audio processor according to Kconfig
 if(CONFIG_USE_AUDIO_PROCESSOR)
@@ -900,6 +908,9 @@ idf_component_register(SRCS ${SOURCES}
                         console
                         efuse
                         bt
+                        fatfs
+                        sdmmc
+                        espressif2022__esp_emote_expression
                     )
 
 # Use target_compile_definitions to define BOARD_TYPE, BOARD_NAME
