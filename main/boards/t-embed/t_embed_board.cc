@@ -9,6 +9,8 @@
 #else
 #include "display/lcd_display.h"
 #endif
+#include <driver/rtc_io.h>
+#include <esp_sleep.h>
 #include "driver/spi_common.h"
 #include "esp_lcd_panel_io.h"
 #include "esp_lcd_panel_ops.h"
@@ -46,7 +48,7 @@ static const lcd_cmd_t lcd_st7789v[] = {
      14},
 };
 
-TEmbedBoard::TEmbedBoard() : boot_button_(BOOT_BUTTON_GPIO) {
+TEmbedBoard::TEmbedBoard() : boot_button_(BOOT_BUTTON_GPIO), pwr_button_(PWR_BUTTON_GPIO) {
     gpio_set_direction(BOARD_PWR_EN_PIN, GPIO_MODE_OUTPUT);
     gpio_set_level(BOARD_PWR_EN_PIN, 1);
 
@@ -130,6 +132,42 @@ void TEmbedBoard::InitializeButtons() {
             return;
         }
         app.ToggleChatState();
+    });
+
+    // Deep Sleep on long press of power button (GPIO 6)
+    pwr_button_.OnLongPress([this]() {
+        ESP_LOGI(TAG, "Entering Deep Sleep Mode...");
+        auto& app = Application::GetInstance();
+        app.SetDeviceState(kDeviceStateIdle);
+
+        if (display_) {
+            display_->SetChatMessage("system", "Uyku Moduna Geciliyor...");
+        }
+        vTaskDelay(pdMS_TO_TICKS(1000));
+
+        if (backlight_) {
+            backlight_->SetBrightness(0);
+        }
+
+        app.ResetProtocol();
+
+        ESP_LOGI(TAG, "Waiting for power button to be released...");
+        while (gpio_get_level(PWR_BUTTON_GPIO) == 0) {
+            vTaskDelay(pdMS_TO_TICKS(10));
+        }
+
+        ESP_LOGI(TAG, "Powering down peripherals");
+        gpio_set_level(BOARD_PWR_EN_PIN, 0);
+
+        ESP_LOGI(TAG, "Configuring EXT0 wakeup and entering deep sleep");
+        rtc_gpio_init(PWR_BUTTON_GPIO);
+        rtc_gpio_set_direction(PWR_BUTTON_GPIO, RTC_GPIO_MODE_INPUT_ONLY);
+        rtc_gpio_pullup_en(PWR_BUTTON_GPIO);
+        rtc_gpio_pulldown_dis(PWR_BUTTON_GPIO);
+        esp_sleep_enable_ext0_wakeup(PWR_BUTTON_GPIO, 0);
+
+        vTaskDelay(pdMS_TO_TICKS(500));
+        esp_deep_sleep_start();
     });
 }
 

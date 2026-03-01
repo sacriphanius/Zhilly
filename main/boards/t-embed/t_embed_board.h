@@ -19,6 +19,7 @@ private:
     Display* display_;
     Backlight* backlight_;
     Button boot_button_;
+    Button pwr_button_;
 
     void InitSpi();
     void InitLcdDisplay();

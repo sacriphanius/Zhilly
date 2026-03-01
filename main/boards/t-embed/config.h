@@ -53,6 +53,7 @@
 
 // ── Buttons / Encoder ─────────────────────────────────────────────────────────
 #define BOOT_BUTTON_GPIO GPIO_NUM_0
+#define PWR_BUTTON_GPIO GPIO_NUM_6
 #define ENCODER_A_PIN GPIO_NUM_4
 #define ENCODER_B_PIN GPIO_NUM_5
 #define ENCODER_BTN_PIN GPIO_NUM_0
