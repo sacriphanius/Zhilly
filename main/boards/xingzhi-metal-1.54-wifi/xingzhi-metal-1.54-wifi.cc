@@ -34,7 +34,7 @@ private:
     Cst816x *cst816d_;
 
     void InitializePowerManager() {
-        power_manager_ = new PowerManager(POWER_USB_IN);//USB是否插入
+        power_manager_ = new PowerManager(POWER_USB_IN);
         power_manager_->OnChargingStatusChanged([this](bool is_charging) {
             if (is_charging) {
                 power_save_timer_->SetEnabled(false);
@@ -65,7 +65,7 @@ private:
     }
 
     void InitializeI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = I2C_NUM_0,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
@@ -168,7 +168,7 @@ public:
     virtual Display* GetDisplay() override {
         return display_;
     }
-    
+
     virtual Backlight* GetBacklight() override {
         static PwmBacklight backlight(DISPLAY_BACKLIGHT_PIN, DISPLAY_BACKLIGHT_OUTPUT_INVERT);
         return &backlight;

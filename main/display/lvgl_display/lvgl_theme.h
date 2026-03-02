@@ -10,14 +10,12 @@
 #include <map>
 #include <string>
 
-
 class LvglTheme : public Theme {
 public:
     static lv_color_t ParseColor(const std::string& color);
 
     LvglTheme(const std::string& name);
 
-    // Properties
     inline lv_color_t background_color() const { return background_color_; }
     inline lv_color_t text_color() const { return text_color_; }
     inline lv_color_t chat_background_color() const { return chat_background_color_; }
@@ -52,7 +50,6 @@ public:
 private:
     int spacing_ = 2;
 
-    // Colors
     lv_color_t background_color_;
     lv_color_t text_color_;
     lv_color_t chat_background_color_;
@@ -63,18 +60,14 @@ private:
     lv_color_t border_color_;
     lv_color_t low_battery_color_;
 
-    // Background image
     std::shared_ptr<LvglImage> background_image_ = nullptr;
 
-    // fonts
     std::shared_ptr<LvglFont> text_font_ = nullptr;
     std::shared_ptr<LvglFont> icon_font_ = nullptr;
     std::shared_ptr<LvglFont> large_icon_font_ = nullptr;
 
-    // Emoji collection
     std::shared_ptr<EmojiCollection> emoji_collection_ = nullptr;
 };
-
 
 class LvglThemeManager {
 public:

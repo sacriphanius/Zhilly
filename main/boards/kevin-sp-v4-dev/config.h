@@ -42,7 +42,7 @@
 
 #define ML307_RX_PIN GPIO_NUM_12
 #define ML307_TX_PIN GPIO_NUM_13
-/* Camera pins */
+
 #define CAMERA_PIN_PWDN GPIO_NUM_NC
 #define CAMERA_PIN_RESET GPIO_NUM_NC
 #define CAMERA_PIN_XCLK GPIO_NUM_15
@@ -63,4 +63,4 @@
 
 #define XCLK_FREQ_HZ 20000000
 
-#endif // _BOARD_CONFIG_H_
+#endif 

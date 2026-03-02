@@ -35,7 +35,7 @@ CustomWakeWord::~CustomWakeWord() {
 }
 
 void CustomWakeWord::ParseWakenetModelConfig() {
-    // Read index.json
+
     auto& assets = Assets::GetInstance();
     void* ptr = nullptr;
     size_t size = 0;
@@ -81,7 +81,6 @@ void CustomWakeWord::ParseWakenetModelConfig() {
     cJSON_Delete(root);
 }
 
-
 bool CustomWakeWord::Initialize(AudioCodec* codec, srmodel_list_t* models_list) {
     codec_ = codec;
     commands_.clear();
@@ -103,7 +102,6 @@ bool CustomWakeWord::Initialize(AudioCodec* codec, srmodel_list_t* models_list) 
         return false;
     }
 
-    // 初始化 multinet (命令词识别)
     mn_name_ = esp_srmodel_filter(models_, ESP_MN_PREFIX, language_.c_str());
     if (mn_name_ == nullptr) {
         ESP_LOGW(TAG, "Language '%s' multinet not found, falling back to any multinet model", language_.c_str());
@@ -123,7 +121,7 @@ bool CustomWakeWord::Initialize(AudioCodec* codec, srmodel_list_t* models_list) 
         esp_mn_commands_add(i + 1, commands_[i].command.c_str());
     }
     esp_mn_commands_update();
-    
+
     multinet_->print_active_speech_commands(multinet_model_data_);
     return true;
 }
@@ -149,12 +147,11 @@ void CustomWakeWord::Feed(const std::vector<int16_t>& data) {
     }
 
     std::lock_guard<std::mutex> lock(input_buffer_mutex_);
-    // Check running state inside lock to avoid TOCTOU race with Stop()
+
     if (!running_) {
         return;
     }
 
-    // If input channels is 2, we need to fetch the left channel data
     if (codec_->input_channels() == 2) {
         for (size_t i = 0; i < data.size(); i += 2) {
             input_buffer_.push_back(data[i]);
@@ -162,14 +159,14 @@ void CustomWakeWord::Feed(const std::vector<int16_t>& data) {
     } else {
         input_buffer_.insert(input_buffer_.end(), data.begin(), data.end());
     }
-    
+
     int chunksize = multinet_->get_samp_chunksize(multinet_model_data_);
     while (input_buffer_.size() >= chunksize) {
         std::vector<int16_t> chunk(input_buffer_.begin(), input_buffer_.begin() + chunksize);
         StoreWakeWordData(chunk);
-        
+
         esp_mn_state_t mn_state = multinet_->detect(multinet_model_data_, chunk.data());
-        
+
         if (mn_state == ESP_MN_STATE_DETECTED) {
             esp_mn_results_t *mn_result = multinet_->get_results(multinet_model_data_);
             for (int i = 0; i < mn_result->num && running_; i++) {
@@ -180,7 +177,7 @@ void CustomWakeWord::Feed(const std::vector<int16_t>& data) {
                     last_detected_wake_word_ = command.text;
                     running_ = false;
                     input_buffer_.clear();
-                    
+
                     if (wake_word_detected_callback_) {
                         wake_word_detected_callback_(last_detected_wake_word_);
                     }
@@ -191,7 +188,7 @@ void CustomWakeWord::Feed(const std::vector<int16_t>& data) {
             ESP_LOGD(TAG, "Command word detection timeout, cleaning state");
             multinet_->clean(multinet_model_data_);
         }
-        
+
         if (!running_) {
             break;
         }
@@ -207,9 +204,9 @@ size_t CustomWakeWord::GetFeedSize() {
 }
 
 void CustomWakeWord::StoreWakeWordData(const std::vector<int16_t>& data) {
-    // store audio data to wake_word_pcm_
+
     wake_word_pcm_.push_back(data);
-    // keep about 2 seconds of data, detect duration is 30ms (sample_rate == 16000, chunksize == 512)
+
     while (wake_word_pcm_.size() > 2000 / 30) {
         wake_word_pcm_.pop_front();
     }
@@ -231,7 +228,7 @@ void CustomWakeWord::EncodeWakeWordData() {
         auto this_ = (CustomWakeWord*)arg;
         {
             auto start_time = esp_timer_get_time();
-            // Create encoder
+
             esp_opus_enc_config_t opus_enc_cfg = AS_OPUS_ENC_CONFIG();
             void* encoder_handle = nullptr;
             auto ret = esp_opus_enc_open(&opus_enc_cfg, sizeof(esp_opus_enc_config_t), &encoder_handle);
@@ -242,12 +239,12 @@ void CustomWakeWord::EncodeWakeWordData() {
                 this_->wake_word_cv_.notify_all();
                 return;
             }
-            // Get frame size
+
             int frame_size = 0;
             int outbuf_size = 0;
             esp_opus_enc_get_frame_size(encoder_handle, &frame_size, &outbuf_size);
             frame_size = frame_size / sizeof(int16_t);
-            // Encode all PCM data
+
             int packets = 0;
             std::vector<int16_t> in_buffer;
             esp_audio_enc_in_frame_t in = {};
@@ -279,7 +276,7 @@ void CustomWakeWord::EncodeWakeWordData() {
                 }
             }
             this_->wake_word_pcm_.clear();
-            // Close encoder
+
             esp_opus_enc_close(encoder_handle);
             auto end_time = esp_timer_get_time();
             ESP_LOGI(TAG, "Encode wake word opus %d packets in %ld ms", packets, (long)((end_time - start_time) / 1000));

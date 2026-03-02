@@ -58,7 +58,6 @@ private:
                         self->power_status_ = kDeviceBatterySupply;
                     }
 
-                    /* 低于某个电量，会自动关机 */
                     if (self->power_manager_->low_voltage_ < 2630 && self->power_status_ == kDeviceBatterySupply) {
                         esp_timer_stop(self->power_manager_->timer_handle_);
 
@@ -175,7 +174,7 @@ private:
     }
 
     void InitializeI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = (i2c_port_t)I2C_NUM_0,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
@@ -314,7 +313,6 @@ private:
     void InitializeSt7789Display() {
         ESP_LOGI(TAG, "Install panel IO");
 
-        /*RD PIN */
         gpio_config_t gpio_init_struct;
         gpio_init_struct.intr_type = GPIO_INTR_DISABLE;
         gpio_init_struct.mode = GPIO_MODE_INPUT_OUTPUT;
@@ -324,7 +322,6 @@ private:
         gpio_config(&gpio_init_struct);
         gpio_set_level(LCD_PIN_RD, 1);
 
-        /* BL PIN */
         gpio_init_struct.pin_bit_mask = 1ull << DISPLAY_BACKLIGHT_PIN;
         gpio_init_struct.pull_down_en = GPIO_PULLDOWN_DISABLE;
         gpio_init_struct.pull_up_en = GPIO_PULLUP_ENABLE;
@@ -473,5 +470,4 @@ public:
 
 DECLARE_BOARD(atk_dnesp32s3_box2_4g);
 
-// 定义静态成员变量
 atk_dnesp32s3_box2_4g* atk_dnesp32s3_box2_4g::instance_ = nullptr;

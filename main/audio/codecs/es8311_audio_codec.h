@@ -9,7 +9,6 @@
 #include <esp_codec_dev_defaults.h>
 #include <mutex>
 
-
 class Es8311AudioCodec : public AudioCodec {
 private:
     const audio_codec_data_if_t* data_if_ = nullptr;
@@ -39,4 +38,4 @@ public:
     virtual void EnableOutput(bool enable) override;
 };
 
-#endif // _ES8311_AUDIO_CODEC_H
+#endif 

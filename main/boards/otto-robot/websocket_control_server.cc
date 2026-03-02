@@ -24,35 +24,34 @@ esp_err_t WebSocketControlServer::ws_handler(httpd_req_t *req) {
     if (instance_ == nullptr) {
         return ESP_FAIL;
     }
-    
+
     if (req->method == HTTP_GET) {
         ESP_LOGI(TAG, "Handshake done, the new connection was opened");
         instance_->AddClient(req);
         return ESP_OK;
     }
-    
+
     httpd_ws_frame_t ws_pkt;
     uint8_t *buf = NULL;
     memset(&ws_pkt, 0, sizeof(httpd_ws_frame_t));
     ws_pkt.type = HTTPD_WS_TYPE_TEXT;
-    
-    /* Set max_len = 0 to get the frame len */
+
     esp_err_t ret = httpd_ws_recv_frame(req, &ws_pkt, 0);
     if (ret != ESP_OK) {
         ESP_LOGE(TAG, "httpd_ws_recv_frame failed to get frame len with %d", ret);
         return ret;
     }
     ESP_LOGI(TAG, "frame len is %d", ws_pkt.len);
-    
+
     if (ws_pkt.len) {
-        /* ws_pkt.len + 1 is for NULL termination as we are expecting a string */
+
         buf = (uint8_t*)calloc(1, ws_pkt.len + 1);
         if (buf == NULL) {
             ESP_LOGE(TAG, "Failed to calloc memory for buf");
             return ESP_ERR_NO_MEM;
         }
         ws_pkt.payload = buf;
-        /* Set max_len = ws_pkt.len to get the frame payload */
+
         ret = httpd_ws_recv_frame(req, &ws_pkt, ws_pkt.len);
         if (ret != ESP_OK) {
             ESP_LOGE(TAG, "httpd_ws_recv_frame failed with %d", ret);
@@ -61,16 +60,16 @@ esp_err_t WebSocketControlServer::ws_handler(httpd_req_t *req) {
         }
         ESP_LOGI(TAG, "Got packet with message: %s", ws_pkt.payload);
     }
-    
+
     ESP_LOGI(TAG, "Packet type: %d", ws_pkt.type);
-    
+
     if (ws_pkt.type == HTTPD_WS_TYPE_CLOSE) {
         ESP_LOGI(TAG, "WebSocket close frame received");
         instance_->RemoveClient(req);
         free(buf);
         return ESP_OK;
     }
-    
+
     if (ws_pkt.type == HTTPD_WS_TYPE_TEXT) {
         if (ws_pkt.len > 0 && buf != nullptr) {
             buf[ws_pkt.len] = '\0';
@@ -79,7 +78,7 @@ esp_err_t WebSocketControlServer::ws_handler(httpd_req_t *req) {
     } else {
         ESP_LOGW(TAG, "Unsupported frame type: %d", ws_pkt.type);
     }
-    
+
     free(buf);
     return ESP_OK;
 }
@@ -121,12 +120,12 @@ void WebSocketControlServer::HandleMessage(httpd_req_t *req, const char* data, s
         ESP_LOGE(TAG, "Invalid message: data is null or len is 0");
         return;
     }
-    
+
     if (len > 4096) {
         ESP_LOGE(TAG, "Message too long: %zu bytes", len);
         return;
     }
-    
+
     char* temp_buf = (char*)malloc(len + 1);
     if (temp_buf == nullptr) {
         ESP_LOGE(TAG, "Failed to allocate memory");
@@ -134,22 +133,18 @@ void WebSocketControlServer::HandleMessage(httpd_req_t *req, const char* data, s
     }
     memcpy(temp_buf, data, len);
     temp_buf[len] = '\0';
-    
+
     cJSON* root = cJSON_Parse(temp_buf);
     free(temp_buf);
-    
+
     if (root == nullptr) {
         ESP_LOGE(TAG, "Failed to parse JSON");
         return;
     }
 
-    // 支持两种格式：
-    // 1. 完整格式：{"type":"mcp","payload":{...}}
-    // 2. 简化格式：直接是MCP payload对象
-    
     cJSON* payload = nullptr;
     cJSON* type = cJSON_GetObjectItem(root, "type");
-    
+
     if (type && cJSON_IsString(type) && strcmp(type->valuestring, "mcp") == 0) {
         payload = cJSON_GetObjectItem(root, "payload");
         if (payload != nullptr) {
@@ -164,7 +159,7 @@ void WebSocketControlServer::HandleMessage(httpd_req_t *req, const char* data, s
             cJSON_Delete(payload);
         }
     }
-    
+
     if (payload == nullptr) {
         ESP_LOGE(TAG, "Invalid message format or failed to parse");
     }

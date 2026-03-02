@@ -29,7 +29,6 @@ static uint16_t *trans_buf_1;
 static uint16_t *dest_map;
 #endif
 
-
 bool CustomLcdDisplay::lvgl_port_flush_io_ready_callback(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_io_event_data_t *edata, void *user_ctx) {
     BaseType_t taskAwake = pdFALSE;
     lv_display_t *disp_drv = (lv_display_t *)user_ctx;
@@ -52,19 +51,18 @@ void CustomLcdDisplay::lvgl_port_flush_callback(lv_display_t *drv, const lv_area
     lv_area_t rotated_area;
     if(rotation != LV_DISPLAY_ROTATION_0) {
         lv_color_format_t cf = lv_display_get_color_format(drv);
-        /*Calculate the position of the rotated area*/
+
         rotated_area = *area;
         lv_display_rotate_area(drv, &rotated_area);
-        /*Calculate the source stride (bytes in a line) from the width of the area*/
+
         uint32_t src_stride = lv_draw_buf_width_to_stride(lv_area_get_width(area), cf);
-        /*Calculate the stride of the destination (rotated) area too*/
+
         uint32_t dest_stride = lv_draw_buf_width_to_stride(lv_area_get_width(&rotated_area), cf);
-        /*Have a buffer to store the rotated area and perform the rotation*/
 
         int32_t src_w = lv_area_get_width(area);
         int32_t src_h = lv_area_get_height(area);
         lv_draw_sw_rotate(color_map, dest_map, src_w, src_h, src_stride, dest_stride, rotation, cf);
-        /*Use the rotated area and rotated buffer from now on*/
+
         area = &rotated_area;
     }
 #endif
@@ -81,7 +79,7 @@ void CustomLcdDisplay::lvgl_port_flush_callback(lv_display_t *drv, const lv_area
     uint16_t *map = (uint16_t*)color_map;
 #endif
     xSemaphoreGive(trans_done_sem);
-    
+
     for(int i = 0; i<flush_coun; i++) {
         xSemaphoreTake(trans_done_sem,portMAX_DELAY);
         memcpy(trans_buf_1,map,LVGL_DMA_BUFF_LEN);
@@ -93,7 +91,6 @@ void CustomLcdDisplay::lvgl_port_flush_callback(lv_display_t *drv, const lv_area
     xSemaphoreTake(trans_done_sem,portMAX_DELAY);
     lv_disp_flush_ready(drv);
 }
-
 
 CustomLcdDisplay::CustomLcdDisplay(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_handle_t panel,
                   int width, int height, int offset_x, int offset_y,
@@ -130,7 +127,7 @@ CustomLcdDisplay::CustomLcdDisplay(esp_lcd_panel_io_handle_t panel_io, esp_lcd_p
     esp_lcd_panel_io_callbacks_t cbs = {
         .on_color_trans_done = lvgl_port_flush_io_ready_callback,
     };
-    /* Register done callback */
+
     esp_lcd_panel_io_register_event_callbacks(panel_io_, &cbs, display_);
 
     if (display_ == nullptr) {
@@ -142,6 +139,4 @@ CustomLcdDisplay::CustomLcdDisplay(esp_lcd_panel_io_handle_t panel_io, esp_lcd_p
         lv_display_set_offset(display_, offset_x, offset_y);
     }
 
-    // Note: SetupUI() should be called by Application::Initialize(), not in constructor
-    // to ensure lvgl objects are created after the display is fully initialized.
 }

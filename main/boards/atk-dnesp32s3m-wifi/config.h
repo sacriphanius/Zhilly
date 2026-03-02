@@ -1,7 +1,6 @@
 #ifndef _BOARD_CONFIG_H_
 #define _BOARD_CONFIG_H_
 
-
 #include <driver/gpio.h>
 
 #define AUDIO_INPUT_SAMPLE_RATE      24000
@@ -42,11 +41,9 @@
 
 #define DISPLAY_OFFSET_X 1
 #define DISPLAY_OFFSET_Y 26
-// #define DISPLAY_OFFSET_X 0
-// #define DISPLAY_OFFSET_Y 0
 
 #define DISPLAY_BACKLIGHT_PIN GPIO_NUM_41
 #define DISPLAY_BACKLIGHT_OUTPUT_INVERT false
 
-#endif // _BOARD_CONFIG_H_
+#endif 
 

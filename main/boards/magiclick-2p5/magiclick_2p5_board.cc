@@ -30,7 +30,7 @@ public:
 };
 
 static const gc9a01_lcd_init_cmd_t gc9107_lcd_init_cmds[] = {
-    //  {cmd, { data }, data_size, delay_ms}
+
     {0xfe, (uint8_t[]){0x00}, 0, 0},
     {0xef, (uint8_t[]){0x00}, 0, 0},
     {0xb0, (uint8_t[]){0xc0}, 1, 0},
@@ -98,25 +98,25 @@ private:
             GetDisplay()->SetPowerSaveMode(false);
             GetBacklight()->RestoreBrightness();
         });
-         
+
         power_save_timer_->SetEnabled(true);
     }
 
     void Enable4GModule() {
-        // enable the 4G module
+
         gpio_reset_pin(ML307_POWER_PIN);
         gpio_set_direction(ML307_POWER_PIN, GPIO_MODE_OUTPUT);
         gpio_set_level(ML307_POWER_PIN, ML307_POWER_OUTPUT_INVERT ? 0 : 1);
     }
     void Disable4GModule() {
-        // enable the 4G module
+
         gpio_reset_pin(ML307_POWER_PIN);
         gpio_set_direction(ML307_POWER_PIN, GPIO_MODE_OUTPUT);
         gpio_set_level(ML307_POWER_PIN, ML307_POWER_OUTPUT_INVERT ? 1 : 0);
     }
 
     void InitializeCodecI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = I2C_NUM_0,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
@@ -138,7 +138,7 @@ private:
         } else if (GetNetworkType() == NetworkType::ML307) {
             Enable4GModule();
         }
-        
+
     }
 
     void InitializeButtons() {
@@ -146,7 +146,7 @@ private:
             auto& app = Application::GetInstance();
             if (GetNetworkType() == NetworkType::WIFI) {
                 if (app.GetDeviceState() == kDeviceStateStarting) {
-                    // cast to WifiBoard
+
                     auto& wifi_board = static_cast<WifiBoard&>(GetCurrentBoard());
                     wifi_board.EnterWifiConfigMode();
                 }
@@ -202,7 +202,7 @@ private:
     }
 
     void InitializeLedPower() {
-        // 设置GPIO模式
+
         gpio_reset_pin(BUILTIN_LED_POWER);
         gpio_set_direction(BUILTIN_LED_POWER, GPIO_MODE_OUTPUT);
         gpio_set_level(BUILTIN_LED_POWER, BUILTIN_LED_POWER_OUTPUT_INVERT ? 0 : 1);
@@ -220,9 +220,7 @@ private:
     }
 
     void InitializeGc9107Display(){
-        // esp_lcd_panel_io_handle_t panel_io = nullptr;
-        // esp_lcd_panel_handle_t panel = nullptr;
-        // 液晶屏控制IO初始化
+
         ESP_LOGD(TAG, "Install panel IO");
         esp_lcd_panel_io_spi_config_t io_config = {};
         io_config.cs_gpio_num = DISPLAY_CS_PIN;
@@ -234,7 +232,6 @@ private:
         io_config.lcd_param_bits = 8;
         ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi(SPI3_HOST, &io_config, &panel_io));
 
-        // 初始化液晶屏驱动芯片GC9107
         ESP_LOGD(TAG, "Install LCD driver");        
         gc9a01_vendor_config_t gc9107_vendor_config = {
             .init_cmds = gc9107_lcd_init_cmds,
@@ -290,7 +287,7 @@ public:
     virtual Display* GetDisplay() override {
         return display_;
     }
-    
+
     virtual Backlight* GetBacklight() override {
         static PwmBacklight backlight(DISPLAY_BACKLIGHT_PIN, DISPLAY_BACKLIGHT_OUTPUT_INVERT);
         return &backlight;

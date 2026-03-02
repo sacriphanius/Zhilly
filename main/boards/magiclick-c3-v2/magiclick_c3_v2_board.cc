@@ -28,7 +28,6 @@ public:
     void SetupUI() override {
         SpiLcdDisplay::SetupUI();
 
-        // Apply custom color styles after parent creates all LVGL objects
         DisplayLockGuard lock(this);
         auto screen = lv_disp_get_scr_act(lv_disp_get_default());
         lv_obj_set_style_text_color(screen, lv_color_black(), 0);
@@ -50,7 +49,7 @@ public:
 };
 
 static const gc9a01_lcd_init_cmd_t gc9107_lcd_init_cmds[] = {
-    //  {cmd, { data }, data_size, delay_ms}
+
     {0xfe, (uint8_t[]){0x00}, 0, 0},
     {0xef, (uint8_t[]){0x00}, 0, 0},
     {0xb0, (uint8_t[]){0xc0}, 1, 0},
@@ -104,7 +103,7 @@ private:
     }
 
     void InitializeCodecI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = I2C_NUM_0,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
@@ -119,7 +118,6 @@ private:
         };
         ESP_ERROR_CHECK(i2c_new_master_bus(&i2c_bus_cfg, &codec_i2c_bus_));
 
-        // Print I2C bus info
         if (i2c_master_probe(codec_i2c_bus_, 0x18, 1000) != ESP_OK) {
             while (true) {
                 ESP_LOGE(TAG, "Failed to probe I2C bus, please check if you have installed the correct firmware");
@@ -159,7 +157,7 @@ private:
     void InitializeGc9107Display(){
         esp_lcd_panel_io_handle_t panel_io = nullptr;
         esp_lcd_panel_handle_t panel = nullptr;
-        // 液晶屏控制IO初始化
+
         ESP_LOGD(TAG, "Install panel IO");
         esp_lcd_panel_io_spi_config_t io_config = {};
         io_config.cs_gpio_num = DISPLAY_CS_PIN;
@@ -171,7 +169,6 @@ private:
         io_config.lcd_param_bits = 8;
         ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi(SPI2_HOST, &io_config, &panel_io));
 
-        // 初始化液晶屏驱动芯片GC9107
         ESP_LOGD(TAG, "Install LCD driver");        
         gc9a01_vendor_config_t gc9107_vendor_config = {
             .init_cmds = gc9107_lcd_init_cmds,
@@ -204,7 +201,6 @@ public:
         InitializeGc9107Display();
         GetBacklight()->RestoreBrightness();
 
-        // 把 ESP32C3 的 VDD SPI 引脚作为普通 GPIO 口使用
         esp_efuse_write_field_bit(ESP_EFUSE_VDD_SPI_AS_GPIO);
     }
 

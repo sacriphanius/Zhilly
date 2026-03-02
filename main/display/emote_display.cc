@@ -1,6 +1,5 @@
 #include "emote_display.h"
 
-// Standard C++ headers
 #include <cstring>
 #include <memory>
 #include <unordered_map>
@@ -8,45 +7,28 @@
 #include <algorithm>
 #include <cinttypes>
 
-// Standard C headers
 #include <sys/time.h>
 #include <time.h>
 
-// ESP-IDF headers
 #include <esp_log.h>
 #include <esp_lcd_panel_io.h>
 #include <esp_timer.h>
 #include <lvgl.h>
 
-// FreeRTOS headers
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 
-// Project headers
 #include "assets/lang_config.h"
 #include "assets.h"
 #include "board.h"
 #include "gfx.h"
 #include "expression_emote.h"
 
-
 namespace emote {
-
-// ============================================================================
-// Constants and Type Definitions
-// ============================================================================
 
 static const char* TAG = "EmoteDisplay";
 
-// ============================================================================
-// Forward Declarations
-// ============================================================================
-
 class EmoteDisplay;
-
-// ============================================================================
-// Helper Functions
-// ============================================================================
 
 static bool OnFlushIoReady(const esp_lcd_panel_io_handle_t panel_io,
     esp_lcd_panel_io_event_data_t* const edata, void* user_ctx)
@@ -58,7 +40,6 @@ static bool OnFlushIoReady(const esp_lcd_panel_io_handle_t panel_io,
     return true;
 }
 
-// Flush callback for emote
 static void OnFlushCallback(int x_start, int y_start, int x_end, int y_end, const void* data, emote_handle_t handle)
 {
     esp_lcd_panel_handle_t panel = (esp_lcd_panel_handle_t)emote_get_user_data(handle);
@@ -66,10 +47,6 @@ static void OnFlushCallback(int x_start, int y_start, int x_end, int y_end, cons
         esp_lcd_panel_draw_bitmap(panel, x_start, y_start, x_end, y_end, data);
     }
 }
-
-// ============================================================================
-// Graphics Initialization Functions
-// ============================================================================
 
 static emote_handle_t InitializeEmote(const esp_lcd_panel_handle_t panel, const int width, const int height)
 {
@@ -110,10 +87,6 @@ static emote_handle_t InitializeEmote(const esp_lcd_panel_handle_t panel, const 
 
     return emote_handle;
 }
-
-// ============================================================================
-// EmoteDisplay Class Implementation
-// ============================================================================
 
 EmoteDisplay::EmoteDisplay(const esp_lcd_panel_handle_t panel, const esp_lcd_panel_io_handle_t panel_io,
                            const int width, const int height)
@@ -247,4 +220,4 @@ void EmoteDisplay::RefreshAll()
     }
 }
 
-} // namespace emote
+} 

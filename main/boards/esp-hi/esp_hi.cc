@@ -28,16 +28,16 @@
 
 #ifdef CONFIG_ESP_HI_WEB_CONTROL_ENABLED
 #include "esp_hi_web_control.h"
-#endif //CONFIG_ESP_HI_WEB_CONTROL_ENABLED
+#endif 
 
 #define TAG "ESP_HI"
 
 static const ili9341_lcd_init_cmd_t vendor_specific_init[] = {
-    {0x11, NULL, 0, 120},     // Sleep out, Delay 120ms
+    {0x11, NULL, 0, 120},     
     {0xB1, (uint8_t []){0x05, 0x3A, 0x3A}, 3, 0},
     {0xB2, (uint8_t []){0x05, 0x3A, 0x3A}, 3, 0},
     {0xB3, (uint8_t []){0x05, 0x3A, 0x3A, 0x05, 0x3A, 0x3A}, 6, 0},
-    {0xB4, (uint8_t []){0x03}, 1, 0},   // Dot inversion
+    {0xB4, (uint8_t []){0x03}, 1, 0},   
     {0xC0, (uint8_t []){0x44, 0x04, 0x04}, 3, 0},
     {0xC1, (uint8_t []){0xC0}, 1, 0},
     {0xC2, (uint8_t []){0x0D, 0x00}, 2, 0},
@@ -49,8 +49,8 @@ static const ili9341_lcd_init_cmd_t vendor_specific_init[] = {
     {0x35, (uint8_t []){0x00}, 1, 0},
     {0x3A, (uint8_t []){0x05}, 1, 0},
     {0x36, (uint8_t []){0xC8}, 1, 0},
-    {0x29, NULL, 0, 0},     // Display on
-    {0x2C, NULL, 0, 0},     // Memory write
+    {0x29, NULL, 0, 0},     
+    {0x2C, NULL, 0, 0},     
 };
 
 static const led_strip_config_t bsp_strip_config = {
@@ -89,7 +89,7 @@ private:
             xTaskCreate(
                 [](void* arg) {
                     EspHi* instance = static_cast<EspHi*>(arg);
-                    
+
                     vTaskDelay(5000 / portTICK_PERIOD_MS);
 
                     if (!instance->web_server_initialized_) {
@@ -109,7 +109,7 @@ private:
                 1024 * 10, arg, 5, nullptr);
         }
     }
-#endif //CONFIG_ESP_HI_WEB_CONTROL_ENABLED
+#endif 
 
     void HandleMoveWakePressDown(int64_t current_time, int64_t &last_trigger_time, int &gesture_state)
     {
@@ -166,11 +166,11 @@ private:
     void InitializeButtons()
     {
         static int64_t last_trigger_time = 0;
-        static int gesture_state = 0;  // 0: init, 1: wait second long interval, 2: wait oscillation
+        static int gesture_state = 0;  
 
         boot_button_.OnClick([this]() {
             auto &app = Application::GetInstance();
-            // During startup (before connected), pressing BOOT button enters Wi-Fi config mode without reboot
+
             if (app.GetDeviceState() == kDeviceStateStarting) {
                 EnterWifiConfigMode();
                 return;
@@ -194,7 +194,7 @@ private:
             HandleMoveWakePressUp(current_time, last_trigger_time, gesture_state);
         });
     }
-    
+
     void InitializeLed() {
         ESP_LOGI(TAG, "BLINK_GPIO setting %d", bsp_strip_config.strip_gpio_num);
 
@@ -227,7 +227,7 @@ private:
         esp_event_loop_create_default();
         ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, WIFI_EVENT_STA_CONNECTED,
                                                  &wifi_event_handler, this));
-#endif //CONFIG_ESP_HI_WEB_CONTROL_ENABLED
+#endif 
     }
 
     void InitializeSpi()
@@ -247,7 +247,6 @@ private:
         esp_lcd_panel_io_handle_t panel_io = nullptr;
         esp_lcd_panel_handle_t panel = nullptr;
 
-        // 液晶屏控制IO初始化
         ESP_LOGD(TAG, "Install panel IO");
         esp_lcd_panel_io_spi_config_t io_config = {};
         io_config.cs_gpio_num = DISPLAY_CS_PIN;
@@ -259,7 +258,6 @@ private:
         io_config.lcd_param_bits = 8;
         ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi(SPI2_HOST, &io_config, &panel_io));
 
-        // 初始化液晶屏驱动芯片
         ESP_LOGD(TAG, "Install LCD driver");
         const ili9341_vendor_config_t vendor_config = {
             .init_cmds = &vendor_specific_init[0],
@@ -302,8 +300,7 @@ private:
     void InitializeTools()
     {
         auto& mcp_server = McpServer::GetInstance();
-        
-        // 基础动作控制
+
         mcp_server.AddTool("self.dog.basic_control", "机器人的基础动作。机器人可以做以下基础动作：\n"
             "forward: 向前移动\nbackward: 向后移动\nturn_left: 向左转\nturn_right: 向右转\nstop: 立即停止当前动作", 
             PropertyList({
@@ -325,8 +322,7 @@ private:
                 }
                 return true;
             });
-        
-        // 扩展动作控制
+
         mcp_server.AddTool("self.dog.advanced_control", "机器人的扩展动作。机器人可以做以下扩展动作：\n"
             "sway_back_forth: 前后摇摆\nlay_down: 趴下\nsway: 左右摇摆\nretract_legs: 收回腿部\n"
             "shake_hand: 握手\nshake_back_legs: 伸懒腰\njump_forward: 向前跳跃", 
@@ -357,7 +353,6 @@ private:
                 return true;
             });
 
-        // 灯光控制
         mcp_server.AddTool("self.light.get_power", "获取灯是否打开", PropertyList(), [this](const PropertyList& properties) -> ReturnValue {
             return led_on_;
         });

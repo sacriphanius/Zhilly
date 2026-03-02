@@ -19,7 +19,6 @@
 
 #define BOOT_BUTTON_GPIO        GPIO_NUM_9
 
-
 #define LCD_CS       GPIO_NUM_22
 #define LCD_PCLK     GPIO_NUM_18
 #define LCD_D0       GPIO_NUM_19
@@ -30,7 +29,7 @@
 
 #define EXAMPLE_LCD_H_RES 466
 #define EXAMPLE_LCD_V_RES 466
- 
+
 #define DISPLAY_MIRROR_X false
 #define DISPLAY_MIRROR_Y false
 #define DISPLAY_SWAP_XY  false
@@ -41,4 +40,4 @@
 #define SYS_POWER_IO_PIN GPIO_NUM_2
 #define PWR_KEY_GPIO     GPIO_NUM_1
 
-#endif // _BOARD_CONFIG_H_
+#endif 

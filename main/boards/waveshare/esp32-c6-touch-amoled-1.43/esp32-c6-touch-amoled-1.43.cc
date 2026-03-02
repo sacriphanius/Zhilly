@@ -35,10 +35,10 @@ public:
         uint16_t x2 = area->x2; 
         uint16_t y1 = area->y1;
         uint16_t y2 = area->y2; 
-        // round the start of coordinate down to the nearest 2M number
+
         area->x1 = (x1 >> 1) << 1;
         area->y1 = (y1 >> 1) << 1;
-        // round the end of coordinate up to the nearest 2N+1 number
+
         area->x2 = ((x2 >> 1) << 1) + 1;
         area->y2 = ((y2 >> 1) << 1) + 1;
     }
@@ -54,12 +54,11 @@ public:
                     bool swap_xy)
         : SpiLcdDisplay(io_handle, panel_handle,
                     width, height, offset_x, offset_y, mirror_x, mirror_y, swap_xy) {
-        // Note: UI customization should be done in SetupUI(), not in constructor
-        // to ensure lvgl objects are created before accessing them
+
     }
 
     virtual void SetupUI() override {
-        // Call parent SetupUI() first to create all lvgl objects
+
         SpiLcdDisplay::SetupUI();
 
         DisplayLockGuard lock(this);
@@ -77,11 +76,11 @@ private:
     esp_io_expander_handle_t io_expander = NULL;
     CustomLcdDisplay* display_;
     i2c_master_dev_handle_t disp_touch_dev_handle = NULL;
-    lv_indev_t *touch_indev = NULL;    //touch
+    lv_indev_t *touch_indev = NULL;    
     uint8_t pwr_flag = 0;
 
     void InitializeI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = (i2c_port_t)0,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
@@ -136,8 +135,8 @@ private:
         };
         ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi(SPI2_HOST, &io_config, &io_handle));
         sh8601_vendor_config_t vendor_config = {
-            .init_cmds = lcd_init_cmds,             // Uncomment these line if use custom initialization commands
-            .init_cmds_size = sizeof(lcd_init_cmds) / sizeof(lcd_init_cmds[0]), // sizeof(axs15231b_lcd_init_cmd_t),
+            .init_cmds = lcd_init_cmds,             
+            .init_cmds_size = sizeof(lcd_init_cmds) / sizeof(lcd_init_cmds[0]), 
             .flags = 
             {
                 .use_qspi_interface = 1,
@@ -145,8 +144,8 @@ private:
         };
         const esp_lcd_panel_dev_config_t panel_config = {
             .reset_gpio_num = LCD_RST,
-            .rgb_ele_order = LCD_RGB_ELEMENT_ORDER_RGB,     // Implemented by LCD command `36h`
-            .bits_per_pixel = 16,                           // Implemented by LCD command `3Ah` (16/18)
+            .rgb_ele_order = LCD_RGB_ELEMENT_ORDER_RGB,     
+            .bits_per_pixel = 16,                           
             .vendor_config = &vendor_config,
         };
         ESP_ERROR_CHECK(esp_lcd_new_panel_sh8601(io_handle, &panel_config, &panel_handle));
@@ -157,7 +156,7 @@ private:
         EXAMPLE_LCD_H_RES, EXAMPLE_LCD_V_RES, DISPLAY_OFFSET_X, DISPLAY_OFFSET_Y, DISPLAY_MIRROR_X, DISPLAY_MIRROR_Y, DISPLAY_SWAP_XY);
     }
 
-    void InitializeButtons() { //接入锂电池时,可长按PWR开机/关机
+    void InitializeButtons() { 
         boot_button_.OnClick([this]() {
             auto& app = Application::GetInstance();
             if (app.GetDeviceState() == kDeviceStateStarting) {
@@ -224,7 +223,7 @@ private:
             {tp_y = EXAMPLE_LCD_V_RES;}
             indevData->point.x = tp_x;
             indevData->point.y = tp_y;
-            //ESP_LOGI("tp","(%ld,%ld)",indevData->point.x,indevData->point.y);
+
             indevData->state = LV_INDEV_STATE_PRESSED;
         }
         else

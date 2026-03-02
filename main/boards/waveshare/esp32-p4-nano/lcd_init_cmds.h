@@ -38,7 +38,6 @@ static const jd9365_lcd_init_cmd_t lcd_init_cmds[] = {
     {0x43, (uint8_t[]){0x1E}, 1, 0},
     {0x44, (uint8_t[]){0x0D}, 1, 0},
     {0x45, (uint8_t[]){0x28}, 1, 0},
-    //{0x4A, (uint8_t[]){0x35}, 1, 0},//bist
 
     {0x55, (uint8_t[]){0x02}, 1, 0},
     {0x57, (uint8_t[]){0x69}, 1, 0},
@@ -210,8 +209,8 @@ static const jd9365_lcd_init_cmd_t lcd_init_cmds[] = {
     {0x02, (uint8_t[]){0xB3}, 1, 0},
     {0x09, (uint8_t[]){0x61}, 1, 0},
     {0x0E, (uint8_t[]){0x48}, 1, 0},
-    {0x37, (uint8_t[]){0x58}, 1, 0}, // 全志
-    {0x2B, (uint8_t[]){0x0F}, 1, 0}, // 全志
+    {0x37, (uint8_t[]){0x58}, 1, 0}, 
+    {0x2B, (uint8_t[]){0x0F}, 1, 0}, 
 
     {0xE0, (uint8_t[]){0x00}, 1, 0},
 

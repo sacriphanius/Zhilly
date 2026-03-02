@@ -3,7 +3,6 @@
 
 #include "mcp_server.h"
 
-
 class LampController {
 private:
     bool power_ = false;
@@ -40,5 +39,4 @@ public:
     }
 };
 
-
-#endif // __LAMP_CONTROLLER_H__
+#endif 

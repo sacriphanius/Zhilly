@@ -23,15 +23,15 @@
 
 #include "bmi270_api.h"
 #include "i2c_bus.h"
-#endif  // IMU_INT_GPIO
+#endif  
 
 #ifdef CONFIG_IDF_TARGET_ESP32S3
 #define TAG "esp_spot_s3"
 #elif defined(CONFIG_IDF_TARGET_ESP32C5)
 #define TAG "esp_spot_c5"
-#else  // target
+#else  
 #error "Unsupported target"
-#endif  // target
+#endif  
 
 #ifdef IMU_INT_GPIO
 namespace Bmi270Imu {
@@ -58,7 +58,6 @@ esp_err_t Initialize(i2c_bus_handle_t i2c_bus, uint8_t addr = BMI270_I2C_ADDRESS
     return ESP_OK;
 }
 
-// Only used for deep sleep wakeup with wrist gesture interrupt
 esp_err_t EnableImuIntForWakeup() {
     if (!bmi_handle_) {
         return ESP_ERR_INVALID_STATE;
@@ -107,9 +106,9 @@ esp_err_t EnableImuIntForWakeup() {
     return ESP_OK;
 }
 
-}  // namespace Bmi270Imu
+}  
 
-#endif  // IMU_INT_GPIO
+#endif  
 
 class EspSpot : public WifiBoard {
 private:
@@ -124,13 +123,13 @@ private:
     SleepTimer* sleep_timer_ = nullptr;
 #ifdef IMU_INT_GPIO
     i2c_bus_handle_t shared_i2c_bus_handle_ = nullptr;
-    static constexpr int kDeepSleepTimeoutSeconds = 10 * 60; // 10 minutes
+    static constexpr int kDeepSleepTimeoutSeconds = 10 * 60; 
     bool imu_ready_ = false;
 #endif
 
 #ifdef IMU_INT_GPIO
     void InitializeI2c() {
-        // Initialize I2C peripheral
+
         i2c_config_t i2c_bus_cfg = {
             .mode = I2C_MODE_MASTER,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
@@ -183,7 +182,7 @@ private:
         };
         ESP_ERROR_CHECK(i2c_new_master_bus(&i2c_bus_cfg, &i2c_bus_));
     }
-#endif  // IMU_INT_GPIO
+#endif  
 
     void InitializeADC() {
         adc_oneshot_unit_init_cfg_t init_config1 = {.unit_id = ADC_UNIT_1};
@@ -210,7 +209,7 @@ private:
             adc1_cali_handle_ = handle;
             ESP_LOGI(TAG, "ADC Curve Fitting calibration succeeded");
         }
-#endif  // ADC_CALI_SCHEME_CURVE_FITTING_SUPPORTED
+#endif  
     }
 
     void InitializeButtons() {
@@ -297,7 +296,7 @@ private:
         };
         gpio_config(&io_conf_imu_int);
         gpio_install_isr_service(0);
-#endif  // IMU_INT_GPIO
+#endif  
     }
 
     void HandleUserActivity() {
@@ -342,7 +341,7 @@ private:
         ESP_LOGI(TAG, "Entering deep sleep, waiting for key or wrist gesture");
         esp_deep_sleep_start();
     }
-#endif  // IMU_INT_GPIO
+#endif  
 
     void BlinkGreenFor5s() {
         auto* led = static_cast<CircularStrip*>(GetLed());
@@ -377,7 +376,7 @@ public:
         InitializeButtons();
 #ifdef IMU_INT_GPIO
         InitializePowerSaveTimer();
-#endif  // IMU_INT_GPIO
+#endif  
     }
 
     virtual Led* GetLed() override {
@@ -412,7 +411,7 @@ public:
 
         if (adc_calibration_lock_) {
             ESP_ERROR_CHECK(adc_cali_raw_to_voltage(adc1_cali_handle_, raw_value, &voltage));
-            voltage = voltage * 3 / 2;  // compensate for voltage divider
+            voltage = voltage * 3 / 2;  
             ESP_LOGI(TAG, "Calibrated voltage: %d mV", voltage);
         } else {
             ESP_LOGI(TAG, "Raw ADC value: %d", raw_value);
@@ -422,10 +421,8 @@ public:
         voltage = voltage < EMPTY_BATTERY_VOLTAGE ? EMPTY_BATTERY_VOLTAGE : voltage;
         voltage = voltage > FULL_BATTERY_VOLTAGE ? FULL_BATTERY_VOLTAGE : voltage;
 
-        // Calculate battery level percentage
         level = (voltage - EMPTY_BATTERY_VOLTAGE) * 100 / (FULL_BATTERY_VOLTAGE - EMPTY_BATTERY_VOLTAGE);
 
-        // ESP-Spot does not support charging detection, so we use MCU_VCC_CTL to determine charging status
         charging = gpio_get_level(MCU_VCC_CTL);
         discharging = !charging;
         ESP_LOGI(TAG, "Battery Level: %d%%, Charging: %s", level, charging ? "Yes" : "No");

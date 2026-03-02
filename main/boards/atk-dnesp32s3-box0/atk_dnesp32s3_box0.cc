@@ -162,7 +162,6 @@ private:
         power_save_timer_->SetEnabled(true);
     }
 
-    // Initialize I2C peripheral
     void InitializeI2c() {
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = (i2c_port_t)I2C_NUM_0,
@@ -179,7 +178,6 @@ private:
         ESP_ERROR_CHECK(i2c_new_master_bus(&i2c_bus_cfg, &i2c_bus_));
     }
 
-    // Initialize spi peripheral
     void InitializeSpi() {
         spi_bus_config_t buscfg = {};
         buscfg.mosi_io_num = LCD_MOSI_PIN;
@@ -313,7 +311,7 @@ private:
         panel_config.bits_per_pixel = 16;
         panel_config.data_endian = LCD_RGB_DATA_ENDIAN_BIG,
         esp_lcd_new_panel_st7789(panel_io, &panel_config, &panel);
-        
+
         esp_lcd_panel_reset(panel);
         esp_lcd_panel_invert_color(panel, true);
         esp_lcd_panel_init(panel);

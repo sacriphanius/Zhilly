@@ -42,7 +42,7 @@ private:
     }
 
     void InitializeSsd1306Display() {
-        // SSD1306 config
+
         esp_lcd_panel_io_i2c_config_t io_config = {
             .dev_addr = 0x3C,
             .on_color_trans_done = nullptr,
@@ -73,7 +73,6 @@ private:
         ESP_ERROR_CHECK(esp_lcd_new_panel_ssd1306(panel_io_, &panel_config, &panel_));
         ESP_LOGI(TAG, "SSD1306 driver installed");
 
-        // Reset the display
         ESP_ERROR_CHECK(esp_lcd_panel_reset(panel_));
         if (esp_lcd_panel_init(panel_) != ESP_OK) {
             ESP_LOGE(TAG, "Failed to initialize display");
@@ -82,15 +81,12 @@ private:
         }
         ESP_ERROR_CHECK(esp_lcd_panel_invert_color(panel_, false));
 
-        // Set the display to on
         ESP_LOGI(TAG, "Turning display on");
         ESP_ERROR_CHECK(esp_lcd_panel_disp_on_off(panel_, true));
 
         display_ = new OledDisplay(panel_io_, panel_, DISPLAY_WIDTH, DISPLAY_HEIGHT, DISPLAY_MIRROR_X, DISPLAY_MIRROR_Y);
     }
 
-
-    // EDA机器狗控制器初始化
     void InitializeEDARobotDogController() {
         ESP_LOGI(TAG, "初始化EDA机器狗MCP控制器");
         ::InitializeEDARobotDogController();
@@ -104,7 +100,6 @@ void InitializeButtons() {
             Application::GetInstance().StopListening();
         });
 
-
     }
 
 public:
@@ -116,8 +111,6 @@ public:
         InitializeEDARobotDogController();
         InitializeButtons();
     }
-
-
 
     virtual AudioCodec* GetAudioCodec() override {
         static NoAudioCodecSimplex audio_codec(AUDIO_INPUT_SAMPLE_RATE, AUDIO_OUTPUT_SAMPLE_RATE,

@@ -49,4 +49,4 @@ private:
     void FadeOut(int interval_ms);
 };
 
-#endif // _CIRCULAR_STRIP_H_
+#endif 

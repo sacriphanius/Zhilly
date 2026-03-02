@@ -39,13 +39,13 @@ private:
         };
         esp_lcd_panel_io_3wire_spi_config_t io_config = GC9503_PANEL_IO_3WIRE_SPI_CONFIG(line_config, 0);
         (esp_lcd_new_panel_io_3wire_spi(&io_config, &panel_io));
-    
+
         ESP_LOGI(TAG, "Install RGB LCD panel driver");
         esp_lcd_panel_handle_t panel_handle = NULL;
         esp_lcd_rgb_panel_config_t rgb_config = {
             .clk_src = LCD_CLK_SRC_PLL160M,
             .timings = GC9503_376_960_PANEL_60HZ_RGB_TIMING(),
-            .data_width = 16, // RGB565 in parallel mode, thus 16bit in width
+            .data_width = 16, 
             .bits_per_pixel = 16,
             .num_fbs = GC9503V_LCD_RGB_BUFFER_NUMS,
             .bounce_buffer_size_px = GC9503V_LCD_H_RES * GC9503V_LCD_RGB_BOUNCE_BUFFER_HEIGHT,
@@ -74,12 +74,12 @@ private:
                 GC9503V_PIN_NUM_DATA15,
             },
             .flags= {
-                .fb_in_psram = true, // allocate frame buffer in PSRAM
+                .fb_in_psram = true, 
             }
         };
-    
+
         ESP_LOGI(TAG, "Initialize RGB LCD panel");
-    
+
         gc9503_vendor_config_t vendor_config = {
             .rgb_config = &rgb_config,
             .flags = {
@@ -103,7 +103,7 @@ private:
     }
 
     void InitializeCodecI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = I2C_NUM_0,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
@@ -153,7 +153,7 @@ public:
     virtual Display* GetDisplay() override {
         return display_;
     }
-    
+
     virtual Backlight* GetBacklight() override {
         static PwmBacklight backlight(DISPLAY_BACKLIGHT_PIN, DISPLAY_BACKLIGHT_OUTPUT_INVERT);
         return &backlight;

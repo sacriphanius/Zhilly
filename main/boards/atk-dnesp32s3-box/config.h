@@ -26,8 +26,6 @@
 #define DISPLAY_BACKLIGHT_PIN GPIO_NUM_NC
 #define DISPLAY_BACKLIGHT_OUTPUT_INVERT true
 
-
-// Pin Definitions 
 #define LCD_NUM_CS GPIO_NUM_1
 #define LCD_NUM_DC GPIO_NUM_2
 #define LCD_NUM_RD GPIO_NUM_41
@@ -43,4 +41,4 @@
 #define GPIO_LCD_D6 GPIO_NUM_9
 #define GPIO_LCD_D7 GPIO_NUM_46
 
-#endif // _BOARD_CONFIG_H_
+#endif 

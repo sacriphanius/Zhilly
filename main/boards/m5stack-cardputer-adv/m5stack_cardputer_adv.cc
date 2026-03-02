@@ -85,7 +85,7 @@ private:
         io_config.trans_queue_depth = 10;
         io_config.lcd_cmd_bits = 8;
         io_config.lcd_param_bits = 8;
-        io_config.flags.sio_mode = 1;  // 3-wire SPI mode (M5GFX uses spi_3wire = true)
+        io_config.flags.sio_mode = 1;  
         ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi(SPI3_HOST, &io_config, &panel_io_));
 
         ESP_LOGI(TAG, "Install ST7789 panel driver");
@@ -140,7 +140,7 @@ public:
             AUDIO_I2S_GPIO_DIN,
             AUDIO_CODEC_PA_PIN,
             AUDIO_CODEC_ES8311_ADDR,
-            false);  // use_mclk = false, Cardputer Adv has no MCLK pin
+            false);  
         return &audio_codec;
     }
 
@@ -149,7 +149,7 @@ public:
     }
 
     virtual Backlight* GetBacklight() override {
-        // M5GFX uses 256Hz PWM frequency for Cardputer backlight
+
         static PwmBacklight backlight(DISPLAY_BACKLIGHT_PIN, DISPLAY_BACKLIGHT_OUTPUT_INVERT, 256);
         return &backlight;
     }

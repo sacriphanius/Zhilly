@@ -44,7 +44,7 @@ public:
             }else {
                 auto& board = Board::GetInstance();
                 app.SetAecMode(kAecOnDeviceSide);
-                
+
                 return "{\"success\": true, \"message\": \"AEC对话打断模式已开启\"}";
             }
         }
@@ -66,14 +66,14 @@ public:
             }
         }
     );
-	
+
     mcp_server.AddTool(
         "self.res.esp_restart",
         "重启设备。当用户意图重启设备时使用此工具。\n",
         PropertyList(),  
         [](const PropertyList&) -> ReturnValue {
             vTaskDelay(pdMS_TO_TICKS(1000));
-            // Reboot the device
+
             esp_restart();
             return true;
         }

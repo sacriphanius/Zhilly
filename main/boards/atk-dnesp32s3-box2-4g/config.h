@@ -1,7 +1,6 @@
 #ifndef _BOARD_CONFIG_H_
 #define _BOARD_CONFIG_H_
 
-
 #include <driver/gpio.h>
 
 enum PowerSupply {
@@ -76,5 +75,5 @@ enum PowerSupply {
 #define Module_4G_RX_PIN GPIO_NUM_44
 #define Module_4G_TX_PIN GPIO_NUM_43
 
-#endif // _BOARD_CONFIG_H_
+#endif 
 

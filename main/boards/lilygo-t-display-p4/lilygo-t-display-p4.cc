@@ -92,7 +92,7 @@ public:
     }
 
     void InitializeCodecI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = I2C_NUM_0,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
@@ -113,10 +113,10 @@ public:
         xl9535_->pin_mode(XL9535_ESP32P4_VCCA_POWER_EN, Cpp_Bus_Driver::Xl95x5::Mode::OUTPUT);
         xl9535_->pin_mode(XL9535_5_0_V_POWER_EN, Cpp_Bus_Driver::Xl95x5::Mode::OUTPUT);
         xl9535_->pin_mode(XL9535_3_3_V_POWER_EN, Cpp_Bus_Driver::Xl95x5::Mode::OUTPUT);
-        // 开关3.3v电压时候必须先将GPS断电
+
         xl9535_->pin_mode(XL9535_GPS_WAKE_UP, Cpp_Bus_Driver::Xl95x5::Mode::OUTPUT);
         xl9535_->pin_write(XL9535_GPS_WAKE_UP, Cpp_Bus_Driver::Xl95x5::Value::LOW);
-        // 开关3.3v电压时候必须先将ESP32C6断电
+
         xl9535_->pin_mode(XL9535_ESP32C6_EN, Cpp_Bus_Driver::Xl95x5::Mode::OUTPUT);
         xl9535_->pin_write(XL9535_ESP32C6_EN, Cpp_Bus_Driver::Xl95x5::Value::LOW);
 
@@ -136,7 +136,6 @@ public:
         xl9535_->pin_write(XL9535_3_3_V_POWER_EN, Cpp_Bus_Driver::Xl95x5::Value::LOW);
         vTaskDelay(pdMS_TO_TICKS(10));
 
-        // ESP32C6复位
         xl9535_->pin_write(XL9535_ESP32C6_EN, Cpp_Bus_Driver::Xl95x5::Value::HIGH);
         vTaskDelay(pdMS_TO_TICKS(100));
         xl9535_->pin_write(XL9535_ESP32C6_EN, Cpp_Bus_Driver::Xl95x5::Value::LOW);
@@ -157,7 +156,7 @@ public:
         vTaskDelay(pdMS_TO_TICKS(10));
 
         Init_Ldo_Channel_Power(3, 1800);
-        
+
         esp_lcd_panel_io_handle_t mipi_dbi_io = NULL;
         esp_lcd_dsi_bus_handle_t mipi_dsi_bus = NULL;
 
@@ -169,11 +168,11 @@ public:
         esp_lcd_new_dsi_bus(&bus_config, &mipi_dsi_bus);
 
         ESP_LOGI(TAG, "Install MIPI DSI LCD control panel");
-        // we use DBI interface to send LCD commands and parameters
+
         esp_lcd_dbi_io_config_t dbi_io_config = {
             .virtual_channel = 0,
-            .lcd_cmd_bits = 8,   // according to the LCD spec
-            .lcd_param_bits = 8, // according to the LCD spec
+            .lcd_cmd_bits = 8,   
+            .lcd_param_bits = 8, 
         };
         esp_lcd_new_panel_io_dbi(mipi_dsi_bus, &dbi_io_config, &mipi_dbi_io);
 
@@ -194,7 +193,7 @@ public:
                 .vsync_front_porch = SCREEN_MIPI_DSI_VFP,
             },
             .flags = {
-                .use_dma2d = true, // use DMA2D to copy draw buffer into frame buffer
+                .use_dma2d = true, 
             }
         };
 
@@ -239,7 +238,6 @@ public:
 #error "unknown macro definition, please select the correct macro definition."
 #endif
 
-
         display_ = new MipiLcdDisplay(mipi_dbi_io, mipi_dpi_panel_, SCREEN_WIDTH, SCREEN_HEIGHT,
                                        SCREEN_OFFSET_X, SCREEN_OFFSET_Y, SCREEN_MIRROR_X, SCREEN_MIRROR_Y, SCREEN_SWAP_XY);
     }
@@ -268,7 +266,7 @@ public:
 
     void AppToggleChatState(void){
         auto& app = Application::GetInstance();
-        // During startup (before connected), pressing BOOT button enters Wi-Fi config mode without reboot
+
         if (app.GetDeviceState() == kDeviceStateStarting) {
             EnterWifiConfigMode();
             return;
@@ -352,34 +350,31 @@ void TouchTask(void *arg) {
 
         if(touch_lock_flag == false){
             size_t current_time = board->esp32p4_->get_system_time_ms();
-            
+
             if (!waiting_for_second_tap) {
-                // 第一次点击
+
                 first_touch_time = current_time;
                 waiting_for_second_tap = true;
                 printf("first touch detected, waiting for second...\n");
             } else {
-                // 第二次点击，检查时间间隔
-                // 500ms内完成双击
+
                 if ((current_time - first_touch_time) <= 500) {
                     printf("double touch trigger\n");
 
                     board->AppToggleChatState();
-                    
-                    // 重置状态
+
                     waiting_for_second_tap = false;
                     first_touch_time = 0;
                 } else {
-                    // 超时，重新开始
+
                     first_touch_time = current_time;
                     printf("first touch timeout, restart...\n");
                 }
             }
-            
+
             touch_lock_flag = true;
         }
-        
-        // 处理双击超时
+
         if (waiting_for_second_tap) {
             size_t current_time = board->esp32p4_->get_system_time_ms();
 
@@ -389,7 +384,7 @@ void TouchTask(void *arg) {
                 printf("double touch timeout\n");
             }
         }
-        
+
         vTaskDelay(pdMS_TO_TICKS(50));
     }
 }

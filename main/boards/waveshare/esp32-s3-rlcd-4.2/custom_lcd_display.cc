@@ -79,7 +79,7 @@ height_(height)
     ESP_ERROR_CHECK_WITHOUT_ABORT(gpio_config(&gpio_conf));
     Set_ResetIOLevel(1);
 
-    DisplayLen                = transfer >> 3; //(1byte 8ipex)
+    DisplayLen                = transfer >> 3; 
     DispBuffer                = (uint8_t *) heap_caps_malloc(DisplayLen, MALLOC_CAP_SPIRAM);
     assert(DispBuffer);
 	PixelIndexLUT = (uint16_t (*)[300])heap_caps_malloc(transfer * sizeof(uint16_t), MALLOC_CAP_SPIRAM);
@@ -100,7 +100,7 @@ height_(height)
     lvgl_port_init(&port_cfg);
     lvgl_port_lock(0);
 
-    display_ = lv_display_create(width, height); /* 以水平和垂直分辨率（像素）进行基本初始化 */
+    display_ = lv_display_create(width, height); 
     lv_display_set_flush_cb(display_, Lvgl_flush_cb);
     lv_display_set_user_data(display_, this);
 	size_t lvgl_buffer_size = LV_COLOR_FORMAT_GET_SIZE(LV_COLOR_FORMAT_RGB565) * transfer;
@@ -117,8 +117,6 @@ height_(height)
         return;
     }
 
-    // Note: SetupUI() should be called by Application::Initialize(), not in constructor
-    // to ensure lvgl objects are created after the display is fully initialized.
 }
 
 CustomLcdDisplay::~CustomLcdDisplay() {
@@ -197,18 +195,18 @@ void CustomLcdDisplay::RLCD_ColorClear(uint8_t color) {
 void CustomLcdDisplay::RLCD_Init() {
     RLCD_Reset();
 
-    RLCD_SendCommand(0xD6);  // NVM Load Control
+    RLCD_SendCommand(0xD6);  
 	RLCD_SendData(0x17);
 	RLCD_SendData(0x02);
 
-	RLCD_SendCommand(0xD1); //Booster Enable
+	RLCD_SendCommand(0xD1); 
 	RLCD_SendData(0x01);
 
-	RLCD_SendCommand(0xC0); //Gate Voltage Control
+	RLCD_SendCommand(0xC0); 
 	RLCD_SendData(0x11);   
 	RLCD_SendData(0x04);   
 
-	RLCD_SendCommand(0xC1); //VSHP Setting
+	RLCD_SendCommand(0xC1); 
 	RLCD_SendData(0x69);
 	RLCD_SendData(0x69);
 	RLCD_SendData(0x69);
@@ -324,15 +322,15 @@ void CustomLcdDisplay::RLCD_SetPixel(uint16_t x, uint16_t y, uint8_t color) {
 }
 
 void CustomLcdDisplay::RLCD_Display() {
-    RLCD_SendCommand(0x2A);     // Column Address Set
+    RLCD_SendCommand(0x2A);     
   	RLCD_SendData(0x12);
   	RLCD_SendData(0x2A);
 
-  	RLCD_SendCommand(0x2B);     // Page Address Set
+  	RLCD_SendCommand(0x2B);     
   	RLCD_SendData(0x00);
   	RLCD_SendData(0xC7);
 
-  	RLCD_SendCommand(0x2c);     // Page Address Set
+  	RLCD_SendCommand(0x2c);     
 
 	RLCD_Sendbuffera(DispBuffer,DisplayLen);
 }

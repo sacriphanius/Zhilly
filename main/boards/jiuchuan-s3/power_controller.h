@@ -11,10 +11,9 @@ enum class PowerState {
         DEEP_SLEEP,
         SHUTDOWN
     };
-    
+
 class PowerController {
 public:
-    
 
     static PowerController& Instance() {
         static PowerController instance;
@@ -27,7 +26,7 @@ public:
             ESP_LOGI("PowerCtrl", "State change: %d -> %d", 
                     static_cast<int>(currentState_), 
                     static_cast<int>(newState));
-            
+
             currentState_ = newState;
             if (stateChangeCallback_) {
                 stateChangeCallback_(newState);

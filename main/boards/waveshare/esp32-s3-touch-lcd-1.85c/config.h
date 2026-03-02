@@ -4,8 +4,6 @@
 #include <driver/gpio.h>
 #include <driver/spi_master.h>
 
-
-
 #define BOOT_BUTTON_GPIO        GPIO_NUM_0
 
 #ifdef CONFIG_VERSION_1_0
@@ -36,8 +34,6 @@
 #define AUDIO_CODEC_ES7210_ADDR     ES7210_CODEC_DEFAULT_ADDR
 
 #endif
-
-
 
 #define I2C_SCL_IO          GPIO_NUM_10       
 #define I2C_SDA_IO          GPIO_NUM_11        
@@ -86,5 +82,4 @@
         .max_transfer_sz = max_trans_sz,                                          \
     }
 
-
-#endif // _BOARD_CONFIG_H_
+#endif 

@@ -39,7 +39,6 @@ protected:
     }
 };
 
-
 class WaveshareEsp32s3TouchLCD43c : public WifiBoard {
 private:
     i2c_master_bus_handle_t i2c_bus_;
@@ -60,17 +59,17 @@ private:
     }
 
     void InitializeGpio() {
-        // Zero-initialize the GPIO configuration structure
+
         gpio_config_t io_conf = {};
-        io_conf.intr_type = GPIO_INTR_DISABLE; // Disable interrupts for this pin
-        io_conf.pin_bit_mask = 1ULL << BSP_LCD_TOUCH_INT;    // Select the GPIO pin using a bitmask
-        io_conf.mode = GPIO_MODE_OUTPUT;          // Set pin as output
-        io_conf.pull_up_en = GPIO_PULLUP_DISABLE; // Disable pull-up
-        gpio_config(&io_conf); // Apply the configuration
+        io_conf.intr_type = GPIO_INTR_DISABLE; 
+        io_conf.pin_bit_mask = 1ULL << BSP_LCD_TOUCH_INT;    
+        io_conf.mode = GPIO_MODE_OUTPUT;          
+        io_conf.pull_up_en = GPIO_PULLUP_DISABLE; 
+        gpio_config(&io_conf); 
     }
 
     void InitializeCodecI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = I2C_NUM_0,
             .sda_io_num = BSP_I2C_SDA,
@@ -183,7 +182,6 @@ private:
         ESP_LOGI(TAG, "Touch panel initialized successfully");
     }
 
-    // Initialization tool
     void InitializeTools() {
         auto &mcp_server = McpServer::GetInstance();
         mcp_server.AddTool("self.system.reconfigure_wifi",

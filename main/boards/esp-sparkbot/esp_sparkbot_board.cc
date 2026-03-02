@@ -35,7 +35,7 @@ public:
         if (enable) {
             Es8311AudioCodec::EnableOutput(enable);
         } else {
-           // Nothing todo because the display io and PA io conflict
+
         }
     }
 };
@@ -49,7 +49,7 @@ private:
     light_mode_t light_mode_ = LIGHT_MODE_ALWAYS_ON;
 
     void InitializeI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = I2C_NUM_0,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
@@ -91,7 +91,6 @@ private:
         esp_lcd_panel_io_handle_t panel_io = nullptr;
         esp_lcd_panel_handle_t panel = nullptr;
 
-        // 液晶屏控制IO初始化
         ESP_LOGD(TAG, "Install panel IO");
         esp_lcd_panel_io_spi_config_t io_config = {};
         io_config.cs_gpio_num = DISPLAY_CS_GPIO;
@@ -103,7 +102,6 @@ private:
         io_config.lcd_param_bits = 8;
         ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi(SPI3_HOST, &io_config, &panel_io));
 
-        // 初始化液晶屏驱动芯片
         ESP_LOGD(TAG, "Install LCD driver");
 
         esp_lcd_panel_dev_config_t panel_config = {};
@@ -111,7 +109,7 @@ private:
         panel_config.rgb_ele_order = LCD_RGB_ELEMENT_ORDER_RGB;
         panel_config.bits_per_pixel = 16;
         ESP_ERROR_CHECK(esp_lcd_new_panel_st7789(panel_io, &panel_config, &panel));
-        
+
         esp_lcd_panel_reset(panel);
         esp_lcd_panel_init(panel);
         esp_lcd_panel_invert_color(panel, true);
@@ -122,7 +120,6 @@ private:
 
     void InitializeCamera() {
 
-        // DVP pin configuration
         static esp_cam_ctlr_dvp_pin_config_t dvp_pin_config = {
             .data_width = CAM_CTLR_DATA_WIDTH_8,
             .data_io = {
@@ -141,14 +138,12 @@ private:
             .xclk_io = SPARKBOT_CAMERA_XCLK,
         };
 
-        // 复用 I2C 总线
         esp_video_init_sccb_config_t sccb_config = {
-            .init_sccb = false,  // 不初始化新的 SCCB，使用现有的 I2C 总线
-            .i2c_handle = i2c_bus_,  // 使用现有的 I2C 总线句柄
-            .freq = 100000,  // 100kHz
+            .init_sccb = false,  
+            .i2c_handle = i2c_bus_,  
+            .freq = 100000,  
         };
 
-        // DVP configuration
         esp_video_init_dvp_config_t dvp_config = {
             .sccb_config = sccb_config,
             .reset_pin = SPARKBOT_CAMERA_RESET,
@@ -157,24 +152,19 @@ private:
             .xclk_freq = SPARKBOT_CAMERA_XCLK_FREQ,
         };
 
-        // Main video configuration
         esp_video_init_config_t video_config = {
             .dvp = &dvp_config,
         };
-        
+
         camera_ = new EspVideo(video_config);
 
         Settings settings("sparkbot", false);
-        // 考虑到部分复刻使用了不可动摄像头的设计，默认启用翻转
+
         bool camera_flipped = static_cast<bool>(settings.GetInt("camera-flipped", 1));
         camera_->SetHMirror(camera_flipped);
         camera_->SetVFlip(camera_flipped);
     }
 
-    /*
-        ESP-SparkBot 的底座
-        https://gitee.com/esp-friends/esp_sparkbot/tree/master/example/tank/c2_tracked_chassis
-    */
     void InitializeEchoUart() {
         uart_config_t uart_config = {
             .baud_rate = ECHO_UART_BAUD_RATE,
@@ -201,7 +191,7 @@ private:
 
     void InitializeTools() {
         auto& mcp_server = McpServer::GetInstance();
-        // 定义设备的属性
+
         mcp_server.AddTool("self.chassis.get_light_mode", "获取灯光效果编号", PropertyList(), [this](const PropertyList& properties) -> ReturnValue {
             if (light_mode_ < 2) {
                 return 1;
@@ -229,7 +219,7 @@ private:
             SendUartMessage("x1.0 y0.0");
             return true;
         });
-        
+
         mcp_server.AddTool("self.chassis.dance", "跳舞", PropertyList(), [this](const PropertyList& properties) -> ReturnValue {
             SendUartMessage("d1");
             light_mode_ = LIGHT_MODE_MAX;
@@ -254,14 +244,14 @@ private:
 
         mcp_server.AddTool("self.camera.set_camera_flipped", "翻转摄像头图像方向", PropertyList(), [this](const PropertyList& properties) -> ReturnValue {
             Settings settings("sparkbot", true);
-            // 考虑到部分复刻使用了不可动摄像头的设计，默认启用翻转
+
             bool flipped = !static_cast<bool>(settings.GetInt("camera-flipped", 1));
-            
+
             camera_->SetHMirror(flipped);
             camera_->SetVFlip(flipped);
-            
+
             settings.SetInt("camera-flipped", flipped ? 1 : 0);
-            
+
             return true;
         });
     }

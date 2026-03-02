@@ -14,33 +14,27 @@
 #include "camera.h"
 #include "assets.h"
 
-/**
- * Network events for unified callback
- */
 enum class NetworkEvent {
-    Scanning,              // Network is scanning (WiFi scanning, etc.)
-    Connecting,            // Network is connecting (data: SSID/network name)
-    Connected,             // Network connected successfully (data: SSID/network name)
-    Disconnected,          // Network disconnected
-    WifiConfigModeEnter,   // Entered WiFi configuration mode
-    WifiConfigModeExit,    // Exited WiFi configuration mode
-    // Cellular modem specific events
-    ModemDetecting,        // Detecting modem (baud rate, module type)
-    ModemErrorNoSim,       // No SIM card detected
-    ModemErrorRegDenied,   // Network registration denied
-    ModemErrorInitFailed,  // Modem initialization failed
-    ModemErrorTimeout      // Operation timeout
+    Scanning,              
+    Connecting,            
+    Connected,             
+    Disconnected,          
+    WifiConfigModeEnter,   
+    WifiConfigModeExit,    
+
+    ModemDetecting,        
+    ModemErrorNoSim,       
+    ModemErrorRegDenied,   
+    ModemErrorInitFailed,  
+    ModemErrorTimeout      
 };
 
-// Power save level enumeration
 enum class PowerSaveLevel {
-    LOW_POWER,    // Maximum power saving (lowest power consumption)
-    BALANCED,     // Medium power saving (balanced)
-    PERFORMANCE,  // No power saving (maximum power consumption / full performance)
+    LOW_POWER,    
+    BALANCED,     
+    PERFORMANCE,  
 };
 
-// Network event callback type (event, data)
-// data contains additional info like SSID for Connecting/Connected events
 using NetworkEventCallback = std::function<void(NetworkEvent event, const std::string& data)>;
 
 void* create_board();
@@ -48,14 +42,13 @@ class AudioCodec;
 class Display;
 class Board {
 private:
-    Board(const Board&) = delete; // 禁用拷贝构造函数
-    Board& operator=(const Board&) = delete; // 禁用赋值操作
+    Board(const Board&) = delete; 
+    Board& operator=(const Board&) = delete; 
 
 protected:
     Board();
     std::string GenerateUuid();
 
-    // 软件生成的设备唯一标识
     std::string uuid_;
 
 public:
@@ -89,4 +82,4 @@ void* create_board() { \
     return new BOARD_CLASS_NAME(); \
 }
 
-#endif // BOARD_H
+#endif 

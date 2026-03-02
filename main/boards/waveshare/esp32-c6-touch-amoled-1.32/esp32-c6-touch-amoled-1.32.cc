@@ -18,10 +18,10 @@
 static const sh8601_lcd_init_cmd_t lcd_init_cmds[] = {
     {0xFE, (uint8_t[]) {0x00}, 1, 0},
     {0xC4, (uint8_t[]) {0x80}, 1, 0},
-    {0x3A, (uint8_t[]) {0x55}, 1, 0}, // 0x55 for RGB565, 0x77 for RGB888
+    {0x3A, (uint8_t[]) {0x55}, 1, 0}, 
     {0x35, (uint8_t[]) {0x00}, 1, 0},
     {0x53, (uint8_t[]) {0x20}, 1, 0},
-    {0x51, (uint8_t[]) {0xFF}, 1, 0}, // Brightness
+    {0x51, (uint8_t[]) {0xFF}, 1, 0}, 
     {0x63, (uint8_t[]) {0xFF}, 1, 0},
     {0x2A, (uint8_t[]) {0x00, 0x06, 0x01, 0xD7}, 4, 0},
     {0x2B, (uint8_t[]) {0x00, 0x00, 0x01, 0xD1}, 4, 0},
@@ -42,7 +42,6 @@ class CustomLcdDisplay : public SpiLcdDisplay {
         uint16_t y1 = area->y1;
         uint16_t y2 = area->y2;
 
-        // Round area for better performance
         area->x1 = (x1 >> 1) << 1;
         area->y1 = (y1 >> 1) << 1;
         area->x2 = ((x2 >> 1) << 1) + 1;
@@ -61,13 +60,12 @@ class CustomLcdDisplay : public SpiLcdDisplay {
     CustomLcdDisplay(esp_lcd_panel_io_handle_t io_handle, esp_lcd_panel_handle_t panel_handle, int width, int height, int offset_x, int offset_y, bool mirror_x, bool mirror_y, bool swap_xy) : 
     SpiLcdDisplay(io_handle, panel_handle, width, height, offset_x, offset_y, mirror_x, mirror_y, swap_xy), 
     io_handle_(io_handle) {
-        // Note: UI customization should be done in SetupUI(), not in constructor
-        // to ensure lvgl objects are created before accessing them
-        SetMIRROR_XY(0xC0); // Rotate 180 degrees - this is safe as it only operates on hardware
+
+        SetMIRROR_XY(0xC0); 
     }
 
     virtual void SetupUI() override {
-        // Call parent SetupUI() first to create all lvgl objects
+
         SpiLcdDisplay::SetupUI();
 
         DisplayLockGuard lock(this);
@@ -112,7 +110,7 @@ class CustomBoard : public WifiBoard {
     void InitializeButtons() {
         boot_button_.OnClick([this]() {
             auto &app = Application::GetInstance();
-            // During startup (before connected), pressing BOOT button enters Wi-Fi config mode without reboot
+
             if (app.GetDeviceState() == kDeviceStateStarting) {
                 EnterWifiConfigMode();
                 return;

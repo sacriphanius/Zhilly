@@ -2,7 +2,6 @@
 #ifndef _BOARD_CONFIG_H_
 #define _BOARD_CONFIG_H_
 
-
 #include <driver/gpio.h>
 
 #define AUDIO_INPUT_SAMPLE_RATE      24000
@@ -40,7 +39,6 @@
 #define DISPLAY_BACKLIGHT_PIN GPIO_NUM_NC
 #define DISPLAY_BACKLIGHT_OUTPUT_INVERT true
 
-/* 相机引脚配置 */
 #define CAM_PIN_PWDN    GPIO_NUM_NC
 #define CAM_PIN_RESET   GPIO_NUM_NC
 #define CAM_PIN_VSYNC   GPIO_NUM_47
@@ -60,5 +58,5 @@
 #define OV_PWDN_IO      4
 #define OV_RESET_IO     5
 
-#endif // _BOARD_CONFIG_H_
+#endif 
 

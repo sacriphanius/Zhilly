@@ -15,4 +15,4 @@ protected:
     void ReadRegs(uint8_t reg, uint8_t* buffer, size_t length);
 };
 
-#endif // I2C_DEVICE_H
+#endif 

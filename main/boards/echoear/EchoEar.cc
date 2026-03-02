@@ -26,7 +26,6 @@
 
 #define TAG "EchoEar"
 
-
 temperature_sensor_handle_t temp_sensor = NULL;
 static const st77916_lcd_init_cmd_t vendor_specific_init_yysj[] = {
     {0xF0, (uint8_t []){0x28}, 1, 0},
@@ -240,8 +239,7 @@ public:
 
         int16_t voltage = static_cast<uint16_t>(read_buffer_[1] << 8 | read_buffer_[0]);
         int16_t current = static_cast<int16_t>(read_buffer_[3] << 8 | read_buffer_[2]);
-        
-        // Use the variables to avoid warnings (can be removed if actual implementation uses them)
+
         (void)voltage;
         (void)current;
     }
@@ -279,7 +277,6 @@ public:
         was_touched_ = false;
         press_count_ = 0;
 
-        // Create touch interrupt semaphore
         touch_isr_mux_ = xSemaphoreCreateBinary();
         if (touch_isr_mux_ == NULL) {
             ESP_LOGE("EchoEar", "Failed to create touch semaphore");
@@ -290,7 +287,6 @@ public:
     {
         delete[] read_buffer_;
 
-        // Delete semaphore if it exists
         if (touch_isr_mux_ != NULL) {
             vSemaphoreDelete(touch_isr_mux_);
             touch_isr_mux_ = NULL;
@@ -316,21 +312,20 @@ public:
         TouchEvent event = TOUCH_NONE;
 
         if (is_touched && !was_touched_) {
-            // Press event (transition from not touched to touched)
+
             press_count_++;
             event = TOUCH_PRESS;
             ESP_LOGI("EchoEar", "TOUCH PRESS - count: %d, x: %d, y: %d", press_count_, tp_.x, tp_.y);
         } else if (!is_touched && was_touched_) {
-            // Release event (transition from touched to not touched)
+
             event = TOUCH_RELEASE;
             ESP_LOGI("EchoEar", "TOUCH RELEASE - total presses: %d", press_count_);
         } else if (is_touched && was_touched_) {
-            // Continuous touch (hold)
+
             event = TOUCH_HOLD;
             ESP_LOGD("EchoEar", "TOUCH HOLD - x: %d, y: %d", tp_.x, tp_.y);
         }
 
-        // Update previous state
         was_touched_ = is_touched;
         return event;
     }
@@ -345,7 +340,6 @@ public:
         press_count_ = 0;
     }
 
-    // Semaphore management methods
     SemaphoreHandle_t GetTouchSemaphore()
     {
         return touch_isr_mux_;
@@ -372,11 +366,9 @@ private:
     uint8_t* read_buffer_ = nullptr;
     TouchPoint_t tp_;
 
-    // Touch state tracking
     bool was_touched_;
     int press_count_;
 
-    // Touch interrupt semaphore
     SemaphoreHandle_t touch_isr_mux_;
 };
 
@@ -389,7 +381,7 @@ private:
     Display* display_ = nullptr;
     PwmBacklight* backlight_ = nullptr;
     esp_timer_handle_t touchpad_timer_;
-    esp_lcd_touch_handle_t tp;   // LCD touch handle
+    esp_lcd_touch_handle_t tp;   
     EspVideo* camera_ = nullptr;
 
     void InitializeI2c()
@@ -501,7 +493,7 @@ private:
         const gpio_config_t int_gpio_config = {
             .pin_bit_mask = (1ULL << TP_PIN_NUM_INT),
             .mode = GPIO_MODE_INPUT,
-            // .intr_type = GPIO_INTR_NEGEDGE
+
             .intr_type = GPIO_INTR_ANYEDGE
         };
         gpio_config(&int_gpio_config);
@@ -607,7 +599,7 @@ private:
 
         camera_ = new EspVideo(video_config);
     }
-#endif // CONFIG_ESP_VIDEO_ENABLE_USB_UVC_VIDEO_DEVICE
+#endif 
 
 public:
     EchoEar() : boot_button_(BOOT_BUTTON_GPIO)
@@ -622,7 +614,7 @@ public:
         InitializeButtons();
 #ifdef CONFIG_ESP_VIDEO_ENABLE_USB_UVC_VIDEO_DEVICE
         InitializeCamera();
-#endif // CONFIG_ESP_VIDEO_ENABLE_USB_UVC_VIDEO_DEVICE
+#endif 
     }
 
     virtual AudioCodec* GetAudioCodec() override

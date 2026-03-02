@@ -6,7 +6,6 @@
 #define AUDIO_INPUT_SAMPLE_RATE  16000
 #define AUDIO_OUTPUT_SAMPLE_RATE 24000
 
-// 配置PDM上采样fs参数（取值范围<=480）。部分设备在441时表现更稳定
 #define AUDIO_PDM_UPSAMPLE_FS    441
 
 #define AUDIO_ADC_MIC_CHANNEL       2
@@ -44,4 +43,4 @@
 #define DISPLAY_BACKLIGHT_OUTPUT_INVERT false
 #define DISPLAY_SPI_MODE        0
 
-#endif // _BOARD_CONFIG_H_
+#endif 

@@ -10,18 +10,17 @@ static const char TAG[] = "BoxAudioCodecLite";
 BoxAudioCodecLite::BoxAudioCodecLite(void* i2c_master_handle, int input_sample_rate, int output_sample_rate,
     gpio_num_t mclk, gpio_num_t bclk, gpio_num_t ws, gpio_num_t dout, gpio_num_t din,
     gpio_num_t pa_pin, bool input_reference) {
-    duplex_ = true; // 是否双工
-    input_reference_ = input_reference; // 是否使用参考输入，实现回声消除
+    duplex_ = true; 
+    input_reference_ = input_reference; 
     if (input_reference) {
         ref_buffer_.resize(960 * 2);
     }
-    input_channels_ = 2 + input_reference_; // 输入通道数
+    input_channels_ = 2 + input_reference_; 
     input_sample_rate_ = input_sample_rate;
     output_sample_rate_ = output_sample_rate;
 
     CreateDuplexChannels(mclk, bclk, ws, dout, din);
 
-    // Do initialize of related interface: data_if, ctrl_if and gpio_if
     audio_codec_i2s_cfg_t i2s_cfg = {
         .port = I2S_NUM_0,
         .rx_handle = rx_handle_,
@@ -30,7 +29,6 @@ BoxAudioCodecLite::BoxAudioCodecLite(void* i2c_master_handle, int input_sample_r
     data_if_ = audio_codec_new_i2s_data(&i2s_cfg);
     assert(data_if_ != NULL);
 
-    // Output
     audio_codec_i2c_cfg_t i2c_cfg = {
         .port = (i2c_port_t)1,
         .addr = ES8156_CODEC_DEFAULT_ADDR,
@@ -59,7 +57,6 @@ BoxAudioCodecLite::BoxAudioCodecLite(void* i2c_master_handle, int input_sample_r
     output_dev_ = esp_codec_dev_new(&dev_cfg);
     assert(output_dev_ != NULL);
 
-    // Input
     i2c_cfg.addr = ES7243E_CODEC_DEFAULT_ADDR;
     in_ctrl_if_ = audio_codec_new_i2c_ctrl(&i2c_cfg);
     assert(in_ctrl_if_ != NULL);
@@ -191,7 +188,7 @@ void BoxAudioCodecLite::EnableInput(bool enable) {
             fs.channel_mask |= ESP_CODEC_DEV_MAKE_CHANNEL_MASK(i);
         }
         ESP_ERROR_CHECK(esp_codec_dev_open(input_dev_, &fs));
-        // 麦克风增益解决收音太小的问题
+
         ESP_ERROR_CHECK(esp_codec_dev_set_in_gain(input_dev_, 37.5)); 
     } else {
         ESP_ERROR_CHECK(esp_codec_dev_close(input_dev_));
@@ -204,7 +201,7 @@ void BoxAudioCodecLite::EnableOutput(bool enable) {
         return;
     }
     if (enable) {
-        // Play 16bit 1 channel
+
         esp_codec_dev_sample_info_t fs = {
             .bits_per_sample = 16,
             .channel = 1,
@@ -229,19 +226,19 @@ int BoxAudioCodecLite::Read(int16_t* dest, int samples) {
             int size = samples / input_channels_;
             int channels = input_channels_ - input_reference_;
             std::vector<int16_t> data(size * channels);
-            // read mic data
+
             ESP_ERROR_CHECK_WITHOUT_ABORT(esp_codec_dev_read(input_dev_, (void*)data.data(), data.size() * sizeof(int16_t)));
             int j = 0;
             int i = 0;
             while (i< samples) {
-                // mic data
+
                 for (int p = 0; p < channels; p++) {
                     dest[i++] = data[j++];
                 }
-                // ref data
+
                 dest[i++] = read_pos_ < write_pos_? ref_buffer_[read_pos_++] : 0;
             }
-    
+
             if (read_pos_ == write_pos_) {
                 read_pos_ = write_pos_ = 0;
             }    
@@ -253,10 +250,10 @@ int BoxAudioCodecLite::Read(int16_t* dest, int samples) {
 int BoxAudioCodecLite::Write(const int16_t* data, int samples) {
     if (output_enabled_) {
         ESP_ERROR_CHECK_WITHOUT_ABORT(esp_codec_dev_write(output_dev_, (void*)data, samples * sizeof(int16_t)));
-        if (input_reference_) { // 板子不支持硬件回采，采用缓存播放缓冲来实现回声消除
+        if (input_reference_) { 
             if (write_pos_ - read_pos_ + samples > ref_buffer_.size()) { 
                 assert(ref_buffer_.size() >= samples);
-                // 写溢出，只保留最近的数据
+
                 read_pos_ = write_pos_ + samples - ref_buffer_.size();
             }
             if (read_pos_) {

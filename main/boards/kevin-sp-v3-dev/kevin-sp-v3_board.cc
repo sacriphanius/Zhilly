@@ -16,7 +16,6 @@
 
 #define TAG "kevin-sp-v3"
 
-// class KEVIN_SP_V3Board : public Ml307Board {
 class KEVIN_SP_V3Board : public WifiBoard {
 private:
     i2c_master_bus_handle_t display_i2c_bus_;
@@ -54,7 +53,7 @@ private:
     void InitializeSt7789Display() {
         esp_lcd_panel_io_handle_t panel_io = nullptr;
         esp_lcd_panel_handle_t panel = nullptr;
-        // 液晶屏控制IO初始化
+
         ESP_LOGD(TAG, "Install panel IO");
         esp_lcd_panel_io_spi_config_t io_config = {};
         io_config.cs_gpio_num = GPIO_NUM_14;
@@ -66,7 +65,6 @@ private:
         io_config.lcd_param_bits = 8;
         ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi(SPI3_HOST, &io_config, &panel_io));
 
-        // 初始化液晶屏驱动芯片ST7789
         ESP_LOGD(TAG, "Install LCD driver");
         esp_lcd_panel_dev_config_t panel_config = {};
         panel_config.reset_gpio_num = GPIO_NUM_NC;
@@ -84,12 +82,12 @@ private:
     }
 
     void InitializeCamera() {
-         // ESP32-S3 使用 esp_camera 组件
+
         camera_config_t camera_config = {
             .pin_pwdn = CAMERA_PIN_PWDN,
             .pin_reset = CAMERA_PIN_RESET,
             .pin_xclk = CAMERA_PIN_XCLK,
-            .pin_sccb_sda = -1, // 使用已初始化的 I2C
+            .pin_sccb_sda = -1, 
             .pin_sccb_scl = -1,
             .pin_d7 = CAMERA_PIN_D7,
             .pin_d6 = CAMERA_PIN_D6,
@@ -143,12 +141,12 @@ public:
     virtual Display *GetDisplay() override {
         return display_;
     }
-    
+
     virtual Backlight* GetBacklight() override {
         static PwmBacklight backlight(DISPLAY_BACKLIGHT_PIN, DISPLAY_BACKLIGHT_OUTPUT_INVERT);
         return &backlight;
     }
-    
+
     virtual Camera* GetCamera() override {
         return camera_;
     }

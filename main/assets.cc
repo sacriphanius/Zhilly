@@ -15,16 +15,15 @@
 #include <esp_heap_caps.h>
 #include <cbin_font.h>
 
-
 #define TAG "Assets"
 #define PARTITION_LABEL "assets"
 
 struct mmap_assets_table {
-    char asset_name[32];          /*!< Name of the asset */
-    uint32_t asset_size;          /*!< Size of the asset */
-    uint32_t asset_offset;        /*!< Offset of the asset */
-    uint16_t asset_width;         /*!< Width of the asset */
-    uint16_t asset_height;        /*!< Height of the asset */
+    char asset_name[32];          
+    uint32_t asset_size;          
+    uint32_t asset_offset;        
+    uint16_t asset_width;         
+    uint16_t asset_height;        
 };
 
 Assets::Assets() {
@@ -33,7 +32,7 @@ Assets::Assets() {
 #else
     strategy_ = std::make_unique<Assets::EmoteStrategy>();
 #endif
-    // Initialize the partition
+
     InitializePartition();
 }
 
@@ -73,7 +72,6 @@ bool Assets::LoadSrmodelsFromIndex(Assets* assets, cJSON* root) {
     size_t size = 0;
     bool need_delete_root = false;
 
-    // If root is not provided, parse index.json
     if (root == nullptr) {
         if (!assets->GetAssetData("index.json", ptr, size)) {
             ESP_LOGE(TAG, "The index.json file is not found");
@@ -192,7 +190,7 @@ void Assets::LvglStrategy::UnApplyPartition(Assets* assets) {
     }
     checksum_valid_ = false;
     assets_.clear();
-    (void)assets; // Unused parameter
+    (void)assets; 
 }
 
 bool Assets::LvglStrategy::GetAssetData(Assets* assets, const std::string& name, void*& ptr, size_t& size) {
@@ -340,7 +338,6 @@ bool Assets::LvglStrategy::Apply(Assets* assets) {
         display->SetTheme(current_theme);
     }
 
-    // Parse hide_subtitle configuration
     cJSON* hide_subtitle = cJSON_GetObjectItem(root, "hide_subtitle");
     if (cJSON_IsBool(hide_subtitle)) {
         bool hide = cJSON_IsTrue(hide_subtitle);
@@ -350,11 +347,11 @@ bool Assets::LvglStrategy::Apply(Assets* assets) {
             ESP_LOGI(TAG, "Set hide_subtitle to %s", hide ? "true" : "false");
         }
     }
-    
+
     cJSON_Delete(root);
     return true;
 }
-#endif // HAVE_LVGL
+#endif 
 
 bool Assets::EmoteStrategy::InitializePartition(Assets* assets) {
     assets->partition_valid_ = false;
@@ -373,7 +370,7 @@ bool Assets::EmoteStrategy::InitializePartition(Assets* assets) {
                 .partition_label = PARTITION_LABEL,
             },
             .flags = {
-                .mmap_enable = true, //must be true here!!!
+                .mmap_enable = true, 
             },
         };
         ret = emote_mount_assets(emote_display->GetEmoteHandle(), &data);
@@ -390,7 +387,7 @@ void Assets::EmoteStrategy::UnApplyPartition(Assets* assets) {
     if (emote_display && emote_display->GetEmoteHandle() != nullptr) {
         emote_unmount_assets(emote_display->GetEmoteHandle());
     }
-    (void)assets; // Unused parameter
+    (void)assets; 
 }
 
 bool Assets::EmoteStrategy::GetAssetData(Assets* assets, const std::string& name, void*& ptr, size_t& size) {
@@ -407,7 +404,7 @@ bool Assets::EmoteStrategy::GetAssetData(Assets* assets, const std::string& name
         ESP_LOGE(TAG, "Failed to get asset data by name: %s", name.c_str());
         return false;
     }
-    (void)assets; // Unused parameter
+    (void)assets; 
     return false;
 }
 
@@ -426,13 +423,11 @@ bool Assets::EmoteStrategy::Apply(Assets* assets) {
 bool Assets::Download(std::string url, std::function<void(int progress, size_t speed)> progress_callback) {
     ESP_LOGI(TAG, "Downloading new version of assets from %s", url.c_str());
 
-    // 取消当前资源分区的内存映射
     UnApplyPartition();
 
-    // 下载新的资源文件
     auto network = Board::GetInstance().GetNetwork();
     auto http = network->CreateHttp(0);
-    
+
     if (!http->Open("GET", url)) {
         ESP_LOGE(TAG, "Failed to open HTTP connection");
         return false;
@@ -454,17 +449,14 @@ bool Assets::Download(std::string url, std::function<void(int progress, size_t s
         return false;
     }
 
-    // 定义扇区大小为4KB（ESP32的标准扇区大小）
     const size_t SECTOR_SIZE = esp_partition_get_main_flash_sector_size();
-    
-    // 计算需要擦除的扇区数量
-    size_t sectors_to_erase = (content_length + SECTOR_SIZE - 1) / SECTOR_SIZE; // 向上取整
+
+    size_t sectors_to_erase = (content_length + SECTOR_SIZE - 1) / SECTOR_SIZE; 
     size_t total_erase_size = sectors_to_erase * SECTOR_SIZE;
-    
+
     ESP_LOGI(TAG, "Sector size: %u, content length: %u, sectors to erase: %u, total erase size: %u", 
              SECTOR_SIZE, content_length, sectors_to_erase, total_erase_size);
-    
-    // 写入新的资源文件到分区，一边erase一边写入
+
     char* buffer = (char*)heap_caps_malloc(SECTOR_SIZE, MALLOC_CAP_INTERNAL);
     if (buffer == nullptr) {
         ESP_LOGE(TAG, "Failed to allocate buffer");
@@ -474,7 +466,7 @@ bool Assets::Download(std::string url, std::function<void(int progress, size_t s
     size_t recent_written = 0;
     size_t current_sector = 0;
     auto last_calc_time = esp_timer_get_time();
-    
+
     while (true) {
         int ret = http->Read(buffer, SECTOR_SIZE);
         if (ret < 0) {
@@ -487,22 +479,19 @@ bool Assets::Download(std::string url, std::function<void(int progress, size_t s
             break;
         }
 
-        // 检查是否需要擦除新的扇区
         size_t write_end_offset = total_written + ret;
         size_t needed_sectors = (write_end_offset + SECTOR_SIZE - 1) / SECTOR_SIZE;
-        
-        // 擦除需要的新扇区
+
         while (current_sector < needed_sectors) {
             size_t sector_start = current_sector * SECTOR_SIZE;
             size_t sector_end = (current_sector + 1) * SECTOR_SIZE;
-            
-            // 确保擦除范围不超过分区大小
+
             if (sector_end > partition_->size) {
                 ESP_LOGE(TAG, "Sector end (%u) exceeds partition size (%lu)", sector_end, partition_->size);
                 heap_caps_free(buffer);
                 return false;
             }
-            
+
             ESP_LOGD(TAG, "Erasing sector %u (offset: %u, size: %u)", current_sector, sector_start, SECTOR_SIZE);
             esp_err_t err = esp_partition_erase_range(partition_, sector_start, SECTOR_SIZE);
             if (err != ESP_OK) {
@@ -510,11 +499,10 @@ bool Assets::Download(std::string url, std::function<void(int progress, size_t s
                 heap_caps_free(buffer);
                 return false;
             }
-            
+
             current_sector++;
         }
 
-        // 写入数据到分区
         esp_err_t err = esp_partition_write(partition_, total_written, buffer, ret);
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "Failed to write to assets partition at offset %u: %s", total_written, esp_err_to_name(err));
@@ -525,20 +513,19 @@ bool Assets::Download(std::string url, std::function<void(int progress, size_t s
         total_written += ret;
         recent_written += ret;
 
-        // 计算进度和速度
         if (esp_timer_get_time() - last_calc_time >= 1000000 || total_written == content_length || ret == 0) {
             size_t progress = total_written * 100 / content_length;
-            size_t speed = recent_written; // 每秒的字节数
+            size_t speed = recent_written; 
             ESP_LOGI(TAG, "Progress: %u%% (%u/%u), Speed: %u B/s, Sectors erased: %u", 
                      progress, total_written, content_length, speed, current_sector);
             if (progress_callback) {
                 progress_callback(progress, speed);
             }
             last_calc_time = esp_timer_get_time();
-            recent_written = 0; // 重置最近写入的字节数
+            recent_written = 0; 
         }
     }
-    
+
     http->Close();
     heap_caps_free(buffer);
 
@@ -550,7 +537,6 @@ bool Assets::Download(std::string url, std::function<void(int progress, size_t s
     ESP_LOGI(TAG, "Assets download completed, total written: %u bytes, total sectors erased: %u", 
              total_written, current_sector);
 
-    // 重新初始化资源分区
     if (!InitializePartition()) {
         ESP_LOGE(TAG, "Failed to re-initialize assets partition");
         return false;

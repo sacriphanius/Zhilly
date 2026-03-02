@@ -37,7 +37,6 @@
 #define DISPLAY_BACKLIGHT_PIN GPIO_NUM_42
 #define DISPLAY_BACKLIGHT_OUTPUT_INVERT true
 
-/* Camera pins */
 #define CAMERA_PIN_PWDN GPIO_NUM_NC
 #define CAMERA_PIN_RESET GPIO_NUM_NC
 #define CAMERA_PIN_XCLK GPIO_NUM_5
@@ -58,5 +57,4 @@
 
 #define XCLK_FREQ_HZ 20000000
 
-
-#endif // _BOARD_CONFIG_H_
+#endif 

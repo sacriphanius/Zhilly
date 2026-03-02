@@ -1,7 +1,4 @@
-/**
- * @file gifdec_mve.h
- *
- */
+
 
 #ifndef GIFDEC_MVE_H
 #define GIFDEC_MVE_H
@@ -10,33 +7,14 @@
 extern "C" {
 #endif
 
-/*********************
- *      INCLUDES
- *********************/
 #include <stdint.h>
 #include "../../misc/lv_color.h"
-
-/*********************
- *      DEFINES
- *********************/
 
 #define GIFDEC_FILL_BG(dst, w, h, stride, color, opa) \
     _gifdec_fill_bg_mve(dst, w, h, stride, color, opa)
 
 #define GIFDEC_RENDER_FRAME(dst, w, h, stride, frame, pattern, tindex) \
     _gifdec_render_frame_mve(dst, w, h, stride, frame, pattern, tindex)
-
-/**********************
- *      MACROS
- **********************/
-
-/**********************
- *      TYPEDEFS
- **********************/
-
-/**********************
- * GLOBAL PROTOTYPES
- **********************/
 
 static inline void _gifdec_fill_bg_mve(uint8_t * dst, uint16_t w, uint16_t h, uint16_t stride, uint8_t * color,
                                        uint8_t opa)
@@ -76,12 +54,12 @@ static inline void _gifdec_render_frame_mve(uint8_t * dst, uint16_t w, uint16_t 
 
     __asm volatile(
         "vmov.u16       q3, #255                                \n"
-        "vshl.u16       q3, q3, #8                              \n" /* left shift 8 for a*/
+        "vshl.u16       q3, q3, #8                              \n" 
 
         "mov            r0, #2                                  \n"
-        "vidup.u16      q6, r0, #4                              \n" /* [2, 6, 10, 14, 18, 22, 26, 30] */
+        "vidup.u16      q6, r0, #4                              \n" 
         "mov            r0, #0                                  \n"
-        "vidup.u16      q7, r0, #4                              \n" /* [0, 4, 8, 12, 16, 20, 24, 28] */
+        "vidup.u16      q7, r0, #4                              \n" 
 
         "3:                                                     \n"
         "mov            r1, %[dst]                              \n"
@@ -95,18 +73,18 @@ static inline void _gifdec_render_frame_mve(uint8_t * dst, uint16_t w, uint16_t 
         "vmul.u16       q5, q4, r0                              \n"
 
         "mov            r0, #1                                  \n"
-        "vldrb.u16      q2, [%[pattern], q5]                    \n" /* load 8 pixel r*/
+        "vldrb.u16      q2, [%[pattern], q5]                    \n" 
 
         "vadd.u16       q5, q5, r0                              \n"
-        "vldrb.u16      q1, [%[pattern], q5]                    \n" /* load 8 pixel g*/
+        "vldrb.u16      q1, [%[pattern], q5]                    \n" 
 
         "vadd.u16       q5, q5, r0                              \n"
-        "vldrb.u16      q0, [%[pattern], q5]                    \n" /* load 8 pixel b*/
+        "vldrb.u16      q0, [%[pattern], q5]                    \n" 
 
-        "vshl.u16       q1, q1, #8                              \n" /* left shift 8 for g*/
+        "vshl.u16       q1, q1, #8                              \n" 
 
-        "vorr.u16       q0, q0, q1                              \n" /* make 8 pixel gb*/
-        "vorr.u16       q1, q2, q3                              \n" /* make 8 pixel ar*/
+        "vorr.u16       q0, q0, q1                              \n" 
+        "vorr.u16       q1, q2, q3                              \n" 
 
         "vcmp.i16       ne, q4, %[tindex]                       \n"
         "vpstt                                                  \n"
@@ -134,7 +112,7 @@ static inline void _gifdec_render_frame_mve(uint8_t * dst, uint16_t w, uint16_t 
 }
 
 #ifdef __cplusplus
-} /*extern "C"*/
+} 
 #endif
 
-#endif /*GIFDEC_MVE_H*/
+#endif 

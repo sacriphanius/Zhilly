@@ -1,18 +1,16 @@
 #ifndef _BOARD_CONFIG_H_
 #define _BOARD_CONFIG_H_
 
-// Movecall Moji configuration
-
 #include <driver/gpio.h>
 
 #define AUDIO_INPUT_SAMPLE_RATE  24000
 #define AUDIO_OUTPUT_SAMPLE_RATE 24000
 
-#define AUDIO_I2S_GPIO_MCLK GPIO_NUM_16 //MCLK
-#define AUDIO_I2S_GPIO_WS GPIO_NUM_45  //LRCK
-#define AUDIO_I2S_GPIO_BCLK GPIO_NUM_9 //SCLK
-#define AUDIO_I2S_GPIO_DIN  GPIO_NUM_10 //DOUT
-#define AUDIO_I2S_GPIO_DOUT GPIO_NUM_8  //DIN
+#define AUDIO_I2S_GPIO_MCLK GPIO_NUM_16 
+#define AUDIO_I2S_GPIO_WS GPIO_NUM_45  
+#define AUDIO_I2S_GPIO_BCLK GPIO_NUM_9 
+#define AUDIO_I2S_GPIO_DIN  GPIO_NUM_10 
+#define AUDIO_I2S_GPIO_DOUT GPIO_NUM_8  
 
 #define AUDIO_CODEC_PA_PIN       GPIO_NUM_46
 #define AUDIO_CODEC_I2C_SDA_PIN  GPIO_NUM_15
@@ -22,7 +20,6 @@
 #define BUILTIN_LED_GPIO        GPIO_NUM_48
 #define BOOT_BUTTON_GPIO        GPIO_NUM_0
 
-
 #define DISPLAY_WIDTH   240
 #define DISPLAY_HEIGHT  240
 #define DISPLAY_MIRROR_X true
@@ -31,7 +28,6 @@
 
 #define DISPLAY_OFFSET_X  0
 #define DISPLAY_OFFSET_Y  0
-
 
 #define DISPLAY_BACKLIGHT_PIN GPIO_NUM_42
 #define DISPLAY_BACKLIGHT_OUTPUT_INVERT true
@@ -49,8 +45,7 @@
 
 #define DISPLAY_SPI_SCLK_HZ     (40 * 1000 * 1000)
 
-// 电量检测相关引脚定义
-#define BATTERY_ADC_PIN         GPIO_NUM_1  // 电池电压检测ADC引脚
-#define BATTERY_CHARGING_PIN    GPIO_NUM_41 // 充电状态检测引脚
+#define BATTERY_ADC_PIN         GPIO_NUM_1  
+#define BATTERY_CHARGING_PIN    GPIO_NUM_41 
 
-#endif // _BOARD_CONFIG_H_
+#endif 

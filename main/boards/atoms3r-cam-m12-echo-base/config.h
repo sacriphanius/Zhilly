@@ -1,8 +1,6 @@
 #ifndef _BOARD_CONFIG_H_
 #define _BOARD_CONFIG_H_
 
-// AtomS3R M12+EchoBase Board configuration
-
 #include <driver/gpio.h>
 
 #define AUDIO_INPUT_REFERENCE    true
@@ -25,7 +23,6 @@
 #define VOLUME_UP_BUTTON_GPIO   GPIO_NUM_NC
 #define VOLUME_DOWN_BUTTON_GPIO GPIO_NUM_NC
 
-
 #define CAMERA_PIN_PWDN    GPIO_NUM_NC
 #define CAMERA_PIN_RESET   GPIO_NUM_NC
 #define CAMERA_PIN_VSYNC   GPIO_NUM_10
@@ -45,5 +42,4 @@
 #define CAMERA_XCLK_FREQ   (20000000)
 #define XCLK_FREQ_HZ CAMERA_XCLK_FREQ
 
-
-#endif // _BOARD_CONFIG_H_
+#endif 

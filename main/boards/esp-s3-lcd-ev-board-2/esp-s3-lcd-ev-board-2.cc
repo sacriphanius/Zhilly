@@ -29,7 +29,6 @@ private:
     LcdDisplay* display_;
     EspVideo* camera_;
 
-    //add support ev board lcd
     esp_io_expander_handle_t expander = NULL;
 
     void InitializeRGB_GC9503V_Display() {
@@ -37,7 +36,6 @@ private:
 
         esp_lcd_panel_io_handle_t panel_io = nullptr;
 
-        // add support ev board lcd
         gpio_config_t io_conf = {
             .pin_bit_mask = BIT64(GC9503V_PIN_NUM_VSYNC),
             .mode = GPIO_MODE_OUTPUT,
@@ -66,9 +64,9 @@ private:
         esp_lcd_panel_handle_t panel_handle = NULL;
         esp_lcd_rgb_panel_config_t rgb_config = {
             .clk_src = LCD_CLK_SRC_PLL160M,
-            //add support ev board
+
             .timings = GC9503_800_480_PANEL_60HZ_RGB_TIMING(),
-            .data_width = 16, // RGB565 in parallel mode, thus 16bit in width
+            .data_width = 16, 
             .bits_per_pixel = 16,
             .num_fbs = GC9503V_LCD_RGB_BUFFER_NUMS,
             .bounce_buffer_size_px = GC9503V_LCD_H_RES * GC9503V_LCD_RGB_BOUNCE_BUFFER_HEIGHT,
@@ -97,12 +95,12 @@ private:
                 GC9503V_PIN_NUM_DATA15,
             },
             .flags= {
-                .fb_in_psram = true, // allocate frame buffer in PSRAM
+                .fb_in_psram = true, 
             }
         };
-    
+
         ESP_LOGI(TAG, "Initialize RGB LCD panel");
-    
+
         gc9503_vendor_config_t vendor_config = {
             .rgb_config = &rgb_config,
             .flags = {
@@ -113,8 +111,7 @@ private:
         const esp_lcd_panel_dev_config_t panel_config = {
             .reset_gpio_num = -1,
             .rgb_ele_order = LCD_RGB_ELEMENT_ORDER_RGB,
-            // .bits_per_pixel = 16,
-            //add surpport ev board
+
             .bits_per_pixel = 18,
             .vendor_config = &vendor_config,
         };
@@ -128,7 +125,7 @@ private:
     }
 
     void InitializeCodecI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = I2C_NUM_0,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
@@ -143,10 +140,8 @@ private:
         };
         ESP_ERROR_CHECK(i2c_new_master_bus(&i2c_bus_cfg, &i2c_bus_));
 
-         //add support ev board lcd amp
-        //初始化扩展io口
         esp_io_expander_new_i2c_tca9554(i2c_bus_, 0x20, &expander);
-        /* Setup power amplifier pin, set default to enable */
+
         esp_io_expander_set_dir(expander, BSP_POWER_AMP_IO, IO_EXPANDER_OUTPUT);
         esp_io_expander_set_level(expander, BSP_POWER_AMP_IO, true);
 
@@ -220,7 +215,7 @@ private:
         };
         camera_ = new EspVideo(video_config);
     }
-#endif // CONFIG_ESP_VIDEO_ENABLE_USB_UVC_VIDEO_DEVICE
+#endif 
 
 public:
     ESP_S3_LCD_EV_Board_2() : boot_button_(BOOT_BUTTON_GPIO) {
@@ -230,7 +225,7 @@ public:
         InitializeTouch();
 #ifdef CONFIG_ESP_VIDEO_ENABLE_USB_UVC_VIDEO_DEVICE
         InitializeCamera();
-#endif // CONFIG_ESP_VIDEO_ENABLE_USB_UVC_VIDEO_DEVICE
+#endif 
     }
 
     virtual AudioCodec* GetAudioCodec() override {
@@ -253,8 +248,7 @@ public:
     virtual Display* GetDisplay() override {
         return display_;
     }
-    
-    //添加彩灯显示状态，如果亮度太暗可以去更改默认亮度值 DEFAULT_BRIGHTNESS 在led的sigle_led.cc中
+
     virtual Led* GetLed() override {
         static SingleLed led(BUILTIN_LED_GPIO);
         return &led;
@@ -264,7 +258,7 @@ public:
     virtual Camera* GetCamera() override {
         return camera_;
     }
-#endif // CONFIG_ESP_VIDEO_ENABLE_USB_UVC_VIDEO_DEVICE
+#endif 
 
 };
 

@@ -25,17 +25,6 @@
 #include "protocol.h"
 #include "ogg_demuxer.h"
 
-/*
- * There are two types of audio data flow:
- * 1. (MIC) -> [Processors] -> {Encode Queue} -> [Opus Encoder] -> {Send Queue} -> (Server)
- * 2. (Server) -> {Decode Queue} -> [Opus Decoder] -> {Playback Queue} -> (Speaker)
- *
- * We use one task for MIC / Speaker / Processors, and one task for Opus Encoder / Opus Decoder.
- * 
- * Decode Queue and Send Queue are the main queues, because Opus packets are quite smaller than PCM packets.
- * 
- */
-
 #define OPUS_FRAME_DURATION_MS 60
 #define MAX_ENCODE_TASKS_IN_QUEUE 2
 #define MAX_PLAYBACK_TASKS_IN_QUEUE 2
@@ -81,7 +70,6 @@ struct AudioServiceCallbacks {
     std::function<void(bool)> on_vad_change;
     std::function<void(void)> on_audio_testing_queue_full;
 };
-
 
 enum AudioTaskType {
     kAudioTaskTypeEncodeToSendQueue,
@@ -146,8 +134,7 @@ private:
     std::mutex input_resampler_mutex_;
     esp_ae_rate_cvt_handle_t input_resampler_ = nullptr;
     esp_ae_rate_cvt_handle_t output_resampler_ = nullptr;
-    
-    // Encoder/Decoder state
+
     int encoder_sample_rate_ = 16000;
     int encoder_duration_ms_ = OPUS_FRAME_DURATION_MS;
     int encoder_frame_size_ = 0;
@@ -160,7 +147,6 @@ private:
 
     EventGroupHandle_t event_group_;
 
-    // Audio encode / decode
     TaskHandle_t audio_input_task_handle_ = nullptr;
     TaskHandle_t audio_output_task_handle_ = nullptr;
     TaskHandle_t opus_codec_task_handle_ = nullptr;
@@ -171,7 +157,7 @@ private:
     std::deque<std::unique_ptr<AudioStreamPacket>> audio_testing_queue_;
     std::deque<std::unique_ptr<AudioTask>> audio_encode_queue_;
     std::deque<std::unique_ptr<AudioTask>> audio_playback_queue_;
-    // For server AEC
+
     std::deque<uint32_t> timestamp_queue_;
 
     bool wake_word_initialized_ = false;

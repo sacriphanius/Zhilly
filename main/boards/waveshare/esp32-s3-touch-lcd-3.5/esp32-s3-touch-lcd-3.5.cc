@@ -31,54 +31,45 @@
 class Pmic : public Axp2101 {
     public:
         Pmic(i2c_master_bus_handle_t i2c_bus, uint8_t addr) : Axp2101(i2c_bus, addr) {
-            WriteReg(0x22, 0b110); // PWRON > OFFLEVEL as POWEROFF Source enable
-            WriteReg(0x27, 0x10);  // hold 4s to power off
-    
-            // Disable All DCs but DC1
+            WriteReg(0x22, 0b110); 
+            WriteReg(0x27, 0x10);  
+
             WriteReg(0x80, 0x01);
-            // Disable All LDOs
+
             WriteReg(0x90, 0x00);
             WriteReg(0x91, 0x00);
-    
-            // Set DC1 to 3.3V
+
             WriteReg(0x82, (3300 - 1500) / 100);
-    
-            // Set ALDO1 to 3.3V
+
             WriteReg(0x92, (3300 - 500) / 100);
 
             WriteReg(0x96, (1500 - 500) / 100);
             WriteReg(0x97, (2800 - 500) / 100);
-    
-            // Enable ALDO1 BLDO1 BLDO2 
+
             WriteReg(0x90, 0x31);
-        
-            WriteReg(0x64, 0x02); // CV charger voltage setting to 4.1V
-            
-            WriteReg(0x61, 0x02); // set Main battery precharge current to 50mA
-            WriteReg(0x62, 0x08); // set Main battery charger current to 400mA ( 0x08-200mA, 0x09-300mA, 0x0A-400mA )
-            WriteReg(0x63, 0x01); // set Main battery term charge current to 25mA
+
+            WriteReg(0x64, 0x02); 
+
+            WriteReg(0x61, 0x02); 
+            WriteReg(0x62, 0x08); 
+            WriteReg(0x63, 0x01); 
         }
     };
 
 typedef struct {
-    int cmd;                /*<! The specific LCD command */
-    const void *data;       /*<! Buffer that holds the command specific data */
-    size_t data_bytes;      /*<! Size of `data` in memory, in bytes */
-    unsigned int delay_ms;  /*<! Delay in milliseconds after this command */
+    int cmd;                
+    const void *data;       
+    size_t data_bytes;      
+    unsigned int delay_ms;  
 } st7796_lcd_init_cmd_t;
 
 typedef struct {
-    const st7796_lcd_init_cmd_t *init_cmds;     /*!< Pointer to initialization commands array. Set to NULL if using default commands.
-                                                 *   The array should be declared as `static const` and positioned outside the function.
-                                                 *   Please refer to `vendor_specific_init_default` in source file.
-                                                 */
-    uint16_t init_cmds_size;                    /*<! Number of commands in above array */
+    const st7796_lcd_init_cmd_t *init_cmds;     
+    uint16_t init_cmds_size;                    
 } st7796_vendor_config_t;
 
 st7796_lcd_init_cmd_t st7796_lcd_init_cmds[] = {
     {0x11, (uint8_t []){ 0x00 }, 0, 120},
-
-    // {0x36, (uint8_t []){ 0x08 }, 1, 0},
 
     {0x3A, (uint8_t []){ 0x05 }, 1, 0},
     {0xF0, (uint8_t []){ 0xC3 }, 1, 0},
@@ -125,7 +116,7 @@ private:
     }
 
     void InitializeI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = (i2c_port_t)I2C_NUM_0,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
@@ -140,7 +131,7 @@ private:
         };
         ESP_ERROR_CHECK(i2c_new_master_bus(&i2c_bus_cfg, &i2c_bus_));
     }
-    
+
     void InitializeTca9554(void)
     {
         esp_err_t ret = esp_io_expander_new_i2c_tca9554(i2c_bus_, ESP_IO_EXPANDER_I2C_TCA9554_ADDRESS_000, &io_expander);
@@ -192,9 +183,9 @@ private:
         };
 
         esp_video_init_sccb_config_t sccb_config = {
-            .init_sccb = false,  // 不初始化新的 SCCB，使用现有的 I2C 总线
-            .i2c_handle = i2c_bus_,  // 使用现有的 I2C 总线句柄
-            .freq = 100000,  // 100kHz
+            .init_sccb = false,  
+            .i2c_handle = i2c_bus_,  
+            .freq = 100000,  
         };
 
         esp_video_init_dvp_config_t dvp_config = {
@@ -210,7 +201,7 @@ private:
         };
 
         camera_ = new EspVideo(video_config);
-        
+
     }
 
     void InitializeTouch()
@@ -248,7 +239,7 @@ private:
     void InitializeLcdDisplay() {
         esp_lcd_panel_io_handle_t panel_io = nullptr;
         esp_lcd_panel_handle_t panel = nullptr;
-        // 液晶屏控制IO初始化
+
         ESP_LOGI(TAG, "Install panel IO");
         esp_lcd_panel_io_spi_config_t io_config = {};
         io_config.cs_gpio_num = DISPLAY_CS_PIN;
@@ -265,7 +256,6 @@ private:
             .init_cmds_size = sizeof(st7796_lcd_init_cmds) / sizeof(st7796_lcd_init_cmd_t),
         };      
 
-        // 初始化液晶屏驱动芯片
         ESP_LOGI(TAG, "Install LCD driver");
         esp_lcd_panel_dev_config_t panel_config = {};
         panel_config.reset_gpio_num = DISPLAY_RST_PIN;
@@ -276,7 +266,7 @@ private:
         ESP_ERROR_CHECK(esp_lcd_new_panel_st7789(panel_io, &panel_config, &panel));
 
         esp_lcd_panel_reset(panel);
- 
+
         esp_lcd_panel_init(panel);
         esp_lcd_panel_invert_color(panel, DISPLAY_INVERT_COLOR);
         esp_lcd_panel_swap_xy(panel, DISPLAY_SWAP_XY);
@@ -297,7 +287,6 @@ private:
         });
     }
 
-    // 初始化工具
     void InitializeTools() {
         auto &mcp_server = McpServer::GetInstance();
         mcp_server.AddTool("self.system.reconfigure_wifi",
@@ -318,7 +307,7 @@ public:
         InitializeAxp2101();
         InitializeSpi();
         InitializeLcdDisplay();
-        // 解决部分开机黑屏的问题
+
         if (esp_reset_reason() == ESP_RST_POWERON) {
             fflush(stdout);
             esp_restart();
@@ -340,7 +329,7 @@ public:
     virtual Display* GetDisplay() override {
         return display_;
     }
-    
+
     virtual Backlight* GetBacklight() override {
         static PwmBacklight backlight(DISPLAY_BACKLIGHT_PIN, DISPLAY_BACKLIGHT_OUTPUT_INVERT);
         return &backlight;

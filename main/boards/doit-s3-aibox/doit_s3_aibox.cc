@@ -117,7 +117,7 @@ public:
         touch_button_(TOUCH_BUTTON_GPIO),
         volume_up_button_(VOLUME_UP_BUTTON_GPIO),
         volume_down_button_(VOLUME_DOWN_BUTTON_GPIO){
-        // 上拉io48 置高电平
+
         InitializeGpio(GPIO_NUM_48);
         InitializeButtons();
     }

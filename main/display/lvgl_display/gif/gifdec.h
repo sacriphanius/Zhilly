@@ -22,8 +22,6 @@ typedef struct _gd_GCE {
     int transparency;
 } gd_GCE;
 
-
-
 typedef struct _gd_GIF {
     lv_fs_file_t fd;
     const char * data;
@@ -62,7 +60,7 @@ void gd_rewind(gd_GIF * gif);
 void gd_close_gif(gd_GIF * gif);
 
 #ifdef __cplusplus
-} /* extern "C" */
+} 
 #endif
 
-#endif /* GIFDEC_H */
+#endif 

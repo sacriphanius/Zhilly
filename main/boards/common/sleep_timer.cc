@@ -10,7 +10,6 @@
 
 #define TAG "SleepTimer"
 
-
 SleepTimer::SleepTimer(int seconds_to_light_sleep, int seconds_to_deep_sleep)
     : seconds_to_light_sleep_(seconds_to_light_sleep), seconds_to_deep_sleep_(seconds_to_deep_sleep) {
     esp_timer_create_args_t timer_args = {
@@ -84,18 +83,16 @@ void SleepTimer::CheckTimer() {
                 audio_service.EnableWakeWordDetection(false);
                 vTaskDelay(pdMS_TO_TICKS(100));
             }
-        
+
             app.Schedule([this, &app]() {
                 while (in_light_sleep_mode_) {
                     auto& board = Board::GetInstance();
                     board.GetDisplay()->UpdateStatusBar(true);
                     lv_refr_now(nullptr);
                     lvgl_port_stop();
-    
-                    // 配置timer唤醒源（30秒后自动唤醒）
+
                     esp_sleep_enable_timer_wakeup(30 * 1000000);
-                    
-                    // 进入light sleep模式
+
                     esp_light_sleep_start();
                     lvgl_port_resume();
 

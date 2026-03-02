@@ -3,7 +3,6 @@
 
 #include <driver/gpio.h>
 
-
 #define AUDIO_INPUT_SAMPLE_RATE  24000
 #define AUDIO_OUTPUT_SAMPLE_RATE 24000
 
@@ -22,7 +21,6 @@
 #define AUDIO_CODEC_ES8311_ADDR  ES8311_CODEC_DEFAULT_ADDR
 #define AUDIO_CODEC_ES7210_ADDR  0x82
 
-
 #define BUILTIN_LED_GPIO        GPIO_NUM_4
 #define BOOT_BUTTON_GPIO        GPIO_NUM_0
 
@@ -38,5 +36,4 @@
 #define DISPLAY_BACKLIGHT_PIN            GPIO_NUM_19
 #define DISPLAY_BACKLIGHT_OUTPUT_INVERT  false
 
-
-#endif // _BOARD_CONFIG_H_
+#endif 

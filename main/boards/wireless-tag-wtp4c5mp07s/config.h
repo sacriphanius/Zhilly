@@ -28,7 +28,7 @@
 #define PIN_NUM_LCD_RST                 GPIO_NUM_23
 
 #define DELAY_TIME_MS                   (3000)
-#define LCD_MIPI_DSI_LANE_NUM           (2)    // 2 data lanes
+#define LCD_MIPI_DSI_LANE_NUM           (2)    
 
 #define MIPI_DSI_PHY_PWR_LDO_CHAN       (3)
 #define MIPI_DSI_PHY_PWR_LDO_VOLTAGE_MV (2500)
@@ -43,41 +43,34 @@
 #define DISPLAY_BACKLIGHT_PIN           GPIO_NUM_20
 #define DISPLAY_BACKLIGHT_OUTPUT_INVERT false
 
-// SD Card configuration (disabled by default)
-// Enable one of the following by setting to 1 and set pins accordingly.
-// Note: SDMMC may conflict with ESP-Hosted SDIO. If using ESP-Hosted via SDIO,
-// prefer SDSPI mode for SD card or disable hosted SDIO.
-
-// SDMMC 1-bit/4-bit mode
 #ifndef SDCARD_SDMMC_ENABLED
 #define SDCARD_SDMMC_ENABLED            0
 #endif
-// SDMMC bus width: set to 1 or 4
+
 #ifndef SDCARD_SDMMC_BUS_WIDTH
-// Use 4-bit bus width when enabling SDMMC
+
 #define SDCARD_SDMMC_BUS_WIDTH          4
 #endif
-// SDMMC pin assignments (set to actual pins when enabling SDMMC)
+
 #ifndef SDCARD_SDMMC_CLK_PIN
-#define SDCARD_SDMMC_CLK_PIN            GPIO_NUM_43  // BSP_SD_CLK
+#define SDCARD_SDMMC_CLK_PIN            GPIO_NUM_43  
 #endif
 #ifndef SDCARD_SDMMC_CMD_PIN
-#define SDCARD_SDMMC_CMD_PIN            GPIO_NUM_44  // BSP_SD_CMD
+#define SDCARD_SDMMC_CMD_PIN            GPIO_NUM_44  
 #endif
 #ifndef SDCARD_SDMMC_D0_PIN
-#define SDCARD_SDMMC_D0_PIN             GPIO_NUM_39  // BSP_SD_D0
+#define SDCARD_SDMMC_D0_PIN             GPIO_NUM_39  
 #endif
 #ifndef SDCARD_SDMMC_D1_PIN
-#define SDCARD_SDMMC_D1_PIN             GPIO_NUM_40  // BSP_SD_D1
+#define SDCARD_SDMMC_D1_PIN             GPIO_NUM_40  
 #endif
 #ifndef SDCARD_SDMMC_D2_PIN
-#define SDCARD_SDMMC_D2_PIN             GPIO_NUM_41  // BSP_SD_D2
+#define SDCARD_SDMMC_D2_PIN             GPIO_NUM_41  
 #endif
 #ifndef SDCARD_SDMMC_D3_PIN
-#define SDCARD_SDMMC_D3_PIN             GPIO_NUM_42  // BSP_SD_D3
+#define SDCARD_SDMMC_D3_PIN             GPIO_NUM_42  
 #endif
 
-// SDSPI mode (uses SPI bus)
 #ifndef SDCARD_SDSPI_ENABLED
 #define SDCARD_SDSPI_ENABLED            1
 #endif
@@ -85,20 +78,20 @@
 #define SDCARD_SPI_HOST                 SPI3_HOST
 #endif
 #ifndef SDCARD_SPI_MOSI
-#define SDCARD_SPI_MOSI                 GPIO_NUM_44  // BSP_SD_SPI_MOSI
+#define SDCARD_SPI_MOSI                 GPIO_NUM_44  
 #endif
 #ifndef SDCARD_SPI_MISO
-#define SDCARD_SPI_MISO                 GPIO_NUM_39  // BSP_SD_SPI_MISO
+#define SDCARD_SPI_MISO                 GPIO_NUM_39  
 #endif
 #ifndef SDCARD_SPI_SCLK
-#define SDCARD_SPI_SCLK                 GPIO_NUM_43  // BSP_SD_SPI_CLK
+#define SDCARD_SPI_SCLK                 GPIO_NUM_43  
 #endif
 #ifndef SDCARD_SPI_CS
-#define SDCARD_SPI_CS                   GPIO_NUM_42  // BSP_SD_SPI_CS
+#define SDCARD_SPI_CS                   GPIO_NUM_42  
 #endif
 
 #ifndef SDCARD_MOUNT_POINT
 #define SDCARD_MOUNT_POINT              "/sdcard"
 #endif
 
-#endif // _BOARD_CONFIG_H_
+#endif 

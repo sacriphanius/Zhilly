@@ -21,7 +21,7 @@ WebsocketProtocol::~WebsocketProtocol() {
 }
 
 bool WebsocketProtocol::Start() {
-    // Only connect to server when audio channel is needed
+
     return true;
 }
 
@@ -76,7 +76,7 @@ bool WebsocketProtocol::IsAudioChannelOpened() const {
 }
 
 void WebsocketProtocol::CloseAudioChannel(bool send_goodbye) {
-    (void)send_goodbye;  // Websocket doesn't need to send goodbye message
+    (void)send_goodbye;  
     websocket_.reset();
 }
 
@@ -99,7 +99,7 @@ bool WebsocketProtocol::OpenAudioChannel() {
     }
 
     if (!token.empty()) {
-        // If token not has a space, add "Bearer " prefix
+
         if (token.find(" ") == std::string::npos) {
             token = "Bearer " + token;
         }
@@ -146,7 +146,7 @@ bool WebsocketProtocol::OpenAudioChannel() {
                 }
             }
         } else {
-            // Parse JSON data
+
             auto root = cJSON_Parse(data);
             auto type = cJSON_GetObjectItem(root, "type");
             if (cJSON_IsString(type)) {
@@ -179,13 +179,11 @@ bool WebsocketProtocol::OpenAudioChannel() {
         return false;
     }
 
-    // Send hello message to describe the client
     auto message = GetHelloMessage();
     if (!SendText(message)) {
         return false;
     }
 
-    // Wait for server hello
     EventBits_t bits = xEventGroupWaitBits(event_group_handle_, WEBSOCKET_PROTOCOL_SERVER_HELLO_EVENT, pdTRUE, pdFALSE, pdMS_TO_TICKS(10000));
     if (!(bits & WEBSOCKET_PROTOCOL_SERVER_HELLO_EVENT)) {
         ESP_LOGE(TAG, "Failed to receive server hello");
@@ -201,7 +199,7 @@ bool WebsocketProtocol::OpenAudioChannel() {
 }
 
 std::string WebsocketProtocol::GetHelloMessage() {
-    // keys: message type, version, audio_params (format, sample_rate, channels)
+
     cJSON* root = cJSON_CreateObject();
     cJSON_AddStringToObject(root, "type", "hello");
     cJSON_AddNumberToObject(root, "version", version_);

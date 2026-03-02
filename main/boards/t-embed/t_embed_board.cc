@@ -18,6 +18,8 @@
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "mcp_server.h"
+#include "settings.h"
 
 #define TAG "TEmbedBoard"
 
@@ -62,16 +64,19 @@ TEmbedBoard::TEmbedBoard() : boot_button_(BOOT_BUTTON_GPIO), pwr_button_(PWR_BUT
     gpio_set_direction(LORA_CS_PIN, GPIO_MODE_OUTPUT);
     gpio_set_level(LORA_CS_PIN, 1);
 
+     
+    InitI2c();
     InitSpi();
     InitLcdDisplay();
     InitializeButtons();
     InitializeSdCard();
+    InitLedStrip();
 }
 
 void TEmbedBoard::InitSpi() {
     spi_bus_config_t buscfg = {};
     buscfg.mosi_io_num = DISPLAY_SPI_MOSI_PIN;
-    buscfg.miso_io_num = DISPLAY_SPI_MISO_PIN;
+    buscfg.miso_io_num = SD_CARD_MISO_PIN;   
     buscfg.sclk_io_num = DISPLAY_SPI_SCLK_PIN;
     buscfg.quadwp_io_num = GPIO_NUM_NC;
     buscfg.quadhd_io_num = GPIO_NUM_NC;
@@ -94,7 +99,7 @@ void TEmbedBoard::InitLcdDisplay() {
     ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi(SPI2_HOST, &io_config, &panel_io));
 
     esp_lcd_panel_dev_config_t panel_config = {};
-    panel_config.reset_gpio_num = DISPLAY_RST_PIN;  // GPIO_NUM_NC — IO40 shared with I2S_WCLK
+    panel_config.reset_gpio_num = DISPLAY_RST_PIN;
     panel_config.rgb_ele_order = LCD_RGB_ELEMENT_ORDER_RGB;
     panel_config.bits_per_pixel = 16;
     ESP_ERROR_CHECK(esp_lcd_new_panel_st7789(panel_io, &panel_config, &panel));
@@ -134,7 +139,6 @@ void TEmbedBoard::InitializeButtons() {
         app.ToggleChatState();
     });
 
-    // Deep Sleep on long press of power button (GPIO 6)
     pwr_button_.OnLongPress([this]() {
         ESP_LOGI(TAG, "Entering Deep Sleep Mode...");
         auto& app = Application::GetInstance();
@@ -179,16 +183,7 @@ void TEmbedBoard::InitializeSdCard() {
         .disk_status_check_enable = true,
     };
 
-    spi_bus_config_t buscfg = {};
-    buscfg.mosi_io_num = SD_CARD_MOSI_PIN;
-    buscfg.miso_io_num = SD_CARD_MISO_PIN;
-    buscfg.sclk_io_num = SD_CARD_SCK_PIN;
-    buscfg.quadwp_io_num = GPIO_NUM_NC;
-    buscfg.quadhd_io_num = GPIO_NUM_NC;
-    buscfg.max_transfer_sz = 4000;
-
-    spi_bus_initialize(SDCARD_SPI_HOST, &buscfg, SPI_DMA_CH_AUTO);
-
+     
     sdmmc_host_t host = SDSPI_HOST_DEFAULT();
     host.slot = SDCARD_SPI_HOST;
 
@@ -206,6 +201,126 @@ void TEmbedBoard::InitializeSdCard() {
     }
 }
 
+static int LevelToBrightness(int level) {
+    if (level < 0)
+        level = 0;
+    if (level > 8)
+        level = 8;
+    return (1 << level) - 1;
+}
+
+static StripColor RGBToColor(int red, int green, int blue) {
+    if (red < 0)
+        red = 0;
+    if (red > 255)
+        red = 255;
+    if (green < 0)
+        green = 0;
+    if (green > 255)
+        green = 255;
+    if (blue < 0)
+        blue = 0;
+    if (blue > 255)
+        blue = 255;
+    return {static_cast<uint8_t>(red), static_cast<uint8_t>(green), static_cast<uint8_t>(blue)};
+}
+
+void TEmbedBoard::InitLedStrip() {
+    led_strip_ = new CircularStrip(WS2812_LED_PIN, WS2812_LED_COUNT);
+
+    Settings settings("led_strip");
+    int brightness_level = settings.GetInt("brightness", 4);
+    led_strip_->SetBrightness(LevelToBrightness(brightness_level), 4);
+
+    auto& mcp_server = McpServer::GetInstance();
+
+    mcp_server.AddTool("self.led_strip.set_brightness",
+                       "Set the brightness of the LED ring (0-8). 0 = OFF, 8 = MAX.",
+                       PropertyList({Property("level", kPropertyTypeInteger, 0, 8)}),
+                       [this](const PropertyList& properties) -> ReturnValue {
+                           int level = properties["level"].value<int>();
+                           ESP_LOGI(TAG, "Set LED brightness level to %d", level);
+                           led_strip_->SetBrightness(LevelToBrightness(level), 4);
+                           Settings s("led_strip", true);
+                           s.SetInt("brightness", level);
+                           return true;
+                       });
+
+    mcp_server.AddTool("self.led_strip.set_all_color",
+                       "Set the color of all 8 LEDs. Values 0-255 for red, green, blue.",
+                       PropertyList({Property("red", kPropertyTypeInteger, 0, 255),
+                                     Property("green", kPropertyTypeInteger, 0, 255),
+                                     Property("blue", kPropertyTypeInteger, 0, 255)}),
+                       [this](const PropertyList& properties) -> ReturnValue {
+                           int r = properties["red"].value<int>();
+                           int g = properties["green"].value<int>();
+                           int b = properties["blue"].value<int>();
+                           ESP_LOGI(TAG, "Set all LEDs to R=%d G=%d B=%d", r, g, b);
+                           led_strip_->SetAllColor(RGBToColor(r, g, b));
+                           return true;
+                       });
+
+    mcp_server.AddTool("self.led_strip.set_single_color",
+                       "Set the color of a single LED by index (0-7).",
+                       PropertyList({Property("index", kPropertyTypeInteger, 0, 7),
+                                     Property("red", kPropertyTypeInteger, 0, 255),
+                                     Property("green", kPropertyTypeInteger, 0, 255),
+                                     Property("blue", kPropertyTypeInteger, 0, 255)}),
+                       [this](const PropertyList& properties) -> ReturnValue {
+                           int idx = properties["index"].value<int>();
+                           int r = properties["red"].value<int>();
+                           int g = properties["green"].value<int>();
+                           int b = properties["blue"].value<int>();
+                           ESP_LOGI(TAG, "Set LED %d to R=%d G=%d B=%d", idx, r, g, b);
+                           led_strip_->SetSingleColor(idx, RGBToColor(r, g, b));
+                           return true;
+                       });
+
+    mcp_server.AddTool(
+        "self.led_strip.blink", "Blink all LEDs with a given color and interval in milliseconds.",
+        PropertyList({Property("red", kPropertyTypeInteger, 0, 255),
+                      Property("green", kPropertyTypeInteger, 0, 255),
+                      Property("blue", kPropertyTypeInteger, 0, 255),
+                      Property("interval", kPropertyTypeInteger, 50, 2000)}),
+        [this](const PropertyList& properties) -> ReturnValue {
+            int r = properties["red"].value<int>();
+            int g = properties["green"].value<int>();
+            int b = properties["blue"].value<int>();
+            int interval = properties["interval"].value<int>();
+            ESP_LOGI(TAG, "Blink LEDs R=%d G=%d B=%d interval=%dms", r, g, b, interval);
+            led_strip_->Blink(RGBToColor(r, g, b), interval);
+            return true;
+        });
+
+    mcp_server.AddTool("self.led_strip.scroll", "Scroll (marquee) effect on the LED ring.",
+                       PropertyList({Property("red", kPropertyTypeInteger, 0, 255),
+                                     Property("green", kPropertyTypeInteger, 0, 255),
+                                     Property("blue", kPropertyTypeInteger, 0, 255),
+                                     Property("length", kPropertyTypeInteger, 1, 7),
+                                     Property("interval", kPropertyTypeInteger, 20, 1000)}),
+                       [this](const PropertyList& properties) -> ReturnValue {
+                           int r = properties["red"].value<int>();
+                           int g = properties["green"].value<int>();
+                           int b = properties["blue"].value<int>();
+                           int length = properties["length"].value<int>();
+                           int interval = properties["interval"].value<int>();
+                           ESP_LOGI(TAG, "Scroll LEDs R=%d G=%d B=%d len=%d interval=%dms", r, g, b,
+                                    length, interval);
+                           StripColor low = RGBToColor(4, 4, 4);
+                           StripColor high = RGBToColor(r, g, b);
+                           led_strip_->Scroll(low, high, length, interval);
+                           return true;
+                       });
+
+    mcp_server.AddTool("self.led_strip.turn_off", "Turn off all LEDs.", PropertyList(),
+                       [this](const PropertyList& properties) -> ReturnValue {
+                           ESP_LOGI(TAG, "Turning off all LEDs");
+                           led_strip_->SetAllColor(RGBToColor(0, 0, 0));
+                           return true;
+                       });
+    ESP_LOGI(TAG, "Circular LED strip initialized");
+}
+
 AudioCodec* TEmbedBoard::GetAudioCodec() {
     static NoAudioCodecSimplexPdm audio_codec(
         AUDIO_INPUT_SAMPLE_RATE, AUDIO_OUTPUT_SAMPLE_RATE, AUDIO_I2S_SPK_BCLK, AUDIO_I2S_SPK_WS,
@@ -218,3 +333,91 @@ Display* TEmbedBoard::GetDisplay() { return display_; }
 Backlight* TEmbedBoard::GetBacklight() { return backlight_; }
 
 DECLARE_BOARD(TEmbedBoard);
+
+void TEmbedBoard::InitI2c() {
+    i2c_master_bus_config_t bus_cfg = {};
+    bus_cfg.i2c_port = I2C_NUM_0;
+    bus_cfg.sda_io_num = GPIO_NUM_8;
+    bus_cfg.scl_io_num = GPIO_NUM_18;
+    bus_cfg.clk_source = I2C_CLK_SRC_DEFAULT;
+    bus_cfg.glitch_ignore_cnt = 7;
+    bus_cfg.flags.enable_internal_pullup = true;
+    esp_err_t err = i2c_new_master_bus(&bus_cfg, &i2c_bus_);
+    if (err != ESP_OK) {
+        ESP_LOGW(TAG, "I2C bus init failed: %s", esp_err_to_name(err));
+        i2c_bus_ = nullptr;
+    } else {
+        ESP_LOGI(TAG, "I2C bus initialized (SDA=8, SCL=18)");
+    }
+}
+
+bool TEmbedBoard::ReadBatteryLevel() {
+    if (!i2c_bus_)
+        return false;
+
+    i2c_device_config_t dev_cfg = {};
+    dev_cfg.dev_addr_length = I2C_ADDR_BIT_LEN_7;
+    dev_cfg.device_address = 0x6B;
+    dev_cfg.scl_speed_hz = 100000;
+
+    i2c_master_dev_handle_t dev;
+    if (i2c_master_bus_add_device(i2c_bus_, &dev_cfg, &dev) != ESP_OK) {
+        ESP_LOGW(TAG, "BQ25896 not found on I2C");
+        return false;
+    }
+
+     
+    uint8_t reg = 0x0E;
+    uint8_t val = 0;
+    esp_err_t err = i2c_master_transmit_receive(dev, &reg, 1, &val, 1, pdMS_TO_TICKS(100));
+    if (err == ESP_OK) {
+         
+        float vbat = 2.304f + (val & 0x7F) * 0.02f;
+         
+        int pct = (int)((vbat - 3.2f) / (4.2f - 3.2f) * 100.0f);
+        if (pct < 0)
+            pct = 0;
+        if (pct > 100)
+            pct = 100;
+        battery_level_ = pct;
+    }
+
+     
+    reg = 0x0B;
+    val = 0;
+    err = i2c_master_transmit_receive(dev, &reg, 1, &val, 1, pdMS_TO_TICKS(100));
+    if (err == ESP_OK) {
+        uint8_t vbus_stat = (val >> 5) & 0x07;   
+        uint8_t chrg_stat = (val >> 3) & 0x03;   
+         
+         
+        battery_charging_ = (vbus_stat != 0);
+        ESP_LOGI(TAG, "BQ25896 REG0B=0x%02X vbus=%d chrg=%d", val, vbus_stat, chrg_stat);
+    }
+
+    i2c_master_bus_rm_device(dev);
+    return true;
+}
+
+bool TEmbedBoard::GetBatteryLevel(int& level, bool& charging, bool& discharging) {
+    ReadBatteryLevel();
+    if (battery_level_ < 0)
+        return false;
+    level = battery_level_;
+    charging = battery_charging_;
+    discharging = !battery_charging_;
+    return true;
+}
+
+std::string TEmbedBoard::GetDeviceStatusJson() {
+    ReadBatteryLevel();
+    char buf[128];
+    if (battery_level_ >= 0) {
+        snprintf(buf, sizeof(buf),
+                 "{\"board_type\":\"t-embed\",\"battery_level\":%d,\"charging\":%s}",
+                 battery_level_, battery_charging_ ? "true" : "false");
+    } else {
+        snprintf(buf, sizeof(buf), "{\"board_type\":\"t-embed\"}");
+    }
+    return std::string(buf);
+}

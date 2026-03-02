@@ -75,7 +75,7 @@
 
 #define LCD_BIT_PER_PIXEL          (16)
 #define DELAY_TIME_MS                      (3000)
-#define LCD_MIPI_DSI_LANE_NUM          (2)    // 2 data lanes
+#define LCD_MIPI_DSI_LANE_NUM          (2)    
 
 #define MIPI_DSI_PHY_PWR_LDO_CHAN          (3)
 #define MIPI_DSI_PHY_PWR_LDO_VOLTAGE_MV    (2500)
@@ -87,5 +87,4 @@
 #define DISPLAY_OFFSET_X  0
 #define DISPLAY_OFFSET_Y  0
 
-
-#endif // _BOARD_CONFIG_H_
+#endif 

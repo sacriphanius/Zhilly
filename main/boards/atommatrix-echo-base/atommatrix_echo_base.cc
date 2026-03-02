@@ -21,10 +21,10 @@
 class Pi4ioe : public I2cDevice {
 public:
     Pi4ioe(i2c_master_bus_handle_t i2c_bus, uint8_t addr) : I2cDevice(i2c_bus, addr) {
-        WriteReg(PI4IOE_REG_IO_PP, 0x00); // Set to high-impedance
-        WriteReg(PI4IOE_REG_IO_PULLUP, 0xFF); // Enable pull-up
-        WriteReg(PI4IOE_REG_IO_DIR, 0x6E); // Set input=0, output=1
-        WriteReg(PI4IOE_REG_IO_OUT, 0xFF); // Set outputs to 1
+        WriteReg(PI4IOE_REG_IO_PP, 0x00); 
+        WriteReg(PI4IOE_REG_IO_PULLUP, 0xFF); 
+        WriteReg(PI4IOE_REG_IO_DIR, 0x6E); 
+        WriteReg(PI4IOE_REG_IO_OUT, 0xFF); 
     }
 
     void SetSpeakerMute(bool mute) {
@@ -41,7 +41,7 @@ private:
     Button face_button_;
 
     void InitializeI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = I2C_NUM_1,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,

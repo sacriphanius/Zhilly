@@ -10,9 +10,8 @@
 
 #define BLINK_INFINITE -1
 
-
 SingleLed::SingleLed(gpio_num_t gpio) {
-    // If the gpio is not connected, you should use NoLed class
+
     assert(gpio != GPIO_NUM_NC);
 
     led_strip_config_t strip_config = {};
@@ -22,7 +21,7 @@ SingleLed::SingleLed(gpio_num_t gpio) {
     strip_config.led_model = LED_MODEL_WS2812;
 
     led_strip_rmt_config_t rmt_config = {};
-    rmt_config.resolution_hz = 10 * 1000 * 1000; // 10MHz
+    rmt_config.resolution_hz = 10 * 1000 * 1000; 
 
     ESP_ERROR_CHECK(led_strip_new_rmt_device(&strip_config, &rmt_config, &led_strip_));
     led_strip_clear(led_strip_);
@@ -47,7 +46,6 @@ SingleLed::~SingleLed() {
     }
 }
 
-
 void SingleLed::SetColor(uint8_t r, uint8_t g, uint8_t b) {
     r_ = r;
     g_ = g;
@@ -58,7 +56,7 @@ void SingleLed::TurnOn() {
     if (led_strip_ == nullptr) {
         return;
     }
-    
+
     std::lock_guard<std::mutex> lock(mutex_);
     esp_timer_stop(blink_timer_);
     led_strip_set_pixel(led_strip_, 0, r_, g_, b_);
@@ -94,7 +92,7 @@ void SingleLed::StartBlinkTask(int times, int interval_ms) {
 
     std::lock_guard<std::mutex> lock(mutex_);
     esp_timer_stop(blink_timer_);
-    
+
     blink_counter_ = times * 2;
     blink_interval_ms_ = interval_ms;
     esp_timer_start_periodic(blink_timer_, interval_ms * 1000);
@@ -114,7 +112,6 @@ void SingleLed::OnBlinkTimer() {
         }
     }
 }
-
 
 void SingleLed::OnStateChanged() {
     auto& app = Application::GetInstance();

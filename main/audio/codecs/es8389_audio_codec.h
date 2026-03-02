@@ -37,4 +37,4 @@ public:
     virtual void EnableOutput(bool enable) override;
 };
 
-#endif // _ES8389_AUDIO_CODEC_H
+#endif 

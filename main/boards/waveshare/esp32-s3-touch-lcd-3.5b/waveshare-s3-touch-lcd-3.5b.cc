@@ -71,32 +71,28 @@ static const axs15231b_lcd_init_cmd_t lcd_init_cmds[] = {
 class Pmic : public Axp2101 {
     public:
         Pmic(i2c_master_bus_handle_t i2c_bus, uint8_t addr) : Axp2101(i2c_bus, addr) {
-            WriteReg(0x22, 0b110); // PWRON > OFFLEVEL as POWEROFF Source enable
-            WriteReg(0x27, 0x10);  // hold 4s to power off
-    
-            // Disable All DCs but DC1
+            WriteReg(0x22, 0b110); 
+            WriteReg(0x27, 0x10);  
+
             WriteReg(0x80, 0x01);
-            // Disable All LDOs
+
             WriteReg(0x90, 0x00);
             WriteReg(0x91, 0x00);
-    
-            // Set DC1 to 3.3V
+
             WriteReg(0x82, (3300 - 1500) / 100);
-    
-            // Set ALDO1 to 3.3V
+
             WriteReg(0x92, (3300 - 500) / 100);
 
             WriteReg(0x96, (1500 - 500) / 100);
             WriteReg(0x97, (2800 - 500) / 100);
-    
-            // Enable ALDO1 BLDO1 BLDO2 
+
             WriteReg(0x90, 0x31);
-        
-            WriteReg(0x64, 0x02); // CV charger voltage setting to 4.1V
-            
-            WriteReg(0x61, 0x02); // set Main battery precharge current to 50mA
-            WriteReg(0x62, 0x08); // set Main battery charger current to 400mA ( 0x08-200mA, 0x09-300mA, 0x0A-400mA )
-            WriteReg(0x63, 0x01); // set Main battery term charge current to 25mA
+
+            WriteReg(0x64, 0x02); 
+
+            WriteReg(0x61, 0x02); 
+            WriteReg(0x62, 0x08); 
+            WriteReg(0x63, 0x01); 
         }
     };
 
@@ -127,7 +123,7 @@ private:
     }
 
     void InitializeI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = (i2c_port_t)I2C_NUM_0,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
@@ -142,7 +138,7 @@ private:
         };
         ESP_ERROR_CHECK(i2c_new_master_bus(&i2c_bus_cfg, &i2c_bus_));
     }
-    
+
     void InitializeTca9554(void)
     {
         esp_err_t ret = esp_io_expander_new_i2c_tca9554(i2c_bus_, ESP_IO_EXPANDER_I2C_TCA9554_ADDRESS_000, &io_expander);
@@ -195,9 +191,9 @@ private:
         };
 
         esp_video_init_sccb_config_t sccb_config = {
-            .init_sccb = false,  // 不初始化新的 SCCB，使用现有的 I2C 总线
-            .i2c_handle = i2c_bus_,  // 使用现有的 I2C 总线句柄
-            .freq = 100000,  // 100kHz
+            .init_sccb = false,  
+            .i2c_handle = i2c_bus_,  
+            .freq = 100000,  
         };
 
         esp_video_init_dvp_config_t dvp_config = {
@@ -213,13 +209,13 @@ private:
         };
 
         camera_ = new EspVideo(video_config);
-        
+
     }
 
     void InitializeLcdDisplay() {
         esp_lcd_panel_io_handle_t panel_io = nullptr;
         esp_lcd_panel_handle_t panel = nullptr;
-        // 液晶屏控制IO初始化
+
         ESP_LOGI(TAG, "Install panel IO");
         esp_lcd_panel_io_spi_config_t io_config = AXS15231B_PANEL_IO_QSPI_CONFIG(
             DISPLAY_CS_PIN,
@@ -227,10 +223,9 @@ private:
             NULL);
         ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi(SPI2_HOST, &io_config, &panel_io));
 
-        // 初始化液晶屏驱动芯片
         ESP_LOGI(TAG, "Install LCD driver");
         const axs15231b_vendor_config_t vendor_config = {
-            .init_cmds = lcd_init_cmds, // Uncomment these line if use custom initialization commands
+            .init_cmds = lcd_init_cmds, 
             .init_cmds_size = sizeof(lcd_init_cmds) / sizeof(lcd_init_cmds[0]),
             .flags = {
                 .use_qspi_interface = 1,
@@ -245,10 +240,10 @@ private:
         esp_lcd_new_panel_axs15231b(panel_io, &panel_config, &panel);
 
         esp_lcd_panel_reset(panel);
- 
+
         esp_lcd_panel_init(panel);
         esp_lcd_panel_invert_color(panel, DISPLAY_INVERT_COLOR);
-        // esp_lcd_panel_disp_on_off(panel, false);
+
         esp_lcd_panel_swap_xy(panel, DISPLAY_SWAP_XY);
         esp_lcd_panel_mirror(panel, DISPLAY_MIRROR_X, DISPLAY_MIRROR_Y);
 
@@ -302,7 +297,7 @@ private:
 public:
     CustomBoard() :
         boot_button_(BOOT_BUTTON_GPIO) {
-        
+
         InitializeI2c();
         InitializeTca9554();
 
@@ -330,7 +325,7 @@ public:
     virtual Display* GetDisplay() override {
         return display_;
     }
-    
+
     virtual Backlight* GetBacklight() override {
         static PwmBacklight backlight(DISPLAY_BACKLIGHT_PIN, DISPLAY_BACKLIGHT_OUTPUT_INVERT);
         return &backlight;

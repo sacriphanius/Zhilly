@@ -16,14 +16,12 @@
 
 #define BLINK_INFINITE -1
 
-// GPIO_LED
 #define LEDC_LS_TIMER          LEDC_TIMER_1
 #define LEDC_LS_MODE           LEDC_LOW_SPEED_MODE
 #define LEDC_LS_CH0_CHANNEL    LEDC_CHANNEL_0
 
 #define LEDC_DUTY              (8191)
 #define LEDC_FADE_TIME    (1000)
-// GPIO_LED
 
 GpioLed::GpioLed(gpio_num_t gpio)
         : GpioLed(gpio, 0, LEDC_LS_TIMER, LEDC_LS_CH0_CHANNEL) {
@@ -34,19 +32,15 @@ GpioLed::GpioLed(gpio_num_t gpio, int output_invert)
 }
 
 GpioLed::GpioLed(gpio_num_t gpio, int output_invert, ledc_timer_t timer_num, ledc_channel_t channel) {
-    // If the gpio is not connected, you should use NoLed class
+
     assert(gpio != GPIO_NUM_NC);
 
-    /*
-     * Prepare and set configuration of timers
-     * that will be used by LED Controller
-     */
     ledc_timer_config_t ledc_timer = {};
-    ledc_timer.duty_resolution = LEDC_TIMER_13_BIT;  // resolution of PWM duty
-    ledc_timer.freq_hz = 4000;                      // frequency of PWM signal
-    ledc_timer.speed_mode = LEDC_LS_MODE;           // timer mode
-    ledc_timer.timer_num = timer_num;               // timer index
-    ledc_timer.clk_cfg = LEDC_AUTO_CLK;              // Auto select the source clock
+    ledc_timer.duty_resolution = LEDC_TIMER_13_BIT;  
+    ledc_timer.freq_hz = 4000;                      
+    ledc_timer.speed_mode = LEDC_LS_MODE;           
+    ledc_timer.timer_num = timer_num;               
+    ledc_timer.clk_cfg = LEDC_AUTO_CLK;              
 
     ESP_ERROR_CHECK(ledc_timer_config(&ledc_timer));
 
@@ -58,13 +52,10 @@ GpioLed::GpioLed(gpio_num_t gpio, int output_invert, ledc_timer_t timer_num, led
     ledc_channel_.timer_sel  = timer_num,
     ledc_channel_.flags.output_invert = output_invert & 0x01,
 
-    // Set LED Controller with previously prepared configuration
     ledc_channel_config(&ledc_channel_);
 
-    // Initialize fade service.
     ledc_fade_func_install(0);
 
-    // When the callback registered by ledc_cb_degister is called, run led ->OnFadeEnd()
     ledc_cbs_t ledc_callbacks = {
         .fade_cb = FadeCallback
     };
@@ -95,7 +86,6 @@ GpioLed::~GpioLed() {
         ledc_fade_func_uninstall();
     }
 }
-
 
 void GpioLed::SetBrightness(uint8_t brightness) {
     if (brightness == 100) {
@@ -219,7 +209,7 @@ void GpioLed::OnStateChanged() {
         case kDeviceStateIdle:
             SetBrightness(IDLE_BRIGHTNESS);
             TurnOn();
-            // TurnOff();
+
             break;
         case kDeviceStateConnecting:
             SetBrightness(DEFAULT_BRIGHTNESS);
@@ -232,7 +222,7 @@ void GpioLed::OnStateChanged() {
             } else {
                 SetBrightness(LOW_BRIGHTNESS);
             }
-            // TurnOn();
+
             StartFadeTask();
             break;
         case kDeviceStateSpeaking:

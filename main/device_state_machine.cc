@@ -5,7 +5,6 @@
 
 static const char* TAG = "StateMachine";
 
-// State name strings for logging
 static const char* const STATE_STRINGS[] = {
     "unknown",
     "starting",
@@ -32,44 +31,43 @@ const char* DeviceStateMachine::GetStateName(DeviceState state) {
 }
 
 bool DeviceStateMachine::IsValidTransition(DeviceState from, DeviceState to) const {
-    // Allow transition to the same state (no-op)
+
     if (from == to) {
         return true;
     }
 
-    // Define valid state transitions based on the state diagram
     switch (from) {
         case kDeviceStateUnknown:
-            // Can only go to starting
+
             return to == kDeviceStateStarting;
 
         case kDeviceStateStarting:
-            // Can go to wifi configuring or activating
+
             return to == kDeviceStateWifiConfiguring ||
                    to == kDeviceStateActivating;
 
         case kDeviceStateWifiConfiguring:
-            // Can go to activating (after wifi connected) or audio testing
+
             return to == kDeviceStateActivating ||
                    to == kDeviceStateAudioTesting;
 
         case kDeviceStateAudioTesting:
-            // Can go back to wifi configuring
+
             return to == kDeviceStateWifiConfiguring;
 
         case kDeviceStateActivating:
-            // Can go to upgrading, idle, or back to wifi configuring (on error)
+
             return to == kDeviceStateUpgrading ||
                    to == kDeviceStateIdle ||
                    to == kDeviceStateWifiConfiguring;
 
         case kDeviceStateUpgrading:
-            // Can go to idle (upgrade failed) or activating
+
             return to == kDeviceStateIdle ||
                    to == kDeviceStateActivating;
 
         case kDeviceStateIdle:
-            // Can go to connecting, listening (manual mode), speaking, activating, upgrading, or wifi configuring
+
             return to == kDeviceStateConnecting ||
                    to == kDeviceStateListening ||
                    to == kDeviceStateSpeaking ||
@@ -78,22 +76,22 @@ bool DeviceStateMachine::IsValidTransition(DeviceState from, DeviceState to) con
                    to == kDeviceStateWifiConfiguring;
 
         case kDeviceStateConnecting:
-            // Can go to idle (failed) or listening (success)
+
             return to == kDeviceStateIdle ||
                    to == kDeviceStateListening;
 
         case kDeviceStateListening:
-            // Can go to speaking or idle
+
             return to == kDeviceStateSpeaking ||
                    to == kDeviceStateIdle;
 
         case kDeviceStateSpeaking:
-            // Can go to listening or idle
+
             return to == kDeviceStateListening ||
                    to == kDeviceStateIdle;
 
         case kDeviceStateFatalError:
-            // Cannot transition out of fatal error
+
             return false;
 
         default:
@@ -107,25 +105,21 @@ bool DeviceStateMachine::CanTransitionTo(DeviceState target) const {
 
 bool DeviceStateMachine::TransitionTo(DeviceState new_state) {
     DeviceState old_state = current_state_.load();
-    
-    // No-op if already in the target state
+
     if (old_state == new_state) {
         return true;
     }
 
-    // Validate transition
     if (!IsValidTransition(old_state, new_state)) {
         ESP_LOGW(TAG, "Invalid state transition: %s -> %s",
                  GetStateName(old_state), GetStateName(new_state));
         return false;
     }
 
-    // Perform transition
     current_state_.store(new_state);
     ESP_LOGI(TAG, "State: %s -> %s",
              GetStateName(old_state), GetStateName(new_state));
 
-    // Notify callback
     NotifyStateChange(old_state, new_state);
     return true;
 }
@@ -154,7 +148,7 @@ void DeviceStateMachine::NotifyStateChange(DeviceState old_state, DeviceState ne
             callbacks_copy.push_back(cb);
         }
     }
-    
+
     for (const auto& cb : callbacks_copy) {
         cb(old_state, new_state);
     }

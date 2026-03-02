@@ -12,24 +12,23 @@
 
 #define TAG "AudioDebugger"
 
-
 AudioDebugger::AudioDebugger() {
 #if CONFIG_USE_AUDIO_DEBUGGER
     udp_sockfd_ = socket(AF_INET, SOCK_DGRAM, 0);
     if (udp_sockfd_ >= 0) {
-        // 解析配置的服务器地址 "IP:PORT"
+
         std::string server_addr = CONFIG_AUDIO_DEBUG_UDP_SERVER;
         size_t colon_pos = server_addr.find(':');
-        
+
         if (colon_pos != std::string::npos) {
             std::string ip = server_addr.substr(0, colon_pos);
             int port = std::stoi(server_addr.substr(colon_pos + 1));
-            
+
             memset(&udp_server_addr_, 0, sizeof(udp_server_addr_));
             udp_server_addr_.sin_family = AF_INET;
             udp_server_addr_.sin_port = htons(port);
             inet_pton(AF_INET, ip.c_str(), &udp_server_addr_.sin_addr);
-            
+
             ESP_LOGI(TAG, "Initialized server address: %s", CONFIG_AUDIO_DEBUG_UDP_SERVER);
         } else {
             ESP_LOGW(TAG, "Invalid server address: %s, should be IP:PORT", CONFIG_AUDIO_DEBUG_UDP_SERVER);

@@ -43,8 +43,6 @@
 #define DISPLAY_BACKLIGHT_PIN GPIO_NUM_42
 #define DISPLAY_BACKLIGHT_OUTPUT_INVERT true
 
-
-/* Camera pins */
 #define CAMERA_PIN_PWDN -1
 #define CAMERA_PIN_RESET -1
 #define CAMERA_PIN_XCLK 17
@@ -67,4 +65,4 @@
 
 #define ML307_RX_PIN GPIO_NUM_44
 #define ML307_TX_PIN GPIO_NUM_43
-#endif // _BOARD_CONFIG_H_
+#endif 

@@ -25,11 +25,6 @@ static const char TAG[] = "AdcPdmAudioCodec";
         },                     \
     }
 
-/**
- * @brief Mono Duplex I2S configuration structure
- *
- * This configuration is used by default in bsp_audio_init()
- */
 #define BSP_I2S_DUPLEX_MONO_CFG(_sample_rate, _dout)                                                         \
     {                                                                                                 \
         .clk_cfg = I2S_PDM_TX_CLK_DEFAULT_CONFIG(_sample_rate),                                          \
@@ -69,7 +64,7 @@ AdcPdmAudioCodec::AdcPdmAudioCodec(int input_sample_rate, int output_sample_rate
     }
 
     i2s_chan_config_t chan_cfg = I2S_CHANNEL_DEFAULT_CONFIG(I2S_NUM_0, I2S_ROLE_MASTER);
-    chan_cfg.auto_clear = true; // Auto clear the legacy data in the DMA buffer
+    chan_cfg.auto_clear = true; 
     ESP_ERROR_CHECK(i2s_new_channel(&chan_cfg, &tx_handle_, NULL));
 
     i2s_pdm_tx_config_t pdm_cfg_default = BSP_I2S_DUPLEX_MONO_CFG((uint32_t)output_sample_rate, pdm_speak_p);
@@ -112,11 +107,10 @@ AdcPdmAudioCodec::AdcPdmAudioCodec(int input_sample_rate, int output_sample_rate
     if(pdm_speak_n != GPIO_NUM_NC){
         PIN_FUNC_SELECT(IO_MUX_GPIO10_REG, PIN_FUNC_GPIO);
         gpio_set_direction(pdm_speak_n, GPIO_MODE_OUTPUT);
-        esp_rom_gpio_connect_out_signal(pdm_speak_n, I2SO_SD_OUT_IDX, 1, 0); //反转输出 SD OUT 信号
+        esp_rom_gpio_connect_out_signal(pdm_speak_n, I2SO_SD_OUT_IDX, 1, 0); 
         gpio_set_drive_capability(pdm_speak_n, GPIO_DRIVE_CAP_0);
     }
 
-    // 初始化输出定时器
     esp_timer_create_args_t output_timer_args = {
         .callback = &AdcPdmAudioCodec::OutputTimerCallback,
         .arg = this,
@@ -129,7 +123,7 @@ AdcPdmAudioCodec::AdcPdmAudioCodec(int input_sample_rate, int output_sample_rate
 }
 
 AdcPdmAudioCodec::~AdcPdmAudioCodec() {
-    // 删除定时器
+
     if (output_timer_) {
         esp_timer_stop(output_timer_);
         esp_timer_delete(output_timer_);
@@ -171,7 +165,7 @@ void AdcPdmAudioCodec::EnableOutput(bool enable) {
         return;
     }
     if (enable) {
-        // Play 16bit 1 channel
+
         esp_codec_dev_sample_info_t fs = {
             .bits_per_sample = 16,
             .channel = 1,
@@ -182,8 +176,6 @@ void AdcPdmAudioCodec::EnableOutput(bool enable) {
         ESP_ERROR_CHECK(esp_codec_dev_open(output_dev_, &fs));
         ESP_ERROR_CHECK(esp_codec_dev_set_out_vol(output_dev_, output_volume_));
 
-        // 强制按板卡配置重配PDM TX时钟，覆盖第三方库在set_fmt中的默认up_sample_fs
-        // 若通道已启用，先禁用再重配，最后再启用
         ESP_ERROR_CHECK_WITHOUT_ABORT(i2s_channel_disable(tx_handle_));
         i2s_pdm_tx_clk_config_t clk_cfg = I2S_PDM_TX_CLK_DEFAULT_CONFIG((uint32_t)output_sample_rate_);
         clk_cfg.up_sample_fs = AUDIO_PDM_UPSAMPLE_FS;
@@ -192,13 +184,13 @@ void AdcPdmAudioCodec::EnableOutput(bool enable) {
         if(pa_ctrl_pin_ != GPIO_NUM_NC){
             gpio_set_level(pa_ctrl_pin_, 1);
         }
-        // 启用输出时启动定时器
+
         if (output_timer_) {
             esp_timer_start_once(output_timer_, TIMER_TIMEOUT_US);
         }
 
     } else {
-        // 禁用输出时停止定时器
+
         if (output_timer_) {
             esp_timer_stop(output_timer_);
         }
@@ -219,7 +211,7 @@ int AdcPdmAudioCodec::Read(int16_t* dest, int samples) {
 int AdcPdmAudioCodec::Write(const int16_t* data, int samples) {
     if (output_enabled_) {
         ESP_ERROR_CHECK_WITHOUT_ABORT(esp_codec_dev_write(output_dev_, (void*)data, samples * sizeof(int16_t)));
-        // 重置输出定时器
+
         if (output_timer_) {
             esp_timer_stop(output_timer_);
             esp_timer_start_once(output_timer_, TIMER_TIMEOUT_US);
@@ -241,7 +233,6 @@ void AdcPdmAudioCodec::Start() {
     ESP_LOGI(TAG, "Audio codec started");
 }
 
-// 定时器回调函数实现
 void AdcPdmAudioCodec::OutputTimerCallback(void* arg) {
     AdcPdmAudioCodec* codec = static_cast<AdcPdmAudioCodec*>(arg);
     if (codec && codec->output_enabled_) {

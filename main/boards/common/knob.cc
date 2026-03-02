@@ -45,7 +45,7 @@ void Knob::OnRotate(std::function<void(bool)> callback) {
 void Knob::knob_callback(void* arg, void* data) {
     Knob* knob = static_cast<Knob*>(data);
     knob_event_t event = iot_knob_get_event(arg);
-    
+
     if (knob->on_rotate_) {
         knob->on_rotate_(event == KNOB_RIGHT);
     }

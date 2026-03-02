@@ -6,7 +6,6 @@
 #include <esp_lcd_panel_io.h>
 #include <esp_lcd_panel_ops.h>
 
-
 class OledDisplay : public LvglDisplay {
 private:
     esp_lcd_panel_io_handle_t panel_io_ = nullptr;
@@ -38,4 +37,4 @@ public:
     virtual void SetTheme(Theme* theme) override;
 };
 
-#endif // OLED_DISPLAY_H
+#endif 

@@ -38,4 +38,4 @@ public:
     int Read(int16_t* dest, int samples);
 };
 
-#endif // _NO_AUDIO_CODEC_H
+#endif 

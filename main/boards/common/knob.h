@@ -22,4 +22,4 @@ private:
     std::function<void(bool)> on_rotate_;
 };
 
-#endif // KNOB_H_
+#endif 

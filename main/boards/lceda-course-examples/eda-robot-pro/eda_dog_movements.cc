@@ -11,7 +11,7 @@ static const char *TAG = "EDARobotDogMovements";
 
 EDARobotDog::EDARobotDog() {
   is_dog_resting_ = false;
-  // 初始化所有舵机管脚为-1（未连接）
+
   for (int i = 0; i < SERVO_COUNT; i++) {
     servo_pins_[i] = -1;
     servo_trim_[i] = 0;
@@ -35,9 +35,6 @@ void EDARobotDog::Init(int left_front_leg, int left_rear_leg, int right_front_le
   is_dog_resting_ = false;
 }
 
-///////////////////////////////////////////////////////////////////
-//-- ATTACH & DETACH FUNCTIONS ----------------------------------//
-///////////////////////////////////////////////////////////////////
 void EDARobotDog::AttachServos() {
   for (int i = 0; i < SERVO_COUNT; i++) {
     if (servo_pins_[i] != -1) {
@@ -54,9 +51,6 @@ void EDARobotDog::DetachServos() {
   }
 }
 
-///////////////////////////////////////////////////////////////////
-//-- OSCILLATORS TRIMS ------------------------------------------//
-///////////////////////////////////////////////////////////////////
 void EDARobotDog::SetTrims(int left_front_leg, int left_rear_leg,
                       int right_front_leg, int right_rear_leg) {
   servo_trim_[LEFT_FRONT_LEG] = left_front_leg;
@@ -71,9 +65,6 @@ void EDARobotDog::SetTrims(int left_front_leg, int left_rear_leg,
   }
 }
 
-///////////////////////////////////////////////////////////////////
-//-- BASIC MOTION FUNCTIONS -------------------------------------//
-///////////////////////////////////////////////////////////////////
 void EDARobotDog::MoveServos(int time, int servo_target[]) {
   if (GetRestState() == true) {
     SetRestState(false);
@@ -106,7 +97,6 @@ void EDARobotDog::MoveServos(int time, int servo_target[]) {
     vTaskDelay(pdMS_TO_TICKS(time));
   }
 
-  // final adjustment to the target.
   bool f = true;
   int adjustment_count = 0;
   while (f && adjustment_count < 10) {
@@ -180,21 +170,16 @@ void EDARobotDog::Execute(int amplitude[SERVO_COUNT], int offset[SERVO_COUNT],
 
   int cycles = (int)steps;
 
-  //-- Execute complete cycles
   if (cycles >= 1)
     for (int i = 0; i < cycles; i++)
       OscillateServos(amplitude, offset, period, phase_diff);
 
-  //-- Execute the final not complete cycle
   OscillateServos(amplitude, offset, period, phase_diff, (float)steps - cycles);
   vTaskDelay(pdMS_TO_TICKS(10));
 }
 
-///////////////////////////////////////////////////////////////////
-//-- HOME = Dog at rest position --------------------------------//
-///////////////////////////////////////////////////////////////////
 void EDARobotDog::Home() {
-  if (is_dog_resting_ == false) { // Go to rest position only if necessary
+  if (is_dog_resting_ == false) { 
     int homes[SERVO_COUNT] = {LEG_HOME_POSITION, LEG_HOME_POSITION,
                               LEG_HOME_POSITION, LEG_HOME_POSITION};
     MoveServos(500, homes);
@@ -207,13 +192,8 @@ bool EDARobotDog::GetRestState() { return is_dog_resting_; }
 
 void EDARobotDog::SetRestState(bool state) { is_dog_resting_ = state; }
 
-///////////////////////////////////////////////////////////////////
-//-- BASIC LEG MOVEMENTS ----------------------------------------//
-///////////////////////////////////////////////////////////////////
-
 void EDARobotDog::LiftLeftFrontLeg(int period, int height) {
 
-  // 获取当前位置
   int current_pos[SERVO_COUNT];
   for (int i = 0; i < SERVO_COUNT; i++) {
     if (servo_pins_[i] != -1) {
@@ -223,25 +203,21 @@ void EDARobotDog::LiftLeftFrontLeg(int period, int height) {
     }
   }
 
-  // 重复3次摇摆动作
   for (int num = 0; num < 3; num++) {
-    // servo1.write(180); delay(100);
-    current_pos[LEFT_FRONT_LEG] = 0; // servo1
+
+    current_pos[LEFT_FRONT_LEG] = 0; 
     MoveServos(100, current_pos);
 
-    // servo1.write(150); delay(100);
-    current_pos[LEFT_FRONT_LEG] = 30; // servo1
+    current_pos[LEFT_FRONT_LEG] = 30; 
     MoveServos(100, current_pos);
   }
 
-  // servo1.write(90);
-  current_pos[LEFT_FRONT_LEG] = 90; // servo1
+  current_pos[LEFT_FRONT_LEG] = 90; 
   MoveServos(100, current_pos);
 }
 
 void EDARobotDog::LiftLeftRearLeg(int period, int height) {
 
-  // 获取当前位置
   int current_pos[SERVO_COUNT];
   for (int i = 0; i < SERVO_COUNT; i++) {
     if (servo_pins_[i] != -1) {
@@ -251,25 +227,21 @@ void EDARobotDog::LiftLeftRearLeg(int period, int height) {
     }
   }
 
-  // 重复3次摇摆动作
   for (int num = 0; num < 3; num++) {
-    // servo1.write(180); delay(100);
-    current_pos[LEFT_REAR_LEG] = 180; // servo1
+
+    current_pos[LEFT_REAR_LEG] = 180; 
     MoveServos(100, current_pos);
 
-    // servo1.write(150); delay(100);
-    current_pos[LEFT_REAR_LEG] = 150; // servo1
+    current_pos[LEFT_REAR_LEG] = 150; 
     MoveServos(100, current_pos);
   }
 
-  // servo1.write(90);
-  current_pos[LEFT_REAR_LEG] = 90; // servo1
+  current_pos[LEFT_REAR_LEG] = 90; 
   MoveServos(100, current_pos);
 }
 
 void EDARobotDog::LiftRightFrontLeg(int period, int height) {
-  
-  // 获取当前位置
+
   int current_pos[SERVO_COUNT];
   for (int i = 0; i < SERVO_COUNT; i++) {
     if (servo_pins_[i] != -1) {
@@ -279,25 +251,21 @@ void EDARobotDog::LiftRightFrontLeg(int period, int height) {
     }
   }
 
-  // 重复3次摇摆动作
   for (int num = 0; num < 3; num++) {
-    // servo1.write(180); delay(100);
-    current_pos[RIGHT_FRONT_LEG] = 180; // servo1
+
+    current_pos[RIGHT_FRONT_LEG] = 180; 
     MoveServos(100, current_pos);
 
-    // servo1.write(150); delay(100);
-    current_pos[RIGHT_FRONT_LEG] = 150; // servo1
+    current_pos[RIGHT_FRONT_LEG] = 150; 
     MoveServos(100, current_pos);
   }
 
-  // servo1.write(90);
-  current_pos[RIGHT_FRONT_LEG] = 90; // servo1
+  current_pos[RIGHT_FRONT_LEG] = 90; 
   MoveServos(100, current_pos);
 }
 
 void EDARobotDog::LiftRightRearLeg(int period, int height) {
 
-  // 获取当前位置
   int current_pos[SERVO_COUNT];
   for (int i = 0; i < SERVO_COUNT; i++) {
     if (servo_pins_[i] != -1) {
@@ -307,25 +275,18 @@ void EDARobotDog::LiftRightRearLeg(int period, int height) {
     }
   }
 
-  // 重复3次摇摆动作
   for (int num = 0; num < 3; num++) {
-    // servo1.write(180); delay(100);
-    current_pos[RIGHT_REAR_LEG] = 0; // servo1
+
+    current_pos[RIGHT_REAR_LEG] = 0; 
     MoveServos(100, current_pos);
 
-    // servo1.write(150); delay(100);
-    current_pos[RIGHT_REAR_LEG] = 30; // servo1
+    current_pos[RIGHT_REAR_LEG] = 30; 
     MoveServos(100, current_pos);
   }
 
-  // servo1.write(90);
-  current_pos[RIGHT_FRONT_LEG] = 90; // servo1
+  current_pos[RIGHT_FRONT_LEG] = 90; 
   MoveServos(100, current_pos);
 }
-
-///////////////////////////////////////////////////////////////////
-//-- DOG GAIT MOVEMENTS -----------------------------------------//
-///////////////////////////////////////////////////////////////////
 
 void EDARobotDog::Turn(float steps, int period, int dir) {
 
@@ -345,46 +306,40 @@ void EDARobotDog::Turn(float steps, int period, int dir) {
         }
       }
 
-      current_pos[RIGHT_REAR_LEG] = 140; // servo3
-      current_pos[LEFT_REAR_LEG] = 40;   // servo2
+      current_pos[RIGHT_REAR_LEG] = 140; 
+      current_pos[LEFT_REAR_LEG] = 40;   
       MoveServos(100, current_pos);
 
-      current_pos[RIGHT_FRONT_LEG] = 40; // servo4
-      current_pos[LEFT_FRONT_LEG] = 140; // servo1
+      current_pos[RIGHT_FRONT_LEG] = 40; 
+      current_pos[LEFT_FRONT_LEG] = 140; 
       MoveServos(100, current_pos);
 
-      current_pos[RIGHT_REAR_LEG] = 90; // servo3
-      current_pos[LEFT_REAR_LEG] = 90;  // servo2
+      current_pos[RIGHT_REAR_LEG] = 90; 
+      current_pos[LEFT_REAR_LEG] = 90;  
       MoveServos(100, current_pos);
 
-      current_pos[RIGHT_FRONT_LEG] = 90; // servo4
-      current_pos[LEFT_FRONT_LEG] = 90;  // servo1
+      current_pos[RIGHT_FRONT_LEG] = 90; 
+      current_pos[LEFT_FRONT_LEG] = 90;  
       MoveServos(100, current_pos);
 
-
-      current_pos[RIGHT_FRONT_LEG] = 140; // servo4
-      current_pos[LEFT_FRONT_LEG] = 40;   // servo1
+      current_pos[RIGHT_FRONT_LEG] = 140; 
+      current_pos[LEFT_FRONT_LEG] = 40;   
       MoveServos(100, current_pos);
 
-
-      current_pos[RIGHT_REAR_LEG] = 40; // servo3
-      current_pos[LEFT_REAR_LEG] = 140; // servo2
+      current_pos[RIGHT_REAR_LEG] = 40; 
+      current_pos[LEFT_REAR_LEG] = 140; 
       MoveServos(100, current_pos);
 
-
-      current_pos[RIGHT_FRONT_LEG] = 90; // servo4
-      current_pos[LEFT_FRONT_LEG] = 90;  // servo1
+      current_pos[RIGHT_FRONT_LEG] = 90; 
+      current_pos[LEFT_FRONT_LEG] = 90;  
       MoveServos(100, current_pos);
 
-
-      current_pos[RIGHT_REAR_LEG] = 90; // servo3
-      current_pos[LEFT_REAR_LEG] = 90;  // servo2
+      current_pos[RIGHT_REAR_LEG] = 90; 
+      current_pos[LEFT_REAR_LEG] = 90;  
       MoveServos(100, current_pos);
-      
 
     } else {
 
-// 获取当前位置
       int current_pos[SERVO_COUNT];
       for (int i = 0; i < SERVO_COUNT; i++) {
         if (servo_pins_[i] != -1) {
@@ -394,41 +349,36 @@ void EDARobotDog::Turn(float steps, int period, int dir) {
         }
       }
 
-
-      current_pos[LEFT_REAR_LEG] = 140; // servo2
-      current_pos[RIGHT_REAR_LEG] = 40; // servo3
+      current_pos[LEFT_REAR_LEG] = 140; 
+      current_pos[RIGHT_REAR_LEG] = 40; 
       MoveServos(100, current_pos);
 
-      current_pos[LEFT_FRONT_LEG] = 40;   // servo1
-      current_pos[RIGHT_FRONT_LEG] = 140; // servo4
+      current_pos[LEFT_FRONT_LEG] = 40;   
+      current_pos[RIGHT_FRONT_LEG] = 140; 
       MoveServos(100, current_pos);
 
-      current_pos[LEFT_REAR_LEG] = 90;  // servo2
-      current_pos[RIGHT_REAR_LEG] = 90; // servo3
+      current_pos[LEFT_REAR_LEG] = 90;  
+      current_pos[RIGHT_REAR_LEG] = 90; 
       MoveServos(100, current_pos);
 
-      current_pos[LEFT_FRONT_LEG] = 90;  // servo1
-      current_pos[RIGHT_FRONT_LEG] = 90; // servo4
+      current_pos[LEFT_FRONT_LEG] = 90;  
+      current_pos[RIGHT_FRONT_LEG] = 90; 
       MoveServos(100, current_pos);
 
-
-      current_pos[LEFT_FRONT_LEG] = 140; // servo1
-      current_pos[RIGHT_FRONT_LEG] = 40; // servo4
+      current_pos[LEFT_FRONT_LEG] = 140; 
+      current_pos[RIGHT_FRONT_LEG] = 40; 
       MoveServos(100, current_pos);
 
-
-      current_pos[LEFT_REAR_LEG] = 40;   // servo2
-      current_pos[RIGHT_REAR_LEG] = 140; // servo3
+      current_pos[LEFT_REAR_LEG] = 40;   
+      current_pos[RIGHT_REAR_LEG] = 140; 
       MoveServos(100, current_pos);
 
-
-      current_pos[LEFT_FRONT_LEG] = 90;  // servo1
-      current_pos[RIGHT_FRONT_LEG] = 90; // servo4
+      current_pos[LEFT_FRONT_LEG] = 90;  
+      current_pos[RIGHT_FRONT_LEG] = 90; 
       MoveServos(100, current_pos);
 
-
-      current_pos[LEFT_REAR_LEG] = 90;  // servo2
-      current_pos[RIGHT_REAR_LEG] = 90; // servo3
+      current_pos[LEFT_REAR_LEG] = 90;  
+      current_pos[RIGHT_REAR_LEG] = 90; 
       MoveServos(100, current_pos);
 
     }
@@ -441,11 +391,9 @@ void EDARobotDog::Walk(float steps, int period, int dir) {
     SetRestState(false);
   }
 
-
   for (int step = 0; step < (int)steps; step++) {
     if (dir == FORWARD) {
 
-// 获取当前位置
       int current_pos[SERVO_COUNT];
       for (int i = 0; i < SERVO_COUNT; i++) {
         if (servo_pins_[i] != -1) {
@@ -455,62 +403,49 @@ void EDARobotDog::Walk(float steps, int period, int dir) {
         }
       }
 
-  
-      current_pos[LEFT_FRONT_LEG] = 100;  // servo1
-      current_pos[RIGHT_FRONT_LEG] = 100; // servo4
+      current_pos[LEFT_FRONT_LEG] = 100;  
+      current_pos[RIGHT_FRONT_LEG] = 100; 
       MoveServos(100, current_pos);
 
-      
-      current_pos[RIGHT_REAR_LEG] = 60; // servo3
-      current_pos[LEFT_REAR_LEG] = 60;  // servo2
+      current_pos[RIGHT_REAR_LEG] = 60; 
+      current_pos[LEFT_REAR_LEG] = 60;  
       MoveServos(100, current_pos);
 
-   
-      current_pos[LEFT_FRONT_LEG] = 140;  // servo1
-      current_pos[RIGHT_FRONT_LEG] = 140; // servo4
+      current_pos[LEFT_FRONT_LEG] = 140;  
+      current_pos[RIGHT_FRONT_LEG] = 140; 
       MoveServos(100, current_pos);
 
-    
-      current_pos[RIGHT_REAR_LEG] = 40; // servo3
-      current_pos[LEFT_REAR_LEG] = 40;  // servo2
+      current_pos[RIGHT_REAR_LEG] = 40; 
+      current_pos[LEFT_REAR_LEG] = 40;  
       MoveServos(100, current_pos);
 
- 
-
-      current_pos[RIGHT_REAR_LEG] = 90;  // servo3
-      current_pos[LEFT_REAR_LEG] = 90;   // servo2
-      current_pos[LEFT_FRONT_LEG] = 90;  // servo1
-      current_pos[RIGHT_FRONT_LEG] = 90; // servo4
+      current_pos[RIGHT_REAR_LEG] = 90;  
+      current_pos[LEFT_REAR_LEG] = 90;   
+      current_pos[LEFT_FRONT_LEG] = 90;  
+      current_pos[RIGHT_FRONT_LEG] = 90; 
       MoveServos(100, current_pos);
 
-
-      current_pos[LEFT_FRONT_LEG] = 80;  // servo1
-      current_pos[RIGHT_FRONT_LEG] = 80; // servo4
+      current_pos[LEFT_FRONT_LEG] = 80;  
+      current_pos[RIGHT_FRONT_LEG] = 80; 
       MoveServos(100, current_pos);
 
-
-      current_pos[RIGHT_REAR_LEG] = 120; // servo3
-      current_pos[LEFT_REAR_LEG] = 120;  // servo2
+      current_pos[RIGHT_REAR_LEG] = 120; 
+      current_pos[LEFT_REAR_LEG] = 120;  
       MoveServos(100, current_pos);
 
-
-      current_pos[LEFT_FRONT_LEG] = 90;  // servo1
-      current_pos[RIGHT_FRONT_LEG] = 90; // servo4
+      current_pos[LEFT_FRONT_LEG] = 90;  
+      current_pos[RIGHT_FRONT_LEG] = 90; 
       MoveServos(100, current_pos);
 
-
-      current_pos[RIGHT_REAR_LEG] = 140; // servo3
-      current_pos[LEFT_REAR_LEG] = 140;  // servo2
+      current_pos[RIGHT_REAR_LEG] = 140; 
+      current_pos[LEFT_REAR_LEG] = 140;  
       MoveServos(100, current_pos);
 
-
-      current_pos[RIGHT_REAR_LEG] = 90; // servo3
-      current_pos[LEFT_REAR_LEG] = 90;  // servo2
+      current_pos[RIGHT_REAR_LEG] = 90; 
+      current_pos[LEFT_REAR_LEG] = 90;  
       MoveServos(100, current_pos);
     } else {
 
-      // 每次只移动指定的舵机，然后延时100ms
-      // 获取当前位置
       int current_pos[SERVO_COUNT];
       for (int i = 0; i < SERVO_COUNT; i++) {
         if (servo_pins_[i] != -1) {
@@ -520,63 +455,54 @@ void EDARobotDog::Walk(float steps, int period, int dir) {
         }
       }
 
-
-      current_pos[LEFT_FRONT_LEG] = 80;  // servo1
-      current_pos[RIGHT_FRONT_LEG] = 80; // servo4
+      current_pos[LEFT_FRONT_LEG] = 80;  
+      current_pos[RIGHT_FRONT_LEG] = 80; 
       MoveServos(100, current_pos);
 
-
-      current_pos[RIGHT_REAR_LEG] = 120; // servo3
-      current_pos[LEFT_REAR_LEG] = 120;  // servo2
+      current_pos[RIGHT_REAR_LEG] = 120; 
+      current_pos[LEFT_REAR_LEG] = 120;  
       MoveServos(100, current_pos);
 
-
-      current_pos[LEFT_FRONT_LEG] = 40;  // servo1
-      current_pos[RIGHT_FRONT_LEG] = 40; // servo4
+      current_pos[LEFT_FRONT_LEG] = 40;  
+      current_pos[RIGHT_FRONT_LEG] = 40; 
       MoveServos(100, current_pos);
 
-
-      current_pos[RIGHT_REAR_LEG] = 140; // servo3
-      current_pos[LEFT_REAR_LEG] = 140;  // servo2
+      current_pos[RIGHT_REAR_LEG] = 140; 
+      current_pos[LEFT_REAR_LEG] = 140;  
       MoveServos(100, current_pos);
 
-      current_pos[RIGHT_REAR_LEG] = 90;  // servo3
-      current_pos[LEFT_REAR_LEG] = 90;   // servo2
-      current_pos[LEFT_FRONT_LEG] = 90;  // servo1
-      current_pos[RIGHT_FRONT_LEG] = 90; // servo4
+      current_pos[RIGHT_REAR_LEG] = 90;  
+      current_pos[LEFT_REAR_LEG] = 90;   
+      current_pos[LEFT_FRONT_LEG] = 90;  
+      current_pos[RIGHT_FRONT_LEG] = 90; 
       MoveServos(100, current_pos);
 
-
-      current_pos[LEFT_FRONT_LEG] = 100;  // servo1
-      current_pos[RIGHT_FRONT_LEG] = 100; // servo4
+      current_pos[LEFT_FRONT_LEG] = 100;  
+      current_pos[RIGHT_FRONT_LEG] = 100; 
       MoveServos(100, current_pos);
 
-
-      current_pos[RIGHT_REAR_LEG] = 60; // servo3
-      current_pos[LEFT_REAR_LEG] = 60;  // servo2
+      current_pos[RIGHT_REAR_LEG] = 60; 
+      current_pos[LEFT_REAR_LEG] = 60;  
       MoveServos(100, current_pos);
 
-
-      current_pos[LEFT_FRONT_LEG] = 90;  // servo1
-      current_pos[RIGHT_FRONT_LEG] = 90; // servo4
+      current_pos[LEFT_FRONT_LEG] = 90;  
+      current_pos[RIGHT_FRONT_LEG] = 90; 
       MoveServos(100, current_pos);
 
-      current_pos[RIGHT_REAR_LEG] = 40; // servo3
-      current_pos[LEFT_REAR_LEG] = 40;  // servo2
+      current_pos[RIGHT_REAR_LEG] = 40; 
+      current_pos[LEFT_REAR_LEG] = 40;  
       MoveServos(100, current_pos);
 
-
-      current_pos[RIGHT_REAR_LEG] = 90; // servo3
-      current_pos[LEFT_REAR_LEG] = 90;  // servo2
+      current_pos[RIGHT_REAR_LEG] = 90; 
+      current_pos[LEFT_REAR_LEG] = 90;  
       MoveServos(100, current_pos);
-      
+
     }
   }
 }
 
 void EDARobotDog::Sit(int period) {
 
-
 int current_pos[SERVO_COUNT];
       for (int i = 0; i < SERVO_COUNT; i++) {
         if (servo_pins_[i] != -1) {
@@ -586,21 +512,18 @@ int current_pos[SERVO_COUNT];
         }
       }
 
-
-  current_pos[LEFT_REAR_LEG] = 0;  // servo2
-  current_pos[RIGHT_REAR_LEG] = 180; // servo4
+  current_pos[LEFT_REAR_LEG] = 0;  
+  current_pos[RIGHT_REAR_LEG] = 180; 
   MoveServos(100, current_pos);
 }
 
 void EDARobotDog::Stand(int period) {
-  // 站立：所有腿回到中立位置
+
   Home();
 }
 
 void EDARobotDog::Stretch(int period) {
 
-
-  // 获取当前位置
 int current_pos[SERVO_COUNT];
       for (int i = 0; i < SERVO_COUNT; i++) {
         if (servo_pins_[i] != -1) {
@@ -610,19 +533,18 @@ int current_pos[SERVO_COUNT];
         }
       }
 
-
-  current_pos[LEFT_FRONT_LEG] = 0;  // servo1
-  current_pos[RIGHT_REAR_LEG] = 0;    // servo3
-  current_pos[LEFT_REAR_LEG] = 180;     // servo2
-  current_pos[RIGHT_FRONT_LEG] = 180; // servo4
+  current_pos[LEFT_FRONT_LEG] = 0;  
+  current_pos[RIGHT_REAR_LEG] = 0;    
+  current_pos[LEFT_REAR_LEG] = 180;     
+  current_pos[RIGHT_FRONT_LEG] = 180; 
   MoveServos(100, current_pos);
 }
 
 void EDARobotDog::Shake(int period) {
-  // 摇摆：左右摇摆身体，左前腿和右后腿运动方向相反
-  int A[SERVO_COUNT] = {20, 0, 20, 0}; // 只有前腿摇摆
+
+  int A[SERVO_COUNT] = {20, 0, 20, 0}; 
   int O[SERVO_COUNT] = {0, LEG_HOME_POSITION, 0, LEG_HOME_POSITION};
-  // 左前腿和右前腿反相摇摆
+
   double phase_diff[SERVO_COUNT] = {DEG2RAD(180), 0, DEG2RAD(0), 0};
 
   Execute(A, O, period, phase_diff, 3);
@@ -655,10 +577,9 @@ void EDARobotDog::Sleep() {
     }
   }
 
-  // servo1.write(0); servo3.write(180); servo2.write(180); servo4.write(0);
-  current_pos[LEFT_FRONT_LEG] = 0;   // servo1
-  current_pos[RIGHT_REAR_LEG] = 180; // servo3
-  current_pos[LEFT_REAR_LEG] = 180;  // servo2
-  current_pos[RIGHT_FRONT_LEG] = 0;  // servo4
+  current_pos[LEFT_FRONT_LEG] = 0;   
+  current_pos[RIGHT_REAR_LEG] = 180; 
+  current_pos[LEFT_REAR_LEG] = 180;  
+  current_pos[RIGHT_FRONT_LEG] = 0;  
   MoveServos(100, current_pos);
 }

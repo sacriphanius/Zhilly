@@ -14,7 +14,6 @@ void AfeAudioProcessor::Initialize(AudioCodec* codec, int frame_duration_ms, srm
     codec_ = codec;
     frame_samples_ = frame_duration_ms * 16000 / 1000;
 
-    // Pre-allocate output buffer capacity
     output_buffer_.reserve(frame_samples_);
 
     int ref_num = codec_->input_reference() ? 1 : 0;
@@ -36,7 +35,7 @@ void AfeAudioProcessor::Initialize(AudioCodec* codec, int frame_duration_ms, srm
 
     char* ns_model_name = esp_srmodel_filter(models, ESP_NSNET_PREFIX, NULL);
     char* vad_model_name = esp_srmodel_filter(models, ESP_VADN_PREFIX, NULL);
-    
+
     afe_config_t* afe_config = afe_config_init(input_format.c_str(), NULL, AFE_TYPE_VC, AFE_MODE_HIGH_PERF);
     afe_config->aec_mode = AEC_MODE_VOIP_HIGH_PERF;
     afe_config->vad_mode = VAD_MODE_0;
@@ -66,7 +65,7 @@ void AfeAudioProcessor::Initialize(AudioCodec* codec, int frame_duration_ms, srm
 
     afe_iface_ = esp_afe_handle_from_config(afe_config);
     afe_data_ = afe_iface_->create_from_config(afe_config);
-    
+
     xTaskCreate([](void* arg) {
         auto this_ = (AfeAudioProcessor*)arg;
         this_->AudioProcessorTask();
@@ -94,7 +93,7 @@ void AfeAudioProcessor::Feed(std::vector<int16_t>&& data) {
     }
 
     std::lock_guard<std::mutex> lock(input_buffer_mutex_);
-    // Check running state inside lock to avoid TOCTOU race with Stop()
+
     if (!IsRunning()) {
         return;
     }
@@ -152,7 +151,6 @@ void AfeAudioProcessor::AudioProcessorTask() {
             continue;
         }
 
-        // VAD state change
         if (vad_state_change_callback_) {
             if (res->vad_state == VAD_SPEECH && !is_speaking_) {
                 is_speaking_ = true;
@@ -165,19 +163,17 @@ void AfeAudioProcessor::AudioProcessorTask() {
 
         if (output_callback_) {
             size_t samples = res->data_size / sizeof(int16_t);
-            
-            // Add data to buffer
+
             output_buffer_.insert(output_buffer_.end(), res->data, res->data + samples);
-            
-            // Output complete frames when buffer has enough data
+
             while (output_buffer_.size() >= frame_samples_) {
                 if (output_buffer_.size() == frame_samples_) {
-                    // If buffer size equals frame size, move the entire buffer
+
                     output_callback_(std::move(output_buffer_));
                     output_buffer_.clear();
                     output_buffer_.reserve(frame_samples_);
                 } else {
-                    // If buffer size exceeds frame size, copy one frame and remove it
+
                     output_callback_(std::vector<int16_t>(output_buffer_.begin(), output_buffer_.begin() + frame_samples_));
                     output_buffer_.erase(output_buffer_.begin(), output_buffer_.begin() + frame_samples_);
                 }

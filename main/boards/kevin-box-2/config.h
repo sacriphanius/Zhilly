@@ -37,5 +37,4 @@
 
 #define AXP2101_I2C_ADDR 0x34
 
-
-#endif // _BOARD_CONFIG_H_
+#endif 

@@ -8,7 +8,7 @@
 
 class PowerManager {
 private:
-    // 电池电量区间-分压电阻为2个100k
+
     static constexpr struct {
         uint16_t adc;
         uint8_t level;
@@ -25,16 +25,16 @@ private:
     size_t adc_values_count_ = 0;
     uint8_t battery_level_ = 100;
     bool is_charging_ = false;
-    inline static bool battery_update_paused_ = false;  // 静态标志：是否暂停电量更新
+    inline static bool battery_update_paused_ = false;  
 
     adc_oneshot_unit_handle_t adc_handle_;
 
     void CheckBatteryStatus() {
-      // 如果电量更新被暂停（动作进行中），则跳过更新
+
       if (battery_update_paused_) {
         return;
       }
-      
+
       ReadBatteryAdcData();
 
       if (charging_pin_ == GPIO_NUM_NC) {
@@ -62,8 +62,6 @@ private:
 
         CalculateBatteryLevel(average_adc);
 
-        // ESP_LOGI("PowerManager", "ADC值: %d 平均值: %ld 电量: %u%%", adc_value, average_adc,
-        //          battery_level_);
     }
 
     void CalculateBatteryLevel(uint32_t average_adc) {
@@ -108,7 +106,7 @@ public:
             .skip_unhandled_events = true,
         };
         ESP_ERROR_CHECK(esp_timer_create(&timer_args, &timer_handle_));
-        ESP_ERROR_CHECK(esp_timer_start_periodic(timer_handle_, 1000000));  // 1秒
+        ESP_ERROR_CHECK(esp_timer_start_periodic(timer_handle_, 1000000));  
 
         InitializeAdc();
     }
@@ -144,8 +142,7 @@ public:
 
     uint8_t GetBatteryLevel() { return battery_level_; }
 
-    // 暂停/恢复电量更新（用于动作执行时屏蔽更新）
     static void PauseBatteryUpdate() { battery_update_paused_ = true; }
     static void ResumeBatteryUpdate() { battery_update_paused_ = false; }
 };
-#endif  // __POWER_MANAGER_H__
+#endif  

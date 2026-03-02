@@ -28,10 +28,10 @@ public:
 
     static void Config(gpio_num_t gpio, GpioMode mode) {
         std::lock_guard<std::mutex> lock(mutex_);
-        
+
         gpio_config_t config = {};
         config.pin_bit_mask = (1ULL << gpio);
-        
+
         switch(mode) {
             case GpioMode::INPUT:
                 config.mode = GPIO_MODE_INPUT;
@@ -50,7 +50,7 @@ public:
                 config.pull_down_en = GPIO_PULLDOWN_ENABLE;
                 break;
         }
-        
+
         ESP_ERROR_CHECK(gpio_config(&config));
         ESP_LOGI("GpioManager", "Configured GPIO %d mode: %d", gpio, static_cast<int>(mode));
     }

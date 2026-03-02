@@ -9,8 +9,6 @@
 #include <string>
 #include <memory>
 
-
-// Define interface for emoji collection
 class EmojiCollection {
 public:
     virtual void AddEmoji(const std::string& name, LvglImage* image);

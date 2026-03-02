@@ -15,7 +15,6 @@ static const char *TAG = "emoji";
 
 namespace anim {
 
-// Emoji asset name mapping based on usage pattern
 static const std::unordered_map<std::string, std::string> emoji_asset_name_map = {
     {"connecting", "connecting.aaf"},
     {"wake", "wake.aaf"},
@@ -175,4 +174,4 @@ void EmojiWidget::Unlock()
 {
 }
 
-} // namespace anim
+} 

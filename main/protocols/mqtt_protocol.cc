@@ -13,14 +13,13 @@
 MqttProtocol::MqttProtocol() {
     event_group_handle_ = xEventGroupCreate();
 
-    // Initialize reconnect timer
     esp_timer_create_args_t reconnect_timer_args = {
         .callback = [](void* arg) {
             MqttProtocol* protocol = (MqttProtocol*)arg;
             auto& app = Application::GetInstance();
             if (app.GetDeviceState() == kDeviceStateIdle) {
                 ESP_LOGI(TAG, "Reconnecting to MQTT server");
-                auto alive = protocol->alive_;  // Capture alive flag
+                auto alive = protocol->alive_;  
                 app.Schedule([protocol, alive]() {
                     if (*alive) {
                         protocol->StartMqttClient(false);
@@ -35,10 +34,9 @@ MqttProtocol::MqttProtocol() {
 
 MqttProtocol::~MqttProtocol() {
     ESP_LOGI(TAG, "MqttProtocol deinit");
-    
-    // Mark as dead first to prevent any pending scheduled tasks from executing
+
     *alive_ = false;
-    
+
     if (reconnect_timer_ != nullptr) {
         esp_timer_stop(reconnect_timer_);
         esp_timer_delete(reconnect_timer_);
@@ -46,7 +44,7 @@ MqttProtocol::~MqttProtocol() {
 
     udp_.reset();
     mqtt_.reset();
-    
+
     if (event_group_handle_ != nullptr) {
         vEventGroupDelete(event_group_handle_);
     }
@@ -116,10 +114,10 @@ bool MqttProtocol::StartMqttClient(bool report_error) {
             auto session_id = cJSON_GetObjectItem(root, "session_id");
             ESP_LOGI(TAG, "Received goodbye message, session_id: %s", session_id ? session_id->valuestring : "null");
             if (session_id == nullptr || session_id_ == session_id->valuestring) {
-                auto alive = alive_;  // Capture alive flag
+                auto alive = alive_;  
                 Application::GetInstance().Schedule([this, alive]() {
                     if (*alive) {
-                        // Server initiated goodbye, don't send goodbye back to avoid ping-pong
+
                         CloseAudioChannel(false);
                     }
                 });
@@ -197,8 +195,6 @@ void MqttProtocol::CloseAudioChannel(bool send_goodbye) {
 
     ESP_LOGI(TAG, "Closing audio channel, send_goodbye: %d", send_goodbye);
 
-    // Only send goodbye when client initiates the close
-    // Don't send if server already sent goodbye (to avoid ping-pong)
     if (send_goodbye) {
         std::string message = "{";
         message += "\"session_id\":\"" + session_id_ + "\",";
@@ -229,7 +225,6 @@ bool MqttProtocol::OpenAudioChannel() {
         return false;
     }
 
-    // 等待服务器响应
     EventBits_t bits = xEventGroupWaitBits(event_group_handle_, MQTT_PROTOCOL_SERVER_HELLO_EVENT, pdTRUE, pdFALSE, pdMS_TO_TICKS(10000));
     if (!(bits & MQTT_PROTOCOL_SERVER_HELLO_EVENT)) {
         ESP_LOGE(TAG, "Failed to receive server hello");
@@ -241,11 +236,7 @@ bool MqttProtocol::OpenAudioChannel() {
     auto network = Board::GetInstance().GetNetwork();
     udp_ = network->CreateUdp(2);
     udp_->OnMessage([this](const std::string& data) {
-        /*
-         * UDP Encrypted OPUS Packet Format:
-         * |type 1u|flags 1u|payload_len 2u|ssrc 4u|timestamp 4u|sequence 4u|
-         * |payload payload_len|
-         */
+
         if (data.size() < sizeof(aes_nonce_)) {
             ESP_LOGE(TAG, "Invalid audio packet size: %u", data.size());
             return;
@@ -295,7 +286,7 @@ bool MqttProtocol::OpenAudioChannel() {
 }
 
 std::string MqttProtocol::GetHelloMessage() {
-    // 发送 hello 消息申请 UDP 通道
+
     cJSON* root = cJSON_CreateObject();
     cJSON_AddStringToObject(root, "type", "hello");
     cJSON_AddNumberToObject(root, "version", 3);
@@ -332,7 +323,6 @@ void MqttProtocol::ParseServerHello(const cJSON* root) {
         ESP_LOGI(TAG, "Session ID: %s", session_id_.c_str());
     }
 
-    // Get sample rate from hello message
     auto audio_params = cJSON_GetObjectItem(root, "audio_params");
     if (cJSON_IsObject(audio_params)) {
         auto sample_rate = cJSON_GetObjectItem(audio_params, "sample_rate");
@@ -355,8 +345,6 @@ void MqttProtocol::ParseServerHello(const cJSON* root) {
     auto key = cJSON_GetObjectItem(udp, "key")->valuestring;
     auto nonce = cJSON_GetObjectItem(udp, "nonce")->valuestring;
 
-    // auto encryption = cJSON_GetObjectItem(udp, "encryption")->valuestring;
-    // ESP_LOGI(TAG, "UDP server: %s, port: %d, encryption: %s", udp_server_.c_str(), udp_port_, encryption);
     aes_nonce_ = DecodeHexString(nonce);
     mbedtls_aes_init(&aes_ctx_);
     mbedtls_aes_setkey_enc(&aes_ctx_, (const unsigned char*)DecodeHexString(key).c_str(), 128);
@@ -366,12 +354,12 @@ void MqttProtocol::ParseServerHello(const cJSON* root) {
 }
 
 static const char hex_chars[] = "0123456789ABCDEF";
-// 辅助函数，将单个十六进制字符转换为对应的数值
+
 static inline uint8_t CharToHex(char c) {
     if (c >= '0' && c <= '9') return c - '0';
     if (c >= 'A' && c <= 'F') return c - 'A' + 10;
     if (c >= 'a' && c <= 'f') return c - 'a' + 10;
-    return 0;  // 对于无效输入，返回0
+    return 0;  
 }
 
 std::string MqttProtocol::DecodeHexString(const std::string& hex_string) {

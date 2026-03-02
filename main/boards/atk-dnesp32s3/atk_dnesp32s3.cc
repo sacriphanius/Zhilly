@@ -52,7 +52,7 @@ private:
     EspVideo* camera_;
 
     void InitializeI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = (i2c_port_t)I2C_NUM_0,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
@@ -67,11 +67,9 @@ private:
         };
         ESP_ERROR_CHECK(i2c_new_master_bus(&i2c_bus_cfg, &i2c_bus_));
 
-        // Initialize XL9555
         xl9555_ = new XL9555(i2c_bus_, 0x20);
     }
 
-    // Initialize spi peripheral
     void InitializeSpi() {
         spi_bus_config_t buscfg = {};
         buscfg.mosi_io_num = LCD_MOSI_PIN;
@@ -98,7 +96,7 @@ private:
         esp_lcd_panel_io_handle_t panel_io = nullptr;
         esp_lcd_panel_handle_t panel = nullptr;
         ESP_LOGD(TAG, "Install panel IO");
-        // 液晶屏控制IO初始化
+
         esp_lcd_panel_io_spi_config_t io_config = {};
         io_config.cs_gpio_num = LCD_CS_PIN;
         io_config.dc_gpio_num = LCD_DC_PIN;
@@ -109,7 +107,6 @@ private:
         io_config.lcd_param_bits = 8;
         esp_lcd_new_panel_io_spi(SPI2_HOST, &io_config, &panel_io);
 
-        // 初始化液晶屏驱动芯片ST7789
         ESP_LOGD(TAG, "Install LCD driver");
         esp_lcd_panel_dev_config_t panel_config = {};
         panel_config.reset_gpio_num = GPIO_NUM_NC;
@@ -117,7 +114,7 @@ private:
         panel_config.bits_per_pixel = 16;
         panel_config.data_endian = LCD_RGB_DATA_ENDIAN_BIG,
         esp_lcd_new_panel_st7789(panel_io, &panel_config, &panel);
-        
+
         esp_lcd_panel_reset(panel);
         xl9555_->SetOutputState(8, 1);
         xl9555_->SetOutputState(2, 0);
@@ -130,14 +127,12 @@ private:
                                     DISPLAY_WIDTH, DISPLAY_HEIGHT, DISPLAY_OFFSET_X, DISPLAY_OFFSET_Y, DISPLAY_MIRROR_X, DISPLAY_MIRROR_Y, DISPLAY_SWAP_XY);
     }
 
-    // 初始化摄像头：ov2640；
-    // 根据正点原子官方示例参数
     void InitializeCamera() {
-        xl9555_->SetOutputState(OV_PWDN_IO, 0); // PWDN=低 (上电)
-        xl9555_->SetOutputState(OV_RESET_IO, 0); // 确保复位
-        vTaskDelay(pdMS_TO_TICKS(50));           // 延长复位保持时间
-        xl9555_->SetOutputState(OV_RESET_IO, 1); // 释放复位
-        vTaskDelay(pdMS_TO_TICKS(50));           // 延长 50ms
+        xl9555_->SetOutputState(OV_PWDN_IO, 0); 
+        xl9555_->SetOutputState(OV_RESET_IO, 0); 
+        vTaskDelay(pdMS_TO_TICKS(50));           
+        xl9555_->SetOutputState(OV_RESET_IO, 1); 
+        vTaskDelay(pdMS_TO_TICKS(50));           
 
         static esp_cam_ctlr_dvp_pin_config_t dvp_pin_config = {
             .data_width = CAM_CTLR_DATA_WIDTH_8,
@@ -169,8 +164,8 @@ private:
 
         esp_video_init_dvp_config_t dvp_config = {
             .sccb_config = sccb_config,
-            .reset_pin = CAM_PIN_RESET,   // 实际由 XL9555 控制
-            .pwdn_pin = CAM_PIN_PWDN,     // 实际由 XL9555 控制
+            .reset_pin = CAM_PIN_RESET,   
+            .pwdn_pin = CAM_PIN_PWDN,     
             .dvp_pin = dvp_pin_config,
             .xclk_freq = 20000000,
         };
@@ -216,7 +211,7 @@ public:
     virtual Display* GetDisplay() override {
         return display_;
     }
-    
+
     virtual Camera* GetCamera() override {
         return camera_;
     }

@@ -18,7 +18,7 @@
 #include "power_save_timer.h"
 
 #define TAG "esp32s3_korvo2_v3"
-/* ADC Buttons */
+
 typedef enum {
     BSP_ADC_BUTTON_REC,
     BSP_ADC_BUTTON_VOL_MUTE,
@@ -29,7 +29,6 @@ typedef enum {
     BSP_ADC_BUTTON_NUM
 } bsp_adc_button_t;
 
-// Init ili9341 by custom cmd
 static const ili9341_lcd_init_cmd_t vendor_specific_init[] = {
     {0xC8, (uint8_t []){0xFF, 0x93, 0x42}, 3, 0},
     {0xC0, (uint8_t []){0x0E, 0x0E}, 2, 0},
@@ -64,11 +63,10 @@ private:
     PowerSaveTimer* power_save_timer_;
     PowerManager* power_manager_;
     void InitializePowerManager() {
-        // PowerManager需要复用按钮的ADC句柄，所以在InitializeButtons之后调用
-        // 传入按钮的ADC句柄指针，让PowerManager复用
+
         power_manager_ = new PowerManager(GPIO_NUM_NC, &bsp_adc_handle);
     }
-    
+
     void InitializePowerSaveTimer() {
         power_save_timer_ = new PowerSaveTimer(-1, 60);
         power_save_timer_->OnEnterSleepMode([this]() {
@@ -81,7 +79,7 @@ private:
     }
 
     void InitializeI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = (i2c_port_t)1,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
@@ -127,13 +125,12 @@ private:
                 return;
             }
         }
-        // 配置IO0-IO3为输出模式
+
         ESP_ERROR_CHECK(esp_io_expander_set_dir(io_expander_, 
             IO_EXPANDER_PIN_NUM_0 | IO_EXPANDER_PIN_NUM_1 | 
             IO_EXPANDER_PIN_NUM_2 | IO_EXPANDER_PIN_NUM_3, 
             IO_EXPANDER_OUTPUT));
 
-        // 复位LCD和TouchPad
         ESP_ERROR_CHECK(esp_io_expander_set_level(io_expander_,
             IO_EXPANDER_PIN_NUM_0 | IO_EXPANDER_PIN_NUM_1 | IO_EXPANDER_PIN_NUM_2, 1));
         vTaskDelay(pdMS_TO_TICKS(300));
@@ -146,7 +143,7 @@ private:
 
     void EnableLcdCs() {
         if(io_expander_ != NULL) {
-            esp_io_expander_set_level(io_expander_, IO_EXPANDER_PIN_NUM_3, 0);// 置低 LCD CS
+            esp_io_expander_set_level(io_expander_, IO_EXPANDER_PIN_NUM_3, 0);
         }
     }
 
@@ -188,7 +185,7 @@ private:
 
     void InitializeButtons() {
          button_adc_config_t adc_cfg = {};
-        adc_cfg.adc_channel = ADC_CHANNEL_4; // ADC1 channel 0 is GPIO5
+        adc_cfg.adc_channel = ADC_CHANNEL_4; 
 #if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0)
         const adc_oneshot_unit_init_cfg_t init_config1 = {
             .unit_id = ADC_UNIT_1,
@@ -197,32 +194,32 @@ private:
         adc_cfg.adc_handle = &bsp_adc_handle;
 #endif
         adc_cfg.button_index = BSP_ADC_BUTTON_REC;
-        adc_cfg.min = 2310; // middle is 2410mV
+        adc_cfg.min = 2310; 
         adc_cfg.max = 2510;
         adc_button_[0] = new AdcButton(adc_cfg);
 
         adc_cfg.button_index = BSP_ADC_BUTTON_VOL_MUTE;
-        adc_cfg.min = 1880; // middle is 1980mV
+        adc_cfg.min = 1880; 
         adc_cfg.max = 2080;
         adc_button_[1] = new AdcButton(adc_cfg);
 
         adc_cfg.button_index = BSP_ADC_BUTTON_PLAY;
-        adc_cfg.min = 1550; // middle is 1650mV
+        adc_cfg.min = 1550; 
         adc_cfg.max = 1750;
         adc_button_[2] = new AdcButton(adc_cfg);
 
         adc_cfg.button_index = BSP_ADC_BUTTON_SET;
-        adc_cfg.min = 1015; // middle is 1115mV
+        adc_cfg.min = 1015; 
         adc_cfg.max = 1215;
         adc_button_[3] = new AdcButton(adc_cfg);
 
         adc_cfg.button_index = BSP_ADC_BUTTON_VOL_DOWN;
-        adc_cfg.min = 720; // middle is 820mV
+        adc_cfg.min = 720; 
         adc_cfg.max = 920;
         adc_button_[4] = new AdcButton(adc_cfg);
 
         adc_cfg.button_index = BSP_ADC_BUTTON_VOL_UP;
-        adc_cfg.min = 280; // middle is 380mV
+        adc_cfg.min = 280; 
         adc_cfg.max = 480;
         adc_button_[5] = new AdcButton(adc_cfg);
 
@@ -281,7 +278,6 @@ private:
         esp_lcd_panel_io_handle_t panel_io = nullptr;
         esp_lcd_panel_handle_t panel = nullptr;
 
-        // 液晶屏控制IO初始化
         ESP_LOGD(TAG, "Install panel IO");
         esp_lcd_panel_io_spi_config_t io_config = {};
         io_config.cs_gpio_num = GPIO_NUM_NC;
@@ -293,7 +289,6 @@ private:
         io_config.lcd_param_bits = 8;
         ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi(SPI3_HOST, &io_config, &panel_io));
 
-        // 初始化液晶屏驱动芯片
         ESP_LOGD(TAG, "Install LCD driver");
         const ili9341_vendor_config_t vendor_config = {
             .init_cmds = &vendor_specific_init[0],
@@ -302,12 +297,12 @@ private:
 
         esp_lcd_panel_dev_config_t panel_config = {};
         panel_config.reset_gpio_num = GPIO_NUM_NC;
-        // panel_config.flags.reset_active_high = 0,
+
         panel_config.rgb_ele_order = LCD_RGB_ELEMENT_ORDER_RGB;
         panel_config.bits_per_pixel = 16;
         panel_config.vendor_config = (void *)&vendor_config;
         ESP_ERROR_CHECK(esp_lcd_new_panel_ili9341(panel_io, &panel_config, &panel));
-        
+
         ESP_ERROR_CHECK(esp_lcd_panel_reset(panel));
         EnableLcdCs();
         ESP_ERROR_CHECK(esp_lcd_panel_init(panel));
@@ -322,7 +317,7 @@ private:
     void InitializeSt7789Display() {
         esp_lcd_panel_io_handle_t panel_io = nullptr;
         esp_lcd_panel_handle_t panel = nullptr;
-        // 液晶屏控制IO初始化
+
         ESP_LOGD(TAG, "Install panel IO");
         esp_lcd_panel_io_spi_config_t io_config = {};
         io_config.cs_gpio_num = GPIO_NUM_46;
@@ -334,7 +329,6 @@ private:
         io_config.lcd_param_bits = 8;
         ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi(SPI3_HOST, &io_config, &panel_io));
 
-        // 初始化液晶屏驱动芯片ST7789
         ESP_LOGD(TAG, "Install LCD driver");
         esp_lcd_panel_dev_config_t panel_config = {};
         panel_config.reset_gpio_num = GPIO_NUM_NC;
@@ -357,7 +351,7 @@ private:
             .pin_pwdn = CAMERA_PIN_PWDN,
             .pin_reset = CAMERA_PIN_RESET,
             .pin_xclk = CAMERA_PIN_XCLK,
-            .pin_sccb_sda = -1, // Use initialized I2C
+            .pin_sccb_sda = -1, 
             .pin_sccb_scl = -1,
             .pin_d7 = CAMERA_PIN_D7,
             .pin_d6 = CAMERA_PIN_D6,
@@ -399,8 +393,8 @@ public:
         InitializeTca9554();
         InitializeCamera();
         InitializeSpi();
-        InitializeButtons();  // 先初始化按钮（创建ADC1句柄）
-        InitializePowerManager();  // 后初始化PowerManager（复用ADC1句柄）
+        InitializeButtons();  
+        InitializePowerManager();  
         #ifdef LCD_TYPE_ILI9341_SERIAL
         InitializeIli9341Display(); 
         #else

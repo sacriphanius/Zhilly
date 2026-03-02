@@ -2,7 +2,7 @@
 #include "codecs/es8311_audio_codec.h"
 #include "application.h"
 #include "display/lcd_display.h"
-// #include "display/no_display.h"
+
 #include "button.h"
 
 #include "esp_video.h"
@@ -33,7 +33,7 @@ protected:
     i2c_master_bus_handle_t i2c_handle_;
 
     virtual void SetBrightnessImpl(uint8_t brightness) override {
-        uint8_t i2c_address = 0x45;     // 7-bit address
+        uint8_t i2c_address = 0x45;     
         uint8_t reg = 0x96;
         uint8_t data[2] = {reg, brightness};
 
@@ -57,7 +57,6 @@ protected:
             ESP_LOGI(TAG, "Backlight brightness set to %u", brightness);
         }
 
-        // i2c_master_bus_rm_device(dev_handle);
     }
 };
 
@@ -70,7 +69,7 @@ private:
     CustomBacklight *backlight_;
 
     void InitializeCodecI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = I2C_NUM_1,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
@@ -88,7 +87,7 @@ private:
 
     static esp_err_t bsp_enable_dsi_phy_power(void) {
 #if MIPI_DSI_PHY_PWR_LDO_CHAN > 0
-        // Turn on the power for MIPI DSI PHY, so it can go from "No Power" state to "Shutdown" state
+
         static esp_ldo_channel_handle_t phy_pwr_chan = NULL;
         esp_ldo_channel_config_t ldo_cfg = {
             .chan_id = MIPI_DSI_PHY_PWR_LDO_CHAN,
@@ -96,7 +95,7 @@ private:
         };
         esp_ldo_acquire_channel(&ldo_cfg, &phy_pwr_chan);
         ESP_LOGI(TAG, "MIPI DSI PHY Powered on");
-#endif // BSP_MIPI_DSI_PHY_PWR_LDO_CHAN > 0
+#endif 
 
         return ESP_OK;
     }
@@ -132,7 +131,7 @@ private:
         esp_lcd_new_dsi_bus(&bus_config, &mipi_dsi_bus);
 
         ESP_LOGI(TAG, "Install MIPI DSI LCD control panel");
-        // we use DBI interface to send LCD commands and parameters
+
         esp_lcd_dbi_io_config_t dbi_config = JD9365_PANEL_IO_DBI_CONFIG();
         esp_lcd_new_panel_io_dbi(mipi_dsi_bus, &dbi_config, &io);
 
@@ -232,7 +231,7 @@ private:
     void InitializeButtons() {
         boot_button_.OnClick([this]() {
             auto& app = Application::GetInstance();
-            // During startup (before connected), pressing BOOT button enters Wi-Fi config mode without reboot
+
             if (app.GetDeviceState() == kDeviceStateStarting) {
                 EnterWifiConfigMode();
                 return;

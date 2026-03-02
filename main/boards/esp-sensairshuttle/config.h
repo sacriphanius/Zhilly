@@ -37,4 +37,4 @@
 #define DISPLAY_BACKLIGHT_OUTPUT_INVERT false
 #define DISPLAY_SPI_MODE        0
 
-#endif // _BOARD_CONFIG_H_
+#endif 

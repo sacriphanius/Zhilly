@@ -13,4 +13,4 @@ public:
     virtual ~DummyAudioCodec();
 };
 
-#endif // _DUMMY_AUDIO_CODEC_H
+#endif 

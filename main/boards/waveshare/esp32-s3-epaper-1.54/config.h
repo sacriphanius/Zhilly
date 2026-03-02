@@ -20,7 +20,6 @@
 #define BOOT_BUTTON_GPIO        GPIO_NUM_0
 #define VBAT_PWR_GPIO           GPIO_NUM_18
 
-/*EPD port Init*/
 #define EPD_SPI_NUM        SPI3_HOST
 
 #define EPD_DC_PIN    GPIO_NUM_10
@@ -33,11 +32,10 @@
 #define EXAMPLE_LCD_WIDTH   200
 #define EXAMPLE_LCD_HEIGHT  200
 
-/*DEV POWER init*/
 #define EPD_PWR_PIN     GPIO_NUM_6
 #define Audio_PWR_PIN   GPIO_NUM_42
 #define VBAT_PWR_PIN    GPIO_NUM_17
- 
+
 #define DISPLAY_MIRROR_X false
 #define DISPLAY_MIRROR_Y false
 #define DISPLAY_SWAP_XY  false
@@ -45,6 +43,4 @@
 #define DISPLAY_OFFSET_X  0
 #define DISPLAY_OFFSET_Y  0
 
-
-
-#endif // _BOARD_CONFIG_H_
+#endif 

@@ -1,6 +1,4 @@
-/*
-    EdaRobot机器人控制器 - MCP协议版本
-*/
+
 
 #include <cJSON.h>
 #include <esp_log.h>
@@ -144,7 +142,7 @@ private:
     }
 
     void QueueAction(int action_type, int steps, int speed, int direction, int amount) {
-        // 检查手部动作
+
         if ((action_type >= ACTION_HANDS_UP && action_type <= ACTION_HAND_WAVE) && !has_hands_) {
             ESP_LOGW(TAG, "尝试执行手部动作，但机器人没有配置手部舵机");
             return;
@@ -186,7 +184,7 @@ public:
 
         action_queue_ = xQueueCreate(10, sizeof(EdaRobotActionParams));
 
-        QueueAction(ACTION_HOME, 1, 1000, 1, 0);  // direction=1表示复位手部
+        QueueAction(ACTION_HOME, 1, 1000, 1, 0);  
 
         RegisterMcpTools();
     }
@@ -196,7 +194,6 @@ public:
 
         ESP_LOGI(TAG, "开始注册MCP工具...");
 
-        // 基础移动动作
         mcp_server.AddTool("self.edarobot.walk_forward",
                            "行走。steps: 行走步数(1-100); speed: 行走速度(500-1500，数值越小越快); "
                            "direction: 行走方向(-1=后退, 1=前进); arm_swing: 手臂摆动幅度(0-170度)",
@@ -240,7 +237,6 @@ public:
                                return true;
                            });
 
-        // 特殊动作
         mcp_server.AddTool("self.edarobot.swing",
                            "左右摇摆。steps: 摇摆次数(1-100); speed: "
                            "摇摆速度(500-1500，数值越小越快); amount: 摇摆幅度(0-170度)",
@@ -313,7 +309,6 @@ public:
                                return true;
                            });
 
-        // 手部动作（仅在有手部舵机时可用）
         if (has_hands_) {
             mcp_server.AddTool(
                 "self.edarobot.hands_up",
@@ -355,7 +350,6 @@ public:
                 });
         }
 
-        // 系统工具
         mcp_server.AddTool("self.edarobot.stop", "立即停止", PropertyList(),
                            [this](const PropertyList& properties) -> ReturnValue {
                                if (action_task_handle_ != nullptr) {
@@ -382,7 +376,6 @@ public:
 
                 ESP_LOGI(TAG, "设置舵机微调: %s = %d度", servo_type.c_str(), trim_value);
 
-                // 获取当前所有微调值
                 Settings settings("edarobot_trims", true);
                 int left_leg = settings.GetInt("left_leg", 0);
                 int right_leg = settings.GetInt("right_leg", 0);
@@ -391,7 +384,6 @@ public:
                 int left_hand = settings.GetInt("left_hand", 0);
                 int right_hand = settings.GetInt("right_hand", 0);
 
-                // 更新指定舵机的微调值
                 if (servo_type == "left_leg") {
                     left_leg = trim_value;
                     settings.SetInt("left_leg", left_leg);
