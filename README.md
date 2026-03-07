@@ -137,13 +137,6 @@ Siber güvenlik dünyası paylaştıkça büyür. Yeni modüller, tasarım fikir
 <div align="center">
   <h2 style="color: red; animation: blinker 1.5s linear infinite;">
     ⚠️ EDUCATIONAL PURPOSE ONLY ⚠️
-  </h2>
-  <style>
-    @keyframes blinker {
-      50% { opacity: 0; }
-    }
-  </style>
-  <p style="color: #ffcccc;">
     This tool is designed strictly for educational and ethical cybersecurity research. The creator assumes no responsibility for any unauthorized use.  
     <br>
     <i>Bu araç sadece eğitim ve etik siber güvenlik araştırmaları amacıyla tasarlanmıştır. Geliştirici, yetkisiz kullanımlardan ötürü hiçbir sorumluluk kabul etmez.</i>
