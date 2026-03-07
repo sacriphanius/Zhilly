@@ -1,10 +1,8 @@
 #ifndef BAD_USB_LIB_H
 #define BAD_USB_LIB_H
-
 #include <stdint.h>
 #include <cstddef>
 #include "keys.h"
-
 class HIDInterface {
 public:
     virtual void begin(const uint8_t* layout) {};

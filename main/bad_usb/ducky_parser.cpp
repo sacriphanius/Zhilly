@@ -5,14 +5,9 @@
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-
 static const char* TAG = "DuckyParser";
-
-// We redefine duckyCmds and duckyComb here for the parser
 extern const DuckyCommand duckyCmds[];
 extern const DuckyCombination duckyComb[];
-
-// Same arrays from ducky_typer.cpp, stripped of UI commands
 const DuckyCombination duckyComb_local[]{
     {"CTRL-ALT", KEY_LEFT_CTRL, KEY_LEFT_ALT, 0},
     {"CTRL-SHIFT", KEY_LEFT_CTRL, KEY_LEFT_SHIFT, 0},
@@ -27,10 +22,9 @@ const DuckyCombination duckyComb_local[]{
     {"ALT-SHIFT-GUI", KEY_LEFT_ALT, KEY_LEFT_SHIFT, KEY_LEFT_GUI},
     {"CTRL-SHIFT-GUI", KEY_LEFT_CTRL, KEY_LEFT_SHIFT, KEY_LEFT_GUI},
     {"SYSREQ", KEY_LEFT_ALT, KEY_PRINT_SCREEN, 0}};
-
 const DuckyCommand duckyCmds_local[]{
     {"REM", 0, DuckyCommandType_Comment},
-    {"//", 0, DuckyCommandType_Comment},
+    {"
     {"STRING", 0, DuckyCommandType_Print},
     {"STRINGLN", 0, DuckyCommandType_Print},
     {"DELAY", 0, DuckyCommandType_Delay},
@@ -52,7 +46,6 @@ const DuckyCommand duckyCmds_local[]{
     {"ALT-SHIFT-GUI", 0, DuckyCommandType_Combination},
     {"CTRL-SHIFT-GUI", 0, DuckyCommandType_Combination},
     {"SYSREQ", 0, DuckyCommandType_Combination},
-    // Standard keys
     {"BACKSPACE", KEYBACKSPACE, DuckyCommandType_Cmd},
     {"DELETE", KEY_DELETE, DuckyCommandType_Cmd},
     {"ALT", KEY_LEFT_ALT, DuckyCommandType_Cmd},
@@ -88,26 +81,20 @@ const DuckyCommand duckyCmds_local[]{
     {"APP", KEY_MENU, DuckyCommandType_Cmd},
     {"SPACE", KEY_SPACE, DuckyCommandType_Cmd},
 };
-
 DuckyParser::DuckyParser(HIDInterface* hid_interface)
     : hid(hid_interface),
       is_running(false),
       should_stop(false),
       default_delay(100),
       string_delay(0) {}
-
 DuckyParser::~DuckyParser() {}
-
 void DuckyParser::stop() { should_stop = true; }
-
 void DuckyParser::runScript(const std::string& script) {
     is_running = true;
     should_stop = false;
-
     std::string_view sv(script);
     size_t start = 0;
     size_t end = sv.find('\n');
-
     while (end != std::string_view::npos) {
         if (should_stop)
             break;
@@ -116,23 +103,18 @@ void DuckyParser::runScript(const std::string& script) {
         start = end + 1;
         end = sv.find('\n', start);
     }
-
-    // Process the last line if there is no trailing newline
     if (!should_stop && start < sv.length()) {
         std::string line(sv.substr(start));
         parseLine(line);
     }
-
     hid->releaseAll();
     is_running = false;
 }
-
 void DuckyParser::typeText(const std::string& text) {
     if (!hid->isConnected())
         return;
     is_running = true;
     should_stop = false;
-
     for (char c : text) {
         if (should_stop)
             break;
@@ -140,11 +122,9 @@ void DuckyParser::typeText(const std::string& text) {
         if (string_delay > 0)
             vTaskDelay(pdMS_TO_TICKS(string_delay));
     }
-
     hid->releaseAll();
     is_running = false;
 }
-
 const DuckyCommand* DuckyParser::findDuckyCommand(const char* cmd) {
     for (const auto& cmds : duckyCmds_local) {
         if (strcasecmp(cmd, cmds.command) == 0)
@@ -152,7 +132,6 @@ const DuckyCommand* DuckyParser::findDuckyCommand(const char* cmd) {
     }
     return nullptr;
 }
-
 const DuckyCombination* DuckyParser::findDuckyCombination(const char* cmd) {
     for (const auto& comb : duckyComb_local) {
         if (strcasecmp(cmd, comb.command) == 0)
@@ -160,36 +139,28 @@ const DuckyCombination* DuckyParser::findDuckyCombination(const char* cmd) {
     }
     return nullptr;
 }
-
 void DuckyParser::parseLine(const std::string& line) {
     if (line.empty() || line[0] == '\r' || line[0] == '\n')
         return;
-
     size_t space_idx = line.find(' ');
     std::string cmd_str = (space_idx != std::string::npos) ? line.substr(0, space_idx) : line;
     std::string args_str = (space_idx != std::string::npos && space_idx + 1 < line.length())
                                ? line.substr(space_idx + 1)
                                : "";
-
-    // Trim carriage returns from args
     if (!args_str.empty() && args_str.back() == '\r') {
         args_str.pop_back();
     }
     if (!cmd_str.empty() && cmd_str.back() == '\r') {
         cmd_str.pop_back();
     }
-
     executeCommand(cmd_str, args_str);
-
     if (default_delay > 0 && !should_stop) {
         vTaskDelay(pdMS_TO_TICKS(default_delay));
     }
 }
-
 void DuckyParser::executeCommand(const std::string& cmd, const std::string& args) {
     if (!hid->isConnected())
         return;
-
     const DuckyCommand* dcmd = findDuckyCommand(cmd.c_str());
     if (dcmd) {
         switch (dcmd->type) {
@@ -205,13 +176,10 @@ void DuckyParser::executeCommand(const std::string& cmd, const std::string& args
                              ? std::stoi(args)
                              : default_delay;
                     if (ms > 0 && args.empty())
-                        default_delay = ms;  // They set default delay if they gave args
+                        default_delay = ms;  
                 }
-
                 if (args.empty() && ms == 0)
-                    break;  // Should not happen
-
-                // Allow interruption during long delays
+                    break;  
                 const int chunk_ms = 50;
                 int remaining = ms;
                 while (remaining > 0 && !should_stop) {
@@ -229,7 +197,6 @@ void DuckyParser::executeCommand(const std::string& cmd, const std::string& args
                 break;
             case DuckyCommandType_Cmd:
                 if (!args.empty()) {
-                    // Cmd + char, e.g GUI r
                     hid->press(dcmd->key);
                     hid->press(args[0]);
                     hid->releaseAll();
@@ -244,7 +211,6 @@ void DuckyParser::executeCommand(const std::string& cmd, const std::string& args
                     hid->press(comb->key2);
                     if (comb->key3 != 0)
                         hid->press(comb->key3);
-
                     if (!args.empty()) {
                         hid->press(args[0]);
                     }
@@ -256,8 +222,6 @@ void DuckyParser::executeCommand(const std::string& cmd, const std::string& args
                 break;
         }
     } else {
-        // If it's a single character or unknown, you might want to try to just press it.
-        // For standard duckyscript, unknown commands should probably be ignored.
         ESP_LOGI(TAG, "Unknown Command: %s", cmd.c_str());
     }
 }
