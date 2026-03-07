@@ -2,7 +2,7 @@
   <img src="https://raw.githubusercontent.com/78/xiaozhi-esp32/main/docs/assets/logo.png" alt="AI Pentester Assistant" width="150"/>
 </p>
 
-<h1 align="center" style="color: #FF5722;">🛡️ T-Embed AI Pentester Assistant</h1>
+<h1 align="center" style="color: #FF5722;">🛡️ Zhilly AI Pentester Assistant</h1>
 <p align="center">
 <b>AI-Powered, Portable Cyber Security & Cyber Interaction Tool</b><br>
 <b>Yapay Zeka Destekli, Taşınabilir Siber Güvenlik ve Siber Etkileşim Aracı</b>
@@ -40,9 +40,9 @@ Complete control over Sub-GHz and Infrared spectrums:
 *   **RAW Capture:** Capture Sub-GHz signals with microsecond precision.
 *   **SD Card Storage:** Save captured signals to the SD card for later use.
 
-### ⌨️ Bad USB & HID
+### ⌨️ Bad USB & HID (AI-Powered Voice Commands Only)
 *   **Keyboard Emulation:** Your assistant can act as a standard USB keyboard when connected to a computer.
-*   **DuckyScript Support:** Run automated keystroke scripts stored on the SD card directly via voice commands.
+*   **Voice-Driven Support:** Run automated keystroke scripts (DuckyScript) stored on the SD card **exclusively via AI voice commands**. No manual interface is provided, ensuring a hands-free pentesting experience.
     *   *Voice Command:* "Run BadUSB script 'hello_world.txt'" or "Type this: 'I am your AI assistant'".
 *   **HID Tools:** Fully integrated via `usb.bad_usb_run`, `usb.bad_usb_type`, and `usb.bad_usb_stop` tools.
 
@@ -74,7 +74,7 @@ esptool.py -p /dev/ttyACM0 -b 460800 write_flash 0x0 flash_binaries/xiaozhi.bin 
 <h2 id="turkish" style="color: #fff; background-color: #333; padding: 10px; border-radius: 5px;">🇹🇷 Türkçe / Turkish Version</h2>
 
 ## 📖 Proje Hakkında
-Bu proje, açık kaynaklı [**Xiaozhi-esp32 (小智)**](https://github.com/78/xiaozhi-esp32) altyapısını kullanan ve **LilyGO T-Embed CC1101** donanımı için optimize edilmiş, gelişmiş bir **Yapay Zeka Pentester Asistanıdır**. Doğal dil etkileşimini fiziksel donanım test araçlarıyla birleştirerek siber güvenlik araştırmalarınızda size akıllı bir yol arkadaşı olur.
+Bu proje, açık kaynaklı [**Xiaozhi-esp32 (小智)**](https://github.com/78/xiaozhi-esp32) altyapısını kullanan ve **LilyGO T-Embed CC1101** donanımı için optimize edilmiş, gelişmiş bir **Zhilly AI Pentester Asistanıdır**. Doğal dil etkileşimini fiziksel donanım test araçlarıyla birleştirerek siber güvenlik araştırmalarınızda size akıllı bir yol arkadaşı olur.
 
 ## 🚀 Öne Çıkan Özellikler
 
@@ -97,9 +97,9 @@ Sub-GHz ve Kızılötesi frekansları üzerinde tam kontrol:
 *   **RAW Capture:** RF sinyallerini mikro saniye hassasiyetiyle yakalayın.
 *   **SD Kart Kaydı:** Yakalanan sinyalleri daha sonra kullanmak üzere SD karta kaydedin.
 
-### ⌨️ Bad USB & HID
+### ⌨️ Bad USB & HID (Sadece AI Destekli Sesli Komutlar)
 *   **Klavye Simülasyonu:** Asistanınız bilgisayara bağlandığında kendini standart bir USB klavye olarak tanıtır.
-*   **DuckyScript Desteği:** SD kartta saklanan DuckyScript betiklerini sesli komutlarla otomatik olarak çalıştırın.
+*   **Ses Komutu Odaklı:** SD kartta saklanan DuckyScript betiklerini **sadece ve sadece yapay zeka sesli komutlarıyla** otomatik olarak çalıştırın. Manuel bir arayüz yoktur, tamamen sesle kontrol edilir.
     *   *Sesli Komut:* "BadUSB betiği 'selam.txt' çalıştır" veya "Şunu yaz: 'Ben senin yapay zeka asistanınım'".
 *   **HID Araçları:** `usb.bad_usb_run`, `usb.bad_usb_type` ve `usb.bad_usb_stop` araçları ile tam uyumlu çalışır.
 
