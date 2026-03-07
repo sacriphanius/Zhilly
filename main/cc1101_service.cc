@@ -8,6 +8,7 @@
 #include <sstream>
 #include <string>
 #include "boards/t-embed/config.h"
+#include "driver/rmt_tx.h"
 #include "esp_log.h"
 #include "esp_timer.h"
 #include "freertos/FreeRTOS.h"
@@ -19,7 +20,6 @@
 #define SDCARD_MOUNT_POINT "/sdcard"
 #endif
 
- 
 static const Cc1101RegisterSetting bruce_ook_433[] = {
     {0x0B, 0x06}, {0x0C, 0x00}, {0x10, 0xC8}, {0x11, 0x93}, {0x12, 0x30}, {0x13, 0x22},
     {0x14, 0xF8}, {0x15, 0x34}, {0x17, 0x30}, {0x18, 0x18}, {0x19, 0x16}, {0x1A, 0x6C},
@@ -37,20 +37,20 @@ static const Cc1101RegisterSetting bruce_ook_433[] = {
 #define CC1101_PKTCTRL0 0x08
 #define CC1101_RSSI 0x34
 
- 
- 
- 
 Cc1101Service::Cc1101Service() {}
 
 Cc1101Service::~Cc1101Service() {
+    if (rmt_encoder_) {
+        rmt_del_encoder(rmt_encoder_);
+    }
+    if (rmt_tx_channel_) {
+        rmt_del_channel(rmt_tx_channel_);
+    }
     if (spi_handle_) {
         spi_bus_remove_device(spi_handle_);
     }
 }
 
- 
- 
- 
 void Cc1101Service::CommandStrobe(uint8_t cmd) {
     if (!spi_handle_)
         return;
@@ -92,9 +92,6 @@ uint8_t Cc1101Service::ReadReg(uint8_t addr) {
     return t.rx_data[1];
 }
 
- 
- 
- 
 void Cc1101Service::Reset() {
     gpio_set_level(LORA_CS_PIN, 1);
     vTaskDelay(pdMS_TO_TICKS(1));
@@ -110,9 +107,6 @@ void Cc1101Service::Reset() {
     gpio_set_level(LORA_CS_PIN, 1);
 }
 
- 
- 
- 
 bool Cc1101Service::Deinit() {
     if (!initialized_)
         return true;
@@ -131,9 +125,6 @@ bool Cc1101Service::Deinit() {
     return true;
 }
 
- 
- 
- 
 bool Cc1101Service::Init() {
     if (initialized_)
         return true;
@@ -161,26 +152,23 @@ bool Cc1101Service::Init() {
     WriteReg(0x1D, 0x91);
     WriteReg(0x1E, 0x87);
     WriteReg(0x0B, 0x06);
-    WriteReg(CC1101_PKTCTRL0, 0x30);   
+    WriteReg(CC1101_PKTCTRL0, 0x30);
 
     SetRfSettings();
 
     uint8_t version = ReadReg(CC1101_VERSION | 0xC0);
     ESP_LOGI(TAG, "CC1101 version: 0x%02X", version);
     if (version == 0x00 || version == 0xFF) {
-        ESP_LOGE(TAG, "CC1101 SPI hatasi! Versiyon: 0x%02X", version);
+        ESP_LOGE(TAG, "CC1101 SPI error! Version: 0x%02X", version);
     }
 
     initialized_ = true;
-    ESP_LOGI(TAG, "CC1101 hazir. SD kart hazir olunca load_presets cagirin.");
+    ESP_LOGI(TAG, "CC1101 ready. Call load_presets when SD card is ready.");
     return true;
 }
 
 void Cc1101Service::SetRfSettings() { SetFrequency(433.92f); }
 
- 
- 
- 
 bool Cc1101Service::SetFrequency(float mhz) {
     if (!initialized_)
         return false;
@@ -202,7 +190,7 @@ bool Cc1101Service::SetFrequency(float mhz) {
     WriteReg(0x0E, (freq >> 8) & 0xFF);
     WriteReg(0x0F, freq & 0xFF);
     current_frequency_mhz_ = mhz;
-    ESP_LOGI(TAG, "Frekans: %.2f MHz", mhz);
+    ESP_LOGI(TAG, "Frequency: %.2f MHz", mhz);
     return true;
 }
 
@@ -231,9 +219,6 @@ bool Cc1101Service::SetModulation(const std::string& type) {
     return true;
 }
 
- 
- 
- 
 float Cc1101Service::ReadRssi() {
     if (!initialized_)
         return -100.0f;
@@ -254,9 +239,6 @@ float Cc1101Service::ReadRssi() {
     return rssi_dbm;
 }
 
- 
- 
- 
 bool Cc1101Service::GetStatus() { return initialized_; }
 
 uint8_t Cc1101Service::GetChipVersion() { return ReadReg(CC1101_VERSION | 0xC0); }
@@ -269,13 +251,10 @@ void Cc1101Service::DumpRegisters() {
     ESP_LOGI(TAG, "----------------------------");
 }
 
- 
- 
- 
 bool Cc1101Service::LoadPresets(const std::string& path) {
     FILE* f = fopen(path.c_str(), "r");
     if (!f) {
-        ESP_LOGE(TAG, "Preset dosyasi acilamadi: %s", path.c_str());
+        ESP_LOGE(TAG, "Failed to open preset file: %s", path.c_str());
         return false;
     }
 
@@ -295,7 +274,7 @@ bool Cc1101Service::LoadPresets(const std::string& path) {
     cJSON* root = cJSON_Parse(buffer);
     free(buffer);
     if (!root) {
-        ESP_LOGE(TAG, "JSON parse hatasi: %s", path.c_str());
+        ESP_LOGE(TAG, "JSON parse error: %s", path.c_str());
         return false;
     }
 
@@ -353,16 +332,13 @@ bool Cc1101Service::ApplyPreset(const std::string& preset_name) {
     return true;
 }
 
- 
- 
- 
 std::string Cc1101Service::ListSdFiles() const {
     DIR* dir = opendir(SDCARD_MOUNT_POINT);
     if (!dir) {
-        return "Hata: /sdcard acilamadi. SD kart takili mi?";
+        return "Error: failed to open /sdcard. Is SD card inserted?";
     }
 
-    std::string result = "SD Kart dosyalari (/sdcard):\n";
+    std::string result = "SD Card files (/sdcard):\n";
     struct dirent* entry;
     int count = 0;
     while ((entry = readdir(dir)) != NULL) {
@@ -373,7 +349,7 @@ std::string Cc1101Service::ListSdFiles() const {
         std::string lower = name;
         std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
 
-        std::string label = "[dosya]";
+        std::string label = "[file]";
         if (entry->d_type == DT_DIR)
             label = "[klasor]";
         else if (lower.rfind(".sub") != lower.npos)
@@ -391,30 +367,26 @@ std::string Cc1101Service::ListSdFiles() const {
     closedir(dir);
 
     if (count == 0)
-        return "SD kartta hic dosya bulunamadi.";
-    result += "Toplam: " + std::to_string(count) + " dosya.";
+        return "No files found on SD card.";
+    result += "Total: " + std::to_string(count) + " files.";
     return result;
 }
 
- 
- 
- 
 void Cc1101Service::_SetReplaying(bool state) { is_replaying_ = state; }
 
 bool Cc1101Service::ReplaySubFile(const std::string& filename) {
     if (is_replaying_ || is_jamming_)
         return false;
 
-     
-     
-    if (initialized_)
-        Deinit();
+    if (!initialized_) {
+        if (!Init()) {
+            return false;
+        }
+    }
 
-     
     std::string directory = SDCARD_MOUNT_POINT;
     std::string name_only = filename;
 
-     
     size_t last_slash = filename.find_last_of('/');
     if (last_slash != std::string::npos) {
         directory = filename.substr(0, last_slash);
@@ -423,7 +395,7 @@ bool Cc1101Service::ReplaySubFile(const std::string& filename) {
 
     std::string resolved_path = FindFileCaseInsensitive(directory, name_only);
     if (resolved_path.empty()) {
-        ESP_LOGE(TAG, "Dosya bulunamadi (case-insensitive): %s/%s", directory.c_str(),
+        ESP_LOGE(TAG, "File not found (case-insensitive): %s/%s", directory.c_str(),
                  name_only.c_str());
         return false;
     }
@@ -433,15 +405,13 @@ bool Cc1101Service::ReplaySubFile(const std::string& filename) {
         return false;
     }
 
-     
     replay_buffer_.clear();
-    replay_buffer_.reserve(8192);   
+    replay_buffer_.reserve(8192);
     char line[1024];
     bool use_fsk = false;
     bool in_raw = false;
     int read_count = 0;
 
-     
     while (fgets(line, sizeof(line), f)) {
         size_t len = strlen(line);
         while (len > 0 && (line[len - 1] == '\r' || line[len - 1] == '\n'))
@@ -450,7 +420,6 @@ bool Cc1101Service::ReplaySubFile(const std::string& filename) {
         if (strstr(line, "Frequency:")) {
             uint32_t freq_hz = 0;
             if (sscanf(line, "Frequency: %lu", &freq_hz) == 1) {
-                 
                 current_frequency_mhz_ = (float)freq_hz / 1000000.0f;
             }
         } else if (strstr(line, "Preset:")) {
@@ -485,51 +454,132 @@ bool Cc1101Service::ReplaySubFile(const std::string& filename) {
     }
 
     fclose(f);
-    ESP_LOGI(TAG, "SD tamamlandi. Veri: %d", replay_buffer_.size());
+    ESP_LOGI(TAG, "SD reading complete. Data size: %d", replay_buffer_.size());
 
     if (replay_buffer_.empty()) {
-        ESP_LOGE(TAG, "RAW_Data bos!");
+        ESP_LOGE(TAG, "RAW_Data is empty!");
         return false;
     }
 
     current_sub_path_ = resolved_path;
     current_modulation_ = use_fsk ? "FM (FSK)" : "AM (ASK)";
 
-     
-    if (!Init()) {
-        ESP_LOGE(TAG, "CC1101 baslatma hatasi!");
-        return false;
-    }
+    SetModulation(current_modulation_);
+    SetFrequency(current_frequency_mhz_);
 
     is_replaying_ = true;
+
     xTaskCreatePinnedToCore(
         [](void* arg) {
             Cc1101Service* svc = static_cast<Cc1101Service*>(arg);
             const std::vector<int32_t>& buf = svc->_GetRawBuffer();
-            ESP_LOGI("Cc1101", "Replay basladi. Ornek: %d", buf.size());
+            ESP_LOGI("Cc1101", "Replay started. Samples: %d", buf.size());
 
-             
-             
-            gpio_set_level(LORA_GDO0_PIN, 0);
-            gpio_set_direction((gpio_num_t)LORA_GDO0_PIN, GPIO_MODE_OUTPUT);
-            svc->_CommandStrobe(CC1101_STX);   
+            rmt_tx_channel_config_t tx_chan_config = {.gpio_num = (gpio_num_t)LORA_GDO0_PIN,
+                                                      .clk_src = RMT_CLK_SRC_DEFAULT,
+                                                      .resolution_hz = 1000000,  
+                                                      .mem_block_symbols = 64,
+                                                      .trans_queue_depth = 4,
+                                                      .flags = {.invert_out = false,
+                                                                .with_dma = false,
+                                                                .io_loop_back = false,
+                                                                .io_od_mode = false}};
 
-            for (int32_t val : buf) {
-                if (!svc->IsReplaying())
-                    break;
-                int32_t duration = (val > 0) ? val : -val;
-                gpio_set_level(LORA_GDO0_PIN, (val > 0) ? 1 : 0);
-                esp_rom_delay_us(duration);
+            rmt_channel_handle_t rmt_tx_channel = nullptr;
+            if (rmt_new_tx_channel(&tx_chan_config, &rmt_tx_channel) != ESP_OK) {
+                ESP_LOGE("Cc1101", "Failed to create RMT TX channel.");
+                svc->_SetReplaying(false);
+                vTaskDelete(NULL);
+                return;
             }
 
-            gpio_set_level(LORA_GDO0_PIN, 0);
+            rmt_copy_encoder_config_t copy_encoder_config = {};
+            rmt_encoder_handle_t rmt_encoder = nullptr;
+            if (rmt_new_copy_encoder(&copy_encoder_config, &rmt_encoder) != ESP_OK) {
+                ESP_LOGE("Cc1101", "Failed to create RMT Encoder.");
+                rmt_del_channel(rmt_tx_channel);
+                svc->_SetReplaying(false);
+                vTaskDelete(NULL);
+                return;
+            }
+
+            if (rmt_enable(rmt_tx_channel) != ESP_OK) {
+                ESP_LOGE("Cc1101", "RMT Enable error.");
+                rmt_del_encoder(rmt_encoder);
+                rmt_del_channel(rmt_tx_channel);
+                svc->_SetReplaying(false);
+                vTaskDelete(NULL);
+                return;
+            }
+
+            svc->_CommandStrobe(CC1101_STX);
+            vTaskDelay(pdMS_TO_TICKS(5));
+
+            std::vector<rmt_symbol_word_t> rmt_symbols;
+            rmt_symbols.reserve(buf.size() / 2 + 1);
+
+            rmt_symbol_word_t current_symbol;
+            bool high_part_filled = false;
+
+            for (size_t i = 0; i < buf.size(); i++) {
+                int32_t val = buf[i];
+                uint32_t duration = (val > 0) ? (uint32_t)val : (uint32_t)(-val);
+
+                if (duration > 32767)
+                    duration = 32767;
+
+                if (val > 0) {
+                    current_symbol.duration1 = duration;
+                    current_symbol.level1 = 1;
+                    high_part_filled = true;
+                } else {
+                    current_symbol.duration0 = duration;
+                    current_symbol.level0 = 0;
+
+                    if (high_part_filled) {
+                        rmt_symbols.push_back(current_symbol);
+                        high_part_filled = false;
+                    } else {
+                        ESP_LOGW("Cc1101", "Unexpected Low without High in RAW sequence");
+
+                        current_symbol.duration1 = 1;
+                        current_symbol.level1 = 1;
+                        rmt_symbols.push_back(current_symbol);
+                    }
+                }
+            }
+
+            if (high_part_filled) {
+                current_symbol.duration0 = 1;
+                current_symbol.level0 = 0;
+                rmt_symbols.push_back(current_symbol);
+            }
+
+            rmt_transmit_config_t tx_config = {.loop_count = 0, .flags = {.eot_level = 0}};
+
+            if (rmt_symbols.size() > 0) {
+                if (rmt_transmit(rmt_tx_channel, rmt_encoder, rmt_symbols.data(),
+                                 rmt_symbols.size() * sizeof(rmt_symbol_word_t),
+                                 &tx_config) == ESP_OK) {
+                    rmt_tx_wait_all_done(rmt_tx_channel, -1);
+                } else {
+                    ESP_LOGE("Cc1101", "RMT transmit failed.");
+                }
+            }
+
             svc->_CommandStrobe(CC1101_SIDLE);
-            svc->Deinit();   
+
+            rmt_disable(rmt_tx_channel);
+            rmt_del_encoder(rmt_encoder);
+            rmt_del_channel(rmt_tx_channel);
+
+            gpio_set_direction((gpio_num_t)LORA_GDO0_PIN, GPIO_MODE_INPUT);
+
             svc->_SetReplaying(false);
-            ESP_LOGI("Cc1101", "Replay bitti, CC1101 kapandi.");
+            ESP_LOGI("Cc1101", "Replay finished, CC1101 closed.");
             vTaskDelete(NULL);
         },
-        "replay_gpio", 4096, this, 5, (TaskHandle_t*)&replay_task_handle_, 1);
+        "replay_rmt", 4096, this, 5, (TaskHandle_t*)&replay_task_handle_, 1);
 
     return true;
 }
@@ -538,32 +588,29 @@ bool Cc1101Service::StopReplay() {
     if (!is_replaying_)
         return false;
     is_replaying_ = false;
+
     if (initialized_) {
         CommandStrobe(CC1101_SIDLE);
-        gpio_set_level(LORA_GDO0_PIN, 0);
-        Deinit();   
     }
-    ESP_LOGI(TAG, "Replay durduruldu.");
+    ESP_LOGI(TAG, "Replay stopped.");
     return true;
 }
 
- 
- 
- 
 static void JammerTask(void* arg) {
     Cc1101Service* svc = static_cast<Cc1101Service*>(arg);
-    ESP_LOGI("Cc1101", "Jammer gorevi basladi.");
+    ESP_LOGI("Cc1101", "Jammer task started.");
 
-     
-    if (!svc->Init()) {
-        ESP_LOGE("Cc1101", "Jammer icin CC1101 baslatma hatasi!");
-        svc->StopJammer();   
-        vTaskDelete(NULL);
-        return;
+    if (!svc->GetStatus()) {
+        if (!svc->Init()) {
+            ESP_LOGE("Cc1101", "CC1101 init error for Jammer!");
+            svc->StopJammer();
+            vTaskDelete(NULL);
+            return;
+        }
     }
     gpio_set_direction(LORA_GDO0_PIN, GPIO_MODE_OUTPUT);
     gpio_set_level(LORA_GDO0_PIN, 0);
-    svc->_CommandStrobe(CC1101_STX);   
+    svc->_CommandStrobe(CC1101_STX);
 
     while (svc->IsJamming()) {
         for (uint32_t pw = 10; pw <= 500 && svc->IsJamming(); pw += 10) {
@@ -587,8 +634,7 @@ static void JammerTask(void* arg) {
 
     gpio_set_level(LORA_GDO0_PIN, 0);
     svc->_CommandStrobe(CC1101_SIDLE);
-    svc->Deinit();   
-    ESP_LOGI("Cc1101", "Jammer gorevi bitti, CC1101 kapandi.");
+    ESP_LOGI("Cc1101", "Jammer task finished, CC1101 closed.");
     vTaskDelete(NULL);
 }
 
@@ -604,8 +650,6 @@ bool Cc1101Service::StartJammer(uint32_t duration_ms) {
     if (is_replaying_)
         return false;
 
-     
-     
     is_jamming_ = true;
 
     xTaskCreatePinnedToCore(JammerTask, "jammer_task", 4096, this, 5,
@@ -621,7 +665,7 @@ bool Cc1101Service::StartJammer(uint32_t duration_ms) {
         esp_timer_start_once(timer, duration_ms * 1000ULL);
     }
 
-    ESP_LOGI(TAG, "Jammer baslatiliyor (%lu ms)", duration_ms);
+    ESP_LOGI(TAG, "Jammer starting (\%lu ms)", duration_ms);
     return true;
 }
 
@@ -631,7 +675,7 @@ bool Cc1101Service::StopJammer() {
     is_jamming_ = false;
     CommandStrobe(CC1101_SIDLE);
     gpio_set_level(LORA_GDO0_PIN, 0);
-    ESP_LOGI(TAG, "Jammer durduruldu");
+    ESP_LOGI(TAG, "Jammer stopped");
     return true;
 }
 
@@ -643,7 +687,7 @@ std::string Cc1101Service::FindFileCaseInsensitive(const std::string& directory,
 
     std::string search_name = filename;
     std::transform(search_name.begin(), search_name.end(), search_name.begin(), ::tolower);
-     
+
     if (search_name.find('.') == std::string::npos) {
         search_name += ".sub";
     }

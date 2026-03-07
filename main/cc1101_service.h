@@ -8,6 +8,7 @@
 #define CC1101_MDMCFG0 0x14
 
 #include <driver/gpio.h>
+#include <driver/rmt_tx.h>
 #include <driver/spi_master.h>
 #include <cstdint>
 #include <map>
@@ -40,14 +41,11 @@ public:
     uint8_t GetChipVersion();
     void DumpRegisters();
 
-     
     bool LoadPresets(const std::string& path);
     bool ApplyPreset(const std::string& preset_name);
 
-     
     std::string ListSdFiles() const;
 
-     
     bool ReplaySubFile(const std::string& filename);
     bool StopReplay();
     bool IsReplaying() const { return is_replaying_; }
@@ -59,13 +57,14 @@ public:
     const std::string& _GetCurrentModulation() const { return current_modulation_; }
     void _WriteRegPub(uint8_t a, uint8_t d) { WriteReg(a, d); }
 
-     
     bool StartJammer(uint32_t duration_ms);
     bool StopJammer();
     bool IsJamming() const { return is_jamming_; }
 
 private:
     spi_device_handle_t spi_handle_ = nullptr;
+    rmt_channel_handle_t rmt_tx_channel_ = nullptr;
+    rmt_encoder_handle_t rmt_encoder_ = nullptr;
     bool initialized_ = false;
     float current_frequency_mhz_ = 433.92f;
     std::string current_modulation_ = "ASK";

@@ -11,7 +11,7 @@ struct TvCode {
 
 namespace TvBGoneCodes {
 
-// --- European Codes ---
+
 static const uint16_t eu_code_eu000Code[] = {
     2640, 900, 430, 910, 430, 470, 430, 470, 1330, 1330, 430, 470, 430, 470, 430, 470, 430, 470, 430, 470, 430, 470, 430, 470, 430, 470, 430, 470, 430, 470, 430, 470, 880, 470, 430, 910, 430, 470, 430, 65535, 2640, 910, 430, 910, 430, 470, 430, 470, 1330, 1330, 430, 470, 430, 470, 430, 470, 430, 470, 430, 470, 430, 470, 430, 470, 430, 470, 430, 470, 430, 470, 430, 470, 880, 470, 430, 910, 430, 470, 430, 910
 };
@@ -504,7 +504,7 @@ static const TvCode TV_B_GONE_EU_CODES[] = {
 };
 static const size_t TV_B_GONE_EU_CODE_COUNT = sizeof(TV_B_GONE_EU_CODES) / sizeof(TV_B_GONE_EU_CODES[0]);
 
-// --- North American / Asian Codes ---
+
 static const uint16_t na_code_na000Code[] = {
     2400, 600, 1200, 600, 600, 600, 1200, 600, 600, 600, 1200, 600, 600, 600, 600, 600, 1200, 600, 600, 600, 600, 600, 600, 600, 600, 27000, 2400, 600, 1200, 600, 600, 600, 1200, 600, 600, 600, 1200, 600, 600, 600, 600, 600, 1200, 600, 600, 600, 600, 600, 600, 600, 600, 27000
 };
@@ -1049,4 +1049,4 @@ static const TvCode TV_B_GONE_US_CODES[] = {
 };
 static const size_t TV_B_GONE_US_CODE_COUNT = sizeof(TV_B_GONE_US_CODES) / sizeof(TV_B_GONE_US_CODES[0]);
 
-} // namespace TvBGoneCodes
+} 

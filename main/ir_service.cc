@@ -121,7 +121,7 @@ bool IrService::SendRaw(const std::vector<uint16_t>& durations, uint32_t freq_hz
     esp_err_t ret = rmt_transmit(tx_channel_, tx_encoder_, symbols.data(),
                                  symbols.size() * sizeof(rmt_symbol_word_t), &tx_config);
     if (ret != ESP_OK) {
-        ESP_LOGE(TAG, "RMT TX hatası: %s", esp_err_to_name(ret));
+        ESP_LOGE(TAG, "RMT TX error: %s", esp_err_to_name(ret));
         return false;
     }
 
@@ -234,7 +234,7 @@ std::vector<IrCode> IrService::ParseIrFile(const std::string& filepath) {
     std::vector<IrCode> codes;
     FILE* f = fopen(filepath.c_str(), "r");
     if (!f) {
-        ESP_LOGE(TAG, "Dosya açılamadı: %s", filepath.c_str());
+        ESP_LOGE(TAG, "Failed to open file: %s", filepath.c_str());
         return codes;
     }
 
@@ -324,7 +324,7 @@ bool IrService::ReplayFile(const std::string& filepath, const std::string& comma
 
     auto codes = ParseIrFile(filepath);
     if (codes.empty()) {
-        ESP_LOGE(TAG, "Dosyada IR kodu bulunamadı.");
+        ESP_LOGE(TAG, "No IR code found in file.");
         return false;
     }
 
@@ -469,7 +469,7 @@ static void IrJammerTask(void* arg) {
     }
 
     svc->_SetJamming(false);
-    ESP_LOGI("IrService", "IR Jammer durduruldu.");
+    ESP_LOGI("IrService", "IR Jammer stopped.");
     vTaskDelete(NULL);
 }
 

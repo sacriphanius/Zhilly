@@ -24,7 +24,6 @@ const DuckyCombination duckyComb_local[]{
     {"SYSREQ", KEY_LEFT_ALT, KEY_PRINT_SCREEN, 0}};
 const DuckyCommand duckyCmds_local[]{
     {"REM", 0, DuckyCommandType_Comment},
-    {"
     {"STRING", 0, DuckyCommandType_Print},
     {"STRINGLN", 0, DuckyCommandType_Print},
     {"DELAY", 0, DuckyCommandType_Delay},
@@ -176,10 +175,10 @@ void DuckyParser::executeCommand(const std::string& cmd, const std::string& args
                              ? std::stoi(args)
                              : default_delay;
                     if (ms > 0 && args.empty())
-                        default_delay = ms;  
+                        default_delay = ms;
                 }
                 if (args.empty() && ms == 0)
-                    break;  
+                    break;
                 const int chunk_ms = 50;
                 int remaining = ms;
                 while (remaining > 0 && !should_stop) {

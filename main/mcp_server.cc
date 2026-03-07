@@ -109,10 +109,10 @@ void McpServer::AddCommonTools() {
 
     auto& cc1101 = Application::GetInstance().GetCc1101Service();
 
-    AddTool("self.cc1101.get_info", "CC1101 modulu durumu ve tani bilgisi.", PropertyList(),
+    AddTool("self.cc1101.get_info", "CC1101 module status and diagnostics.", PropertyList(),
             [&cc1101](const PropertyList& properties) -> ReturnValue {
                 return std::string("CC1101 Durumu: ") +
-                       (cc1101.GetStatus() ? "Hazir" : "Baslatilmadi");
+                       (cc1101.GetStatus() ? "Ready" : "Not initialized");
             });
 
     AddTool("self.cc1101.set_frequency",
@@ -140,8 +140,8 @@ void McpServer::AddCommonTools() {
             });
 
     AddTool("self.cc1101.load_presets",
-            "SD karttan CC1101 preset JSON dosyasini yukle.\n"
-            "Parametre: path (varsayilan: /sdcard/cc1101_presets.json)",
+            "Load CC1101 preset JSON file from SD card.\n"
+            "Parameter: path (default: /sdcard/cc1101_presets.json)",
             PropertyList({Property("path", kPropertyTypeString,
                                    std::string("/sdcard/cc1101_presets.json"))}),
             [&cc1101](const PropertyList& properties) -> ReturnValue {
@@ -154,34 +154,34 @@ void McpServer::AddCommonTools() {
             });
 
     AddTool("self.cc1101.replay_sub_file",
-            "SD karttaki bir .sub dosyasini replay et (Replay Saldirisi).\n"
-            "Once self.sdcard.list_files ile dosya listesini gor.\n"
+            "Replay a .sub file from SD card (Replay Attack).\n"
+            "First see the file list using self.sdcard.list_files.\n"
             "Parametre: filename (ornek: 'garaj.sub' veya '/sdcard/garaj.sub')",
             PropertyList({Property("filename", kPropertyTypeString)}),
             [&cc1101](const PropertyList& properties) -> ReturnValue {
                 std::string name = properties["filename"].value<std::string>();
                 return cc1101.ReplaySubFile(name)
-                           ? std::string("Replay basladi: ") + name
-                           : std::string("Replay basarisiz. Dosya mevcut mu? ") + name;
+                           ? std::string("Replay started: ") + name
+                           : std::string("Replay failed. Does file exist? ") + name;
             });
 
-    AddTool("self.cc1101.stop_replay", "Devam eden replay islemini durdur.", PropertyList(),
+    AddTool("self.cc1101.stop_replay", "Stop ongoing replay process.", PropertyList(),
             [&cc1101](const PropertyList& properties) -> ReturnValue {
-                return cc1101.StopReplay() ? std::string("Replay durduruldu.")
+                return cc1101.StopReplay() ? std::string("Replay stopped.")
                                            : std::string("Replay zaten calismiyordu.");
             });
 
     AddTool("self.cc1101.start_jammer",
-            "RF Jammer baslat (mevcut frekansta gurultu yayini).\n"
+            "Start RF Jammer (noise broadcast on current frequency).\n"
             "Parametre: duration_ms (0=surekli, maks 600000)",
             PropertyList({Property("duration_ms", kPropertyTypeInteger, 0, 600000)}),
             [&cc1101](const PropertyList& properties) -> ReturnValue {
                 return cc1101.StartJammer(properties["duration_ms"].value<int>())
-                           ? std::string("RF Jammer basladi.")
-                           : std::string("Jammer baslanamadi.");
+                           ? std::string("RF Jammer started.")
+                           : std::string("Failed to start Jammer.");
             });
 
-    AddTool("self.cc1101.stop_jammer", "Aktif RF Jammer'i durdur.", PropertyList(),
+    AddTool("self.cc1101.stop_jammer", "Stop active RF Jammer.", PropertyList(),
             [&cc1101](const PropertyList& properties) -> ReturnValue {
                 return cc1101.StopJammer() ? std::string("RF Jammer durduruldu.")
                                            : std::string("Jammer zaten calismiyordu.");
@@ -191,10 +191,10 @@ void McpServer::AddCommonTools() {
 
     AddTool(
         "self.ir.replay_file",
-        "SD karttaki bir .ir dosyasindaki infrared komutunu gonder.\n"
+        "Send an infrared command from a .ir file on the SD card.\n"
         "Flipper Zero / Bruce uyumlu format desteklenir (NEC, RC5, RC6, Samsung32, SIRC, RAW).\n"
         "Ornekler: ir.replay_file({file: 'tv.ir', command: 'Power'})\n"
-        "  - file: .ir dosyasinin adi veya tam yolu (ornek: 'samsung_tv.ir' veya "
+        "  - file: Name or full path of .ir file (e.g. \'samsung_tv.ir\' or "
         "'/sdcard/ir/tv.ir')\n"
         "  - command: gondermek istediginiz komut adi. Bos birakilirsa ilk komut gonderilir.",
         PropertyList({Property("file", kPropertyTypeString),
@@ -208,31 +208,31 @@ void McpServer::AddCommonTools() {
             return ir.ReplayFile(file, cmd)
                        ? std::string("IR gonderildi: ") + file +
                              (cmd.empty() ? "" : " [" + cmd + "]")
-                       : std::string("IR gonderilemedi. Dosya mevcut mu? ") + file;
+                       : std::string("Failed to send IR. Does file exist? ") + file;
         });
 
     AddTool("self.ir.tv_b_gone",
             "TV-B-Gone: Tüm bilinen TV markalarinin guc kapama kodlarini sirayla gonderir.\n"
             "Etraftaki TV'leri, projektörleri ve ekranlari kapatmak icin kullanilir.\n"
-            "Durdurmak icin self.ir.stop_tv_b_gone cagrisi yapin.\n"
+            "Call self.ir.stop_tv_b_gone to stop it.\n"
             "Parametre: region ('eu' (Avrupa) veya 'us' (Amerika/Asya) olarak belirtilmelidir).",
             PropertyList({Property("region", kPropertyTypeString)}),
             [&ir](const PropertyList& properties) -> ReturnValue {
                 std::string region = properties["region"].value<std::string>();
-                return ir.StartTvBGone(region) ? std::string("TV-B-Gone basladi (Bölge: ") +
+                return ir.StartTvBGone(region) ? std::string("TV-B-Gone started (Region: ") +
                                                      region + "). Tum kodlar sirayla gonderiliyor."
-                                               : std::string("TV-B-Gone baslanamadi.");
+                                               : std::string("Failed to start TV-B-Gone.");
             });
 
-    AddTool("self.ir.stop_tv_b_gone", "Devam eden TV-B-Gone islemini durdur.", PropertyList(),
+    AddTool("self.ir.stop_tv_b_gone", "Stop ongoing TV-B-Gone operation.", PropertyList(),
             [&ir](const PropertyList& properties) -> ReturnValue {
                 ir.StopTvBGone();
-                return std::string("TV-B-Gone durduruldu.");
+                return std::string("TV-B-Gone stopped.");
             });
 
     AddTool(
         "self.ir.start_jammer",
-        "IR Jammer baslat: IR alicili cihazlarin uzaktan kumandayla kontrol edilmesini engeller.\n"
+        "Start IR Jammer: Prevents IR receiver devices from being controlled remotely.\n"
         "Modlar: 'basic' (38kHz sabit), 'sweep' (33-56kHz tarama), 'random' (rastgele)\n"
         "  - mode: 'basic' | 'sweep' | 'random' (varsayilan: 'sweep')\n"
         "  - duration_ms: calisma suresi ms (0 = surekli, maks 300000)",
@@ -251,14 +251,14 @@ void McpServer::AddCommonTools() {
             if (mode_str == "random")
                 mode = IrJamMode::RANDOM;
             return ir.StartJammer(mode, (uint32_t)dur)
-                       ? std::string("IR Jammer basladi (mod: ") + mode_str + ")"
-                       : std::string("IR Jammer baslanamadi.");
+                       ? std::string("IR Jammer started (mode: ") + mode_str + ")"
+                       : std::string("Failed to start IR Jammer.");
         });
 
     AddTool("self.ir.stop_jammer", "Aktif IR Jammer'i durdur.", PropertyList(),
             [&ir](const PropertyList& properties) -> ReturnValue {
                 ir.StopJammer();
-                return std::string("IR Jammer durduruldu.");
+                return std::string("IR Jammer stopped.");
             });
 
     AddTool("news.get_top_headlines",
@@ -288,10 +288,10 @@ void McpServer::AddCommonTools() {
             });
 
     AddTool("self.sdcard.list_files",
-            "SD karttaki tum dosyalari listele (.sub, .json, .txt vb.) etiketli sekilde.\n"
-            "Replay veya preset yukleme oncesinde hangi dosyalar mevcut olduğunu gormek icin "
+            "List all files on SD card (.sub, .json, .txt etc.) with labels.\n"
+            "To see available files before replay or loading preset "
             "kullan.\n"
-            "Dosya tipine gore etiket gosterir: [sub], [csv], [json], [txt], [klasor], [dosya]",
+            "Shows labels by file type: [sub], [csv], [json], [txt], [folder], [file]",
             PropertyList(), [&cc1101](const PropertyList& properties) -> ReturnValue {
                 return cc1101.ListSdFiles();
             });
@@ -308,7 +308,7 @@ void McpServer::AddCommonTools() {
                 std::string script = properties["script"].value<std::string>();
                 bool ok = bad_usb->RunScript(script);
                 return ok ? std::string("DuckyScript kuyruga eklendi.")
-                          : std::string("Hata: Kuyruk dolu.");
+                          : std::string("Error: Queue full.");
             });
 
         AddTool("self.usb.bad_usb_type",
@@ -319,14 +319,14 @@ void McpServer::AddCommonTools() {
                     std::string text = properties["text"].value<std::string>();
                     bool ok = bad_usb->TypeText(text);
                     return ok ? std::string("Metin kuyruga eklendi.")
-                              : std::string("Hata: Kuyruk dolu.");
+                              : std::string("Error: Queue full.");
                 });
 
         AddTool("self.usb.bad_usb_stop",
-                "Aktif devam eden BadUSB scriptini ve bekleme (delay) sureclerini aninda durdurur.",
+                "Instantly stops active BadUSB script and its delay processes.",
                 PropertyList(), [bad_usb](const PropertyList& properties) -> ReturnValue {
                     bad_usb->Stop();
-                    return std::string("BadUSB komutlari durduruldu.");
+                    return std::string("BadUSB commands stopped.");
                 });
 
         AddTool("self.usb.get_status",
