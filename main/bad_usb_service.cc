@@ -20,16 +20,14 @@ BadUsbService::~BadUsbService() {
 void BadUsbService::Start() {
     if (is_service_running_)
         return;
-    ESP_LOGI(TAG, "Starting BadUsbService...");
-    hid_keyboard_->begin();  
-    ESP_LOGI(TAG, "HID Keyboard begin() returned.");
+    ESP_LOGI(TAG, "Starting BadUsbService Task...");
     xTaskCreatePinnedToCore(UsbTaskWrapper, "BadUsbTask", 4096, this,
                             5,  
                             &task_handle_,
                             0  
     );
     is_service_running_ = true;
-    ESP_LOGI(TAG, "BadUsbService Started on Core 0");
+    ESP_LOGI(TAG, "BadUsbService Task Started on Core 0");
 }
 void BadUsbService::UsbTaskWrapper(void* arg) {
     BadUsbService* service = static_cast<BadUsbService*>(arg);
@@ -39,7 +37,19 @@ void BadUsbService::UsbTask() {
     BadUsbMessage msg;
     while (true) {
         if (xQueueReceive(command_queue_, &msg, portMAX_DELAY) == pdPASS) {
+            // Optimization: If it's just a stop command, clear states and stay in Serial mode
+            if (msg.type == BadUsbCommandType::STOP) {
+                ducky_parser_->stop();
+                continue;
+            }
+
             EnterCombatMode();
+            
+            // Start HID Keyboard mode (Serial/JTAG logs will stop)
+            hid_keyboard_->begin();
+            // Wait for host to recognize the new device
+            vTaskDelay(pdMS_TO_TICKS(1500));
+            
             hid_keyboard_->setLayoutByName(msg.lang);
             switch (msg.type) {
                 case BadUsbCommandType::RUN_SCRIPT:
@@ -55,6 +65,10 @@ void BadUsbService::UsbTask() {
                     ducky_parser_->stop();
                     break;
             }
+            
+            // Revert to Serial/JTAG mode for logs
+            hid_keyboard_->end();
+            
             ExitCombatMode();
         }
     }
@@ -108,11 +122,23 @@ void BadUsbService::Stop() {
     xQueueSendToFront(command_queue_, &msg, 0);  
 }
 std::string BadUsbService::GetStatusJSON() {
-    bool ready = hid_keyboard_->isConnected();
+    bool hid_connected = hid_keyboard_->isConnected();
     bool writing = ducky_parser_->isRunning();
+    
+    // Physical connection check: if HID is not enumerated, check hardware VBUS
+    bool physically_connected = hid_connected;
+    if (!physically_connected) {
+        int level;
+        bool charging, discharging;
+        // On T-Embed, charging=true implies VBUS presence (BQ25896 vbus_stat != 0)
+        if (Board::GetInstance().GetBatteryLevel(level, charging, discharging)) {
+            physically_connected = charging; 
+        }
+    }
+
     char json[128];
     snprintf(json, sizeof(json), "{\"usb_connected\": %s, \"is_typing\": %s}",
-             ready ? "true" : "false", writing ? "true" : "false");
+             physically_connected ? "true" : "false", writing ? "true" : "false");
     return std::string(json);
 }
 bool BadUsbService::IsRunning() const { return ducky_parser_->isRunning(); }

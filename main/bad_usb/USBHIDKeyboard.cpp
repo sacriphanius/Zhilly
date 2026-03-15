@@ -11,6 +11,7 @@
 #include "freertos/semphr.h"
 #include "tinyusb.h"
 #include "class/hid/hid_device.h"
+#include "hal/usb_serial_jtag_ll.h"
 
 static const char* TAG = "USBHID";
 
@@ -157,7 +158,27 @@ void USBHIDKeyboard::begin(const uint8_t* layout) {
     }
 }
 
-void USBHIDKeyboard::end() {}
+void USBHIDKeyboard::end() {
+    if (!s_installed) return;
+    
+    ESP_LOGI(TAG, "Uninstalling TinyUSB driver...");
+    
+    // Explicitly unregister and uninstall tinyusb
+    esp_err_t err = tinyusb_driver_uninstall();
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "TinyUSB uninstall failed: 0x%x", err);
+    } else {
+        s_installed = false;
+        ESP_LOGI(TAG, "TinyUSB uninstalled successfully. Serial logs should resume.");
+    }
+
+    // Force PHY reset to ensure Serial/JTAG controller recovers control of the D+/D- lines.
+    // By disabling the 'external PHY' (TUSB), the S3 internal PHY is routed back to 
+    // the Serial/JTAG controller automatically.
+    usb_serial_jtag_ll_phy_enable_external(false);
+    
+    vTaskDelay(pdMS_TO_TICKS(200));
+}
 
 // ── isConnected(): USB bağlı ve HID hazır mı? ────────────────────────────────
 
