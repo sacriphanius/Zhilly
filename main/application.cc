@@ -64,8 +64,8 @@ void Application::Initialize() {
     cc1101_service_.Init();
     ir_service_.Init();
 
-    bad_usb_service_ = std::make_unique<BadUsbService>();
-    bad_usb_service_->Start();
+    // bad_usb_service_ = std::make_unique<BadUsbService>();
+    // bad_usb_service_->Start();
 
     auto display = board.GetDisplay();
     display->SetupUI();

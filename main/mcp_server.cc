@@ -109,83 +109,74 @@ void McpServer::AddCommonTools() {
 
     auto& cc1101 = Application::GetInstance().GetCc1101Service();
 
-    AddTool("self.cc1101.get_info", "CC1101 module status and diagnostics.", PropertyList(),
-            [&cc1101](const PropertyList& properties) -> ReturnValue {
-                return std::string("CC1101 Durumu: ") +
-                       (cc1101.GetStatus() ? "Ready" : "Not initialized");
-            });
-
-    AddTool("self.cc1101.set_frequency",
-            "CC1101 RF frekansini ayarla (MHz).\n"
-            "Yaygin: 315 (Kuzey Amerika garaj), 433 (Avrupa kumanda/IoT), 868 (Avrupa LoRa), 915 "
-            "(Kuzey Amerika ISM).\n"
-            "Parametre: mhz (300-928)",
-            PropertyList({Property("mhz", kPropertyTypeInteger, 300, 928)}),
-            [&cc1101](const PropertyList& properties) -> ReturnValue {
-                return cc1101.SetFrequency(static_cast<float>(properties["mhz"].value<int>()));
-            });
-
     AddTool(
-        "self.cc1101.set_modulation",
-        "CC1101 modulasyon turunu ayarla: 'ASK'/'OOK' (kumandalar/garaj) veya 'FSK' (veri/sensor).",
-        PropertyList({Property("type", kPropertyTypeString)}),
+        "self.cc1101.execute",
+        "CC1101 Sub-GHz master tool. Executes the specified action.\n"
+        "Supported actions:\n"
+        "  'get_info': Get module status\n"
+        "  'set_freq': Set freq (param: 'mhz' int 300-928)\n"
+        "  'set_mod': Set modulation (param: 'type' string 'ASK'|'FSK')\n"
+        "  'read_rssi': Read signal strength\n"
+        "  'load_presets': Load presets from SD (param: 'path' string, default '/sdcard/cc1101_presets.json')\n"
+        "  'replay': Replay .sub file (param: 'filename' string, e.g. 'garaj.sub')\n"
+        "  'stop_replay': Stop ongoing replay\n"
+        "  'tesla_port': Transmit Tesla Port Opener signal\n"
+        "  'save_raw': Save last capture (param: 'filepath' string, optional)\n"
+        "  'start_jammer': Start RF Jammer (param: 'duration_ms' int, 0=infinite)\n"
+        "  'stop_jammer': Stop RF jammer",
+        PropertyList({
+            Property("action", kPropertyTypeString),
+            Property("mhz", kPropertyTypeInteger, 300, 928),
+            Property("type", kPropertyTypeString, std::string("")),
+            Property("path", kPropertyTypeString, std::string("")),
+            Property("filename", kPropertyTypeString, std::string("")),
+            Property("filepath", kPropertyTypeString, std::string("")),
+            Property("duration_ms", kPropertyTypeInteger, 0, 600000)
+        }),
         [&cc1101](const PropertyList& properties) -> ReturnValue {
-            return cc1101.SetModulation(properties["type"].value<std::string>());
-        });
+            if (!properties.HasProperty("action")) return std::string("Error: action required");
+            std::string action = properties["action"].value<std::string>();
 
-    AddTool("self.cc1101.read_rssi",
-            "Anlik sinyal gucunu oku (dBm). -60 uzeri: Guclu, -90 alti: Zayif/yok.", PropertyList(),
-            [&cc1101](const PropertyList& properties) -> ReturnValue {
+            if (action == "get_info") {
+                return std::string("CC1101 Durumu: ") + (cc1101.GetStatus() ? "Ready" : "Not initialized");
+            } else if (action == "set_freq") {
+                if (!properties.HasProperty("mhz")) return std::string("Error: mhz required");
+                return cc1101.SetFrequency(static_cast<float>(properties["mhz"].value<int>()));
+            } else if (action == "set_mod") {
+                if (!properties.HasProperty("type")) return std::string("Error: type required");
+                return cc1101.SetModulation(properties["type"].value<std::string>());
+            } else if (action == "read_rssi") {
                 return std::to_string(cc1101.ReadRssi());
-            });
-
-    AddTool("self.cc1101.load_presets",
-            "Load CC1101 preset JSON file from SD card.\n"
-            "Parameter: path (default: /sdcard/cc1101_presets.json)",
-            PropertyList({Property("path", kPropertyTypeString,
-                                   std::string("/sdcard/cc1101_presets.json"))}),
-            [&cc1101](const PropertyList& properties) -> ReturnValue {
+            } else if (action == "load_presets") {
                 std::string path = "/sdcard/cc1101_presets.json";
-                if (properties.HasProperty("path"))
+                if (properties.HasProperty("path") && !properties["path"].value<std::string>().empty())
                     path = properties["path"].value<std::string>();
                 bool ok = cc1101.LoadPresets(path);
-                return ok ? std::string("Presetler yuklendi: ") + path
-                          : std::string("Preset yuklenemedi: ") + path;
-            });
-
-    AddTool("self.cc1101.replay_sub_file",
-            "Replay a .sub file from SD card (Replay Attack).\n"
-            "First see the file list using self.sdcard.list_files.\n"
-            "Parametre: filename (ornek: 'garaj.sub' veya '/sdcard/garaj.sub')",
-            PropertyList({Property("filename", kPropertyTypeString)}),
-            [&cc1101](const PropertyList& properties) -> ReturnValue {
+                return ok ? std::string("Presetler yuklendi: ") + path : std::string("Preset yuklenemedi: ") + path;
+            } else if (action == "replay") {
+                if (!properties.HasProperty("filename")) return std::string("Error: filename required");
                 std::string name = properties["filename"].value<std::string>();
-                return cc1101.ReplaySubFile(name)
-                           ? std::string("Replay started: ") + name
-                           : std::string("Replay failed. Does file exist? ") + name;
-            });
-
-    AddTool("self.cc1101.stop_replay", "Stop ongoing replay process.", PropertyList(),
-            [&cc1101](const PropertyList& properties) -> ReturnValue {
-                return cc1101.StopReplay() ? std::string("Replay stopped.")
-                                           : std::string("Replay zaten calismiyordu.");
-            });
-
-    AddTool("self.cc1101.start_jammer",
-            "Start RF Jammer (noise broadcast on current frequency).\n"
-            "Parametre: duration_ms (0=surekli, maks 600000)",
-            PropertyList({Property("duration_ms", kPropertyTypeInteger, 0, 600000)}),
-            [&cc1101](const PropertyList& properties) -> ReturnValue {
-                return cc1101.StartJammer(properties["duration_ms"].value<int>())
-                           ? std::string("RF Jammer started.")
-                           : std::string("Failed to start Jammer.");
-            });
-
-    AddTool("self.cc1101.stop_jammer", "Stop active RF Jammer.", PropertyList(),
-            [&cc1101](const PropertyList& properties) -> ReturnValue {
-                return cc1101.StopJammer() ? std::string("RF Jammer durduruldu.")
-                                           : std::string("Jammer zaten calismiyordu.");
-            });
+                return cc1101.ReplaySubFile(name) ? std::string("Replay started: ") + name : std::string("Replay failed. Does file exist? ") + name;
+            } else if (action == "stop_replay") {
+                return cc1101.StopReplay() ? std::string("Replay stopped.") : std::string("Replay zaten calismiyordu.");
+            } else if (action == "tesla_port") {
+                return cc1101.TransmitTeslaPortSignal() ? std::string("Tesla sinyali basariyla yayinlandi.") : std::string("Hata: Tesla sinyali yayinlanamadi.");
+            } else if (action == "save_raw") {
+                std::string fp;
+                if (properties.HasProperty("filepath")) fp = properties["filepath"].value<std::string>();
+                const auto& buf = cc1101._GetRawBuffer();
+                if (buf.empty()) return std::string("Hata: Kaydedilecek RAW veri yok. Once bir dosya replay edin.");
+                bool ok = cc1101.SaveRawToSubFile(buf, cc1101._GetFrequency(), fp);
+                return ok ? std::string("RAW sinyal kaydedildi: ") + (fp.empty() ? "oto-isim" : fp) : std::string("Kaydetme basarisiz.");
+            } else if (action == "start_jammer") {
+                int dur = 0;
+                if (properties.HasProperty("duration_ms")) dur = properties["duration_ms"].value<int>();
+                return cc1101.StartJammer(dur) ? std::string("RF Jammer started.") : std::string("Failed to start Jammer.");
+            } else if (action == "stop_jammer") {
+                return cc1101.StopJammer() ? std::string("RF Jammer durduruldu.") : std::string("Jammer zaten calismiyordu.");
+            }
+            return std::string("Unknown action: ") + action;
+        });
 
     auto& ir = Application::GetInstance().GetIrService();
 
@@ -294,6 +285,13 @@ void McpServer::AddCommonTools() {
             "Shows labels by file type: [sub], [csv], [json], [txt], [folder], [file]",
             PropertyList(), [&cc1101](const PropertyList& properties) -> ReturnValue {
                 return cc1101.ListSdFiles();
+            });
+
+    AddTool("self.sdcard.list_sub_files",
+            "List only .sub files on SD card. Use this before calling replay_sub_file "
+            "to get the exact filenames available for replay.",
+            PropertyList(), [&cc1101](const PropertyList& properties) -> ReturnValue {
+                return cc1101.ListSdSubFiles();
             });
 
     auto bad_usb = Application::GetInstance().GetBadUsbService();
