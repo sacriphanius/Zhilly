@@ -19,6 +19,9 @@
 ## 📖 About the Project
 This project is an advanced **AI Pentester Assistant** based on the [**Xiaozhi-esp32 (小智)**](https://github.com/78/xiaozhi-esp32) infrastructure, optimized for the **LilyGO T-Embed CC1101** hardware. It combines natural language AI interaction with physical hardware testing tools, making it a versitile companion for cybersecurity research and daily technical tasks.
 
+> [!NOTE]
+> **LilyGO T-Watch S3 Support:** Currently supports natural AI conversation only. Other pentesting features are coming soon.
+
 ## 🚀 Key Features
 
 ### 🤖 AI & Interaction
@@ -119,6 +122,9 @@ You are not just an assistant — you are a hands-free, voice-activated cyber we
 
 ## 📖 Proje Hakkında
 Bu proje, açık kaynaklı [**Xiaozhi-esp32 (小智)**](https://github.com/78/xiaozhi-esp32) altyapısını kullanan ve **LilyGO T-Embed CC1101** donanımı için optimize edilmiş, gelişmiş bir **Zhilly AI Pentester Asistanıdır**. Doğal dil etkileşimini fiziksel donanım test araçlarıyla birleştirerek siber güvenlik araştırmalarınızda size akıllı bir yol arkadaşı olur.
+
+> [!NOTE]
+> **LilyGO T-Watch S3 Desteği:** Şu an için sadece karşılıklı sohbet özelliğini desteklemektedir. Diğer siber güvenlik özellikleri yakında eklenecektir.
 
 ## 🚀 Öne Çıkan Özellikler
 
