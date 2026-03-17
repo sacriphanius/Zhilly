@@ -39,6 +39,7 @@ set(SOURCES "audio/audio_codec.cc"
             "assets.cc"
             "cc1101_service.cc"
             "bad_usb_service.cc"
+            "ble_service.cc"
             "news_service.cc"
             "ir_service.cc"
             "main.cc"
@@ -920,6 +921,7 @@ idf_component_register(SRCS ${SOURCES}
                         sdmmc
                         espressif2022__esp_emote_expression
                         tinyusb
+                        NimBLE-Arduino
                     )
 
 # Use target_compile_definitions to define BOARD_TYPE, BOARD_NAME

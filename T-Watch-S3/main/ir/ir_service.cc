@@ -4,6 +4,7 @@
 #include <cmath>
 #include <algorithm>
 #include <string>
+#include <vector>
 
 #define TAG "IrService"
 
@@ -33,6 +34,7 @@ void IrService::Initialize(int tx_pin) {
             .with_dma = 0,
             .io_loop_back = 0,
             .io_od_mode = 0,
+            .allow_pd = 0,
         },
     };
     ESP_ERROR_CHECK(rmt_new_tx_channel(&tx_chan_config, &tx_chan_));
@@ -42,6 +44,7 @@ void IrService::Initialize(int tx_pin) {
         .duty_cycle = 0.33,
         .flags = {
             .polarity_active_low = 0,
+            .always_on = 0,
         },
     };
     ESP_ERROR_CHECK(rmt_apply_carrier(tx_chan_, &carrier_cfg));
@@ -59,6 +62,7 @@ struct TaskParams {
 
 void IrService::StartTvBGone(const std::string& region) {
     Stop();
+    stop_requested_ = false;
     running_ = true;
     TaskParams* params = new TaskParams{this, region};
     xTaskCreate(TaskWrapper, "tvbgone_task", 4096, params, 5, &task_handle_);
@@ -66,16 +70,25 @@ void IrService::StartTvBGone(const std::string& region) {
 
 void IrService::StartJammer(IrJammerMode mode) {
     Stop();
+    stop_requested_ = false;
     running_ = true;
     TaskParams* params = new TaskParams{this, std::to_string((int)mode)};
     xTaskCreate(TaskWrapper, "jammer_task", 4096, params, 5, &task_handle_);
 }
 
 void IrService::Stop() {
-    running_ = false;
+    stop_requested_ = true;
     if (task_handle_ != nullptr) {
-        vTaskDelay(pdMS_TO_TICKS(150));
+        int wait_ms = 0;
+        while (running_ && wait_ms < 500) {
+            vTaskDelay(pdMS_TO_TICKS(10));
+            wait_ms += 10;
+        }
+        if (running_) { // Force delete if still running
+            vTaskDelete(task_handle_);
+        }
         task_handle_ = nullptr;
+        running_ = false;
     }
 }
 
@@ -101,7 +114,7 @@ void IrService::RunTvBGone(const std::string& region) {
     const IrCode* const* codes = (region.compare("NA") == 0) ? NApowerCodes : EUpowerCodes;
     int max_idx = (region.compare("NA") == 0) ? 250 : 150; 
 
-    for (int i = 0; i < max_idx && running_; ++i) {
+    for (int i = 0; i < max_idx && !stop_requested_; ++i) {
         const IrCode* code = codes[i];
         if (code == nullptr) break;
         
@@ -109,11 +122,14 @@ void IrService::RunTvBGone(const std::string& region) {
         rmt_carrier_config_t carrier_cfg = {
             .frequency_hz = freq,
             .duty_cycle = 0.33,
-            .flags = { .polarity_active_low = 0 },
+            .flags = { 
+                .polarity_active_low = 0,
+                .always_on = 0 
+            },
         };
         rmt_apply_carrier(tx_chan_, &carrier_cfg);
         
-        std::vector<uint32_t> durations;
+        std::vector<rmt_symbol_word_t> symbols;
         uint8_t bitsleft = 0;
         uint8_t bits = 0;
         int code_ptr = 0;
@@ -128,12 +144,15 @@ void IrService::RunTvBGone(const std::string& region) {
                 index = (index << 1) | ((bits >> --bitsleft) & 1);
             }
             
-            durations.push_back(code->times[index * 2] * 10);
-            durations.push_back(code->times[index * 2 + 1] * 10);
+            rmt_symbol_word_t symbol;
+            symbol.val = 0;
+            symbol.val =  (code->times[index * 2] * 10) | (1 << 15); // ON
+            symbol.val |= (code->times[index * 2 + 1] * 10) << 16;   // OFF
+            symbols.push_back(symbol);
         }
         
         rmt_transmit_config_t transmit_config = { .loop_count = 0, .flags = { .eot_level = 0 } };
-        rmt_transmit(tx_chan_, raw_encoder_, durations.data(), durations.size() * sizeof(uint32_t), &transmit_config);
+        rmt_transmit(tx_chan_, raw_encoder_, symbols.data(), symbols.size() * sizeof(rmt_symbol_word_t), &transmit_config);
         rmt_tx_wait_all_done(tx_chan_, -1);
         
         vTaskDelay(pdMS_TO_TICKS(205));
@@ -142,50 +161,96 @@ void IrService::RunTvBGone(const std::string& region) {
 
 void IrService::RunJammer(IrJammerMode mode) {
     uint32_t freqs[] = {30000, 33000, 36000, 38000, 40000, 42000, 56000};
-    int freq_idx = 3; // 38kHz
-    
-    while (running_) {
+    int freq_idx = 3; // 38kHz default
+    rmt_transmit_config_t tx_cfg = { .loop_count = 0, .flags = { .eot_level = 0 } };
+
+    while (!stop_requested_) {
         uint32_t freq = freqs[freq_idx];
-        rmt_carrier_config_t carrier_cfg = {
-            .frequency_hz = freq,
-            .duty_cycle = 0.5,
-            .flags = { .polarity_active_low = 0 },
-        };
+        rmt_carrier_config_t carrier_cfg = {};
+        carrier_cfg.frequency_hz = freq;
+        carrier_cfg.duty_cycle = 0.33f;
+        carrier_cfg.flags.polarity_active_low = 0;
+        carrier_cfg.flags.always_on = 0;
         rmt_apply_carrier(tx_chan_, &carrier_cfg);
-        
+
         switch (mode) {
             case kIrJammerModeBasic: {
-                uint32_t dur[] = {12, 12, 12, 12, 12, 12, 12, 12, 12, 12};
-                rmt_transmit_config_t transmit_config = { .loop_count = 50, .flags = { .eot_level = 0 } };
-                rmt_transmit(tx_chan_, raw_encoder_, dur, sizeof(dur), &transmit_config);
-                rmt_tx_wait_all_done(tx_chan_, -1);
+                // 500us ON / 500us OFF — enough for ~19 carrier cycles at 38kHz
+                rmt_symbol_word_t sym;
+                sym.level0    = 1;
+                sym.duration0 = 500;
+                sym.level1    = 0;
+                sym.duration1 = 500;
+                for (int r = 0; r < 20 && !stop_requested_; ++r) {
+                    rmt_transmit(tx_chan_, raw_encoder_, &sym, sizeof(sym), &tx_cfg);
+                    rmt_tx_wait_all_done(tx_chan_, 100);
+                }
+                vTaskDelay(pdMS_TO_TICKS(5));
+                break;
+            }
+            case kIrJammerModeEnhanced: {
+                // Asymmetric: 600us ON / 200us OFF — more aggressive
+                rmt_symbol_word_t sym;
+                sym.level0    = 1;
+                sym.duration0 = 600;
+                sym.level1    = 0;
+                sym.duration1 = 200;
+                for (int r = 0; r < 20 && !stop_requested_; ++r) {
+                    rmt_transmit(tx_chan_, raw_encoder_, &sym, sizeof(sym), &tx_cfg);
+                    rmt_tx_wait_all_done(tx_chan_, 100);
+                }
+                vTaskDelay(pdMS_TO_TICKS(5));
                 break;
             }
             case kIrJammerModeSweep: {
-                static int sweep_val = 15;
-                static int dir = 1;
-                uint32_t dur[] = {(uint32_t)sweep_val, (uint32_t)sweep_val};
-                rmt_transmit_config_t transmit_config = { .loop_count = 20, .flags = { .eot_level = 0 } };
-                rmt_transmit(tx_chan_, raw_encoder_, dur, sizeof(dur), &transmit_config);
-                rmt_tx_wait_all_done(tx_chan_, -1);
-                
+                // Sweep mark duration 200us..1200us
+                static int sweep_val = 200;
+                static int dir = 10;
+                rmt_symbol_word_t sym;
+                sym.level0    = 1;
+                sym.duration0 = (uint16_t)sweep_val;
+                sym.level1    = 0;
+                sym.duration1 = 300;
+                for (int r = 0; r < 10 && !stop_requested_; ++r) {
+                    rmt_transmit(tx_chan_, raw_encoder_, &sym, sizeof(sym), &tx_cfg);
+                    rmt_tx_wait_all_done(tx_chan_, 100);
+                }
                 sweep_val += dir;
-                if (sweep_val > 70 || sweep_val < 8) dir *= -1;
+                if (sweep_val > 1200 || sweep_val < 200) dir *= -1;
+                vTaskDelay(pdMS_TO_TICKS(10));
                 break;
             }
             case kIrJammerModeRandom: {
-                uint32_t dur[20];
-                for(int i=0; i<20; i++) dur[i] = (rand() % 990) + 10;
-                rmt_transmit_config_t transmit_config = { .loop_count = 0, .flags = { .eot_level = 0 } };
-                rmt_transmit(tx_chan_, raw_encoder_, dur, sizeof(dur), &transmit_config);
-                rmt_tx_wait_all_done(tx_chan_, -1);
+                // Random burst length 100-2000us, random frequency
+                rmt_symbol_word_t sym;
+                uint16_t dur = (uint16_t)((rand() % 1900) + 100);
+                sym.level0    = 1;
+                sym.duration0 = dur;
+                sym.level1    = 0;
+                sym.duration1 = (uint16_t)((rand() % 900) + 100);
+                rmt_transmit(tx_chan_, raw_encoder_, &sym, sizeof(sym), &tx_cfg);
+                rmt_tx_wait_all_done(tx_chan_, 200);
                 if (rand() % 10 < 3) freq_idx = rand() % 7;
+                vTaskDelay(pdMS_TO_TICKS(20));
+                break;
+            }
+            case kIrJammerModeEmpty: {
+                // Very short burst + long silence to confuse AGC in receivers
+                rmt_symbol_word_t sym;
+                sym.level0    = 1;
+                sym.duration0 = 100;
+                sym.level1    = 0;
+                sym.duration1 = 5000; // 5ms silence (max 15-bit = 32767)
+                rmt_transmit(tx_chan_, raw_encoder_, &sym, sizeof(sym), &tx_cfg);
+                rmt_tx_wait_all_done(tx_chan_, 200);
+                if (rand() % 5 < 2) freq_idx = (freq_idx + 1) % 7;
+                vTaskDelay(pdMS_TO_TICKS(50));
                 break;
             }
             default:
                 vTaskDelay(pdMS_TO_TICKS(10));
                 break;
         }
-        vTaskDelay(pdMS_TO_TICKS(10));
     }
 }
+

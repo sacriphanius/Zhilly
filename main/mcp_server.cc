@@ -12,6 +12,7 @@
 #include "board.h"
 #include "display.h"
 #include "ir_service.h"
+#include "ble_service.h"
 #include "lvgl_display.h"
 #include "lvgl_theme.h"
 #include "news_service.h"
@@ -342,6 +343,53 @@ void McpServer::AddCommonTools() {
                 "olmadigini gosterir.",
                 PropertyList(), [bad_usb](const PropertyList& properties) -> ReturnValue {
                     return bad_usb->GetStatusJSON();
+                });
+    }
+
+    auto ble_service = Application::GetInstance().GetBleService();
+    if (ble_service) {
+        AddTool("self.ble.start",
+                "Starts the Bluetooth BLE module and begins advertising.",
+                PropertyList(), [ble_service](const PropertyList& properties) -> ReturnValue {
+                    bool ok = ble_service->start();
+                    return ok ? std::string("Bluetooth started.") : std::string("Failed to start Bluetooth.");
+                });
+
+        AddTool("self.ble.stop",
+                "Stops the Bluetooth BLE module completely to free up RAM.",
+                PropertyList(), [ble_service](const PropertyList& properties) -> ReturnValue {
+                    ble_service->stop();
+                    return std::string("Bluetooth stopped and RAM freed.");
+                });
+
+        AddTool("self.ble.bad_usb_run",
+                "Executes DuckyScript commands via BLE to a target device (remote keyboard).\n"
+                "Example: GUI r\\nDELAY 100\\nSTRING cmd\\nENTER\n"
+                "Parameter: script (DuckyScript coding)",
+                PropertyList({Property("script", kPropertyTypeString)}),
+                [ble_service](const PropertyList& properties) -> ReturnValue {
+                    std::string script = properties["script"].value<std::string>();
+                    bool ok = ble_service->execute(script);
+                    return ok ? std::string("BLE DuckyScript queued.") : std::string("Error: Queue full.");
+                });
+
+        AddTool("self.ble.bad_usb_type",
+                "Types plain text directly to the target device via Bluetooth BLE.\n"
+                "Parameter: text (the text string to type)",
+                PropertyList({Property("text", kPropertyTypeString)}),
+                [ble_service](const PropertyList& properties) -> ReturnValue {
+                    std::string text = properties["text"].value<std::string>();
+                    bool ok = ble_service->typeText(text);
+                    return ok ? std::string("BLE Text queued.") : std::string("Error: Queue full.");
+                });
+
+        AddTool("self.ble.get_status",
+                "Returns the current Bluetooth BLE connection and service status.",
+                PropertyList(), [ble_service](const PropertyList& properties) -> ReturnValue {
+                    bool is_connected = ble_service->isConnected();
+                    bool is_active = ble_service->isBleActive();
+                    return std::string("BLE Active: ") + (is_active ? "Yes" : "No") + 
+                           ", Connected Peer: " + (is_connected ? "Yes" : "No");
                 });
     }
 

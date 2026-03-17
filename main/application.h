@@ -14,6 +14,7 @@
 
 #include "audio_service.h"
 #include "bad_usb_service.h"
+#include "ble_service.h"
 #include "cc1101_service.h"
 #include "device_state.h"
 #include "device_state_machine.h"
@@ -88,6 +89,7 @@ public:
     Cc1101Service& GetCc1101Service() { return cc1101_service_; }
     IrService& GetIrService() { return ir_service_; }
     BadUsbService* GetBadUsbService() { return bad_usb_service_.get(); }
+    BleService* GetBleService() { return ble_service_.get(); }
 
     void ResetProtocol();
 
@@ -109,6 +111,7 @@ private:
     Cc1101Service cc1101_service_;
     IrService ir_service_;
     std::unique_ptr<BadUsbService> bad_usb_service_;
+    std::unique_ptr<BleService> ble_service_;
 
     bool has_server_time_ = false;
     bool aborted_ = false;

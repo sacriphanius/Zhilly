@@ -40,6 +40,7 @@ private:
     
     TaskHandle_t task_handle_ = nullptr;
     volatile bool running_ = false;
+    volatile bool stop_requested_ = false;
     
     static void TaskWrapper(void* arg);
     void RunTvBGone(const std::string& region);

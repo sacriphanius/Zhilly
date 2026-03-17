@@ -14,6 +14,7 @@
 #include "lvgl_theme.h"
 #include "lvgl_display.h"
 #include "ir_service.h"
+#include "protocols/network_scanner.h"
 
 #define TAG "MCP"
 
@@ -139,6 +140,50 @@ void McpServer::AddCommonTools() {
         [](const PropertyList& properties) -> ReturnValue {
             IrService::GetInstance().Stop();
             return true;
+        });
+
+    AddTool("self.network.discover_hosts",
+        "Perform a ping sweep on the WiFi subnet to find other active devices/IPs.",
+        PropertyList(),
+        [](const PropertyList& properties) -> ReturnValue {
+            auto hosts = NetworkScanner::GetInstance().DiscoverHosts();
+            cJSON* result_array = cJSON_CreateArray();
+            for (const auto& host : hosts) {
+                cJSON* host_obj = cJSON_CreateObject();
+                cJSON_AddStringToObject(host_obj, "ip", host.ip.c_str());
+                cJSON_AddStringToObject(host_obj, "mac", host.mac.c_str());
+                cJSON_AddBoolToObject(host_obj, "is_active", host.is_active);
+                cJSON_AddItemToArray(result_array, host_obj);
+            }
+            return result_array;
+        });
+
+    AddTool("self.network.port_scan",
+        "Scan the specified IP address for common open TCP vulnerable/service ports.",
+        PropertyList({
+            Property("ip", kPropertyTypeString)
+        }),
+        [](const PropertyList& properties) -> ReturnValue {
+            auto target_ip = properties["ip"].value<std::string>();
+            auto ports = NetworkScanner::GetInstance().ScanPorts(target_ip);
+            
+            cJSON* result_array = cJSON_CreateArray();
+            for (const auto& pi : ports) {
+                cJSON* port_obj = cJSON_CreateObject();
+                cJSON_AddNumberToObject(port_obj, "port", pi.port);
+                cJSON_AddBoolToObject(port_obj, "is_open", pi.is_open);
+                cJSON_AddItemToArray(result_array, port_obj);
+            }
+            return result_array;
+        });
+    AddTool("self.network.resolve_domain",
+        "Resolve a website or domain name to its IPv4 address (ping). Returns empty string if failed.",
+        PropertyList({
+            Property("domain", kPropertyTypeString)
+        }),
+        [](const PropertyList& properties) -> ReturnValue {
+            auto domain = properties["domain"].value<std::string>();
+            return NetworkScanner::GetInstance().ResolveDomain(domain);
         });
 
     tools_.insert(tools_.end(), original_tools.begin(), original_tools.end());

@@ -19,9 +19,6 @@
 ## 📖 About the Project
 This project is an advanced **AI Pentester Assistant** based on the [**Xiaozhi-esp32 (小智)**](https://github.com/78/xiaozhi-esp32) infrastructure, optimized for the **LilyGO T-Embed CC1101** hardware. It combines natural language AI interaction with physical hardware testing tools, making it a versitile companion for cybersecurity research and daily technical tasks.
 
-> [!NOTE]
-> **LilyGO T-Watch S3 Support:** Currently supports natural AI conversation only. Other pentesting features are coming soon.
-
 ## 🚀 Key Features
 
 ### 🤖 AI & Interaction
@@ -48,6 +45,17 @@ Complete control over Sub-GHz and Infrared spectrums:
 *   **Voice-Driven Support:** Run automated keystroke scripts (DuckyScript) stored on the SD card **exclusively via AI voice commands**. No manual interface is provided, ensuring a hands-free pentesting experience.
     *   *Voice Command:* "Run BadUSB script 'hello_world.txt'" or "Type this: 'I am your AI assistant'".
 *   **HID Tools:** Fully integrated via `usb.bad_usb_run`, `usb.bad_usb_type`, and `usb.bad_usb_stop` tools.
+
+### ⌚ LilyGO T-Watch S3 Exclusive Features
+Specifically built for the T-Watch S3, Zhilly includes the following tools without needing a connected computer:
+*   **High-Speed ARP Scanner:** Sweeps your subnet using direct Layer-2 ARP table inspection to instantly uncloak hidden network devices (IoT, secure cameras) along with their physical MAC Addresses.
+    *   *Voice Command:* "Scan the network for devices"
+*   **Port Scanner:** Performs rapid concurrent `select()` TCP checks on the top 21 vulnerable/administration ports of a target IP.
+    *   *Voice Command:* "Scan ports on 192.168.1.10"
+*   **DNS Resolver:** Converts website domains directly into physical IPv4 addresses on the watch display.
+*   **IR Hacking:** Transmit TV-B-Gone kill codes (NA/EU) or initiate directed Infrared parrasite Jamming directly from the watch.
+    *   *Voice Command:* "Turn off the TV" or "Start the IR jammer"
+*   **OTA Upgrade & Power:** Update the watch firmware via URL or perform software reboots entirely through voice chat.
 
 #### 🌍 Supported Keyboard Layouts
 
@@ -123,9 +131,6 @@ You are not just an assistant — you are a hands-free, voice-activated cyber we
 ## 📖 Proje Hakkında
 Bu proje, açık kaynaklı [**Xiaozhi-esp32 (小智)**](https://github.com/78/xiaozhi-esp32) altyapısını kullanan ve **LilyGO T-Embed CC1101** donanımı için optimize edilmiş, gelişmiş bir **Zhilly AI Pentester Asistanıdır**. Doğal dil etkileşimini fiziksel donanım test araçlarıyla birleştirerek siber güvenlik araştırmalarınızda size akıllı bir yol arkadaşı olur.
 
-> [!NOTE]
-> **LilyGO T-Watch S3 Desteği:** Şu an için sadece karşılıklı sohbet özelliğini desteklemektedir. Diğer siber güvenlik özellikleri yakında eklenecektir.
-
 ## 🚀 Öne Çıkan Özellikler
 
 ### 🤖 AI ve Etkileşim
@@ -152,6 +157,17 @@ Sub-GHz ve Kızılötesi frekansları üzerinde tam kontrol:
 *   **Ses Komutu Odaklı:** SD kartta saklanan DuckyScript betiklerini **sadece ve sadece yapay zeka sesli komutlarıyla** otomatik olarak çalıştırın. Manuel bir arayüz yoktur, tamamen sesle kontrol edilir.
     *   *Sesli Komut:* "BadUSB betiği 'selam.txt' çalıştır" veya "Şunu yaz: 'Ben senin yapay zeka asistanınım'".
 *   **HID Araçları:** `usb.bad_usb_run`, `usb.bad_usb_type` ve `usb.bad_usb_stop` araçları ile tam uyumlu çalışır.
+
+### ⌚ LilyGO T-Watch S3 Özel Yetenekleri
+Özellikle T-Watch S3 için geliştirilen donanımsal yapay zeka entegrasyonları şunlardır:
+*   **Yüksek Hızlı ARP Tarayıcı:** Layer-2 (veri bağlantı katmanı) üzerinden çalışan `etharp` tablosu kullanarak alt ağdaki kapalı/gizli cihazları (IoT, kameralar, telefonlar) MAC adresleriyle birlikte saniyeler içinde ifşa eder.
+    *   *Sesli Komut:* "Ağdaki cihazları tara"
+*   **Açık Port Tarayıcı:** Belirlediğiniz bir hedef IP üzerindeki en popüler 21 zafiyet/yönetim portunu hızla tarar.
+    *   *Sesli Komut:* "192.168.1.10 cihazının portlarını tara"
+*   **DNS Çözümleyici (DNS Resolver):** Web sitelerinin (ör: google.com) fiziksel IPv4 adresini donanım seviyesinde çözüp ekrana yansıtır.
+*   **IR Hacking:** Saat üzerinden bölgesel TV-B-Gone televizyon kapatma kodları yollayabilir veya orijinal kumandaları işlevsiz kılan Parazit (Jammer) sinyalleri gönderebilirsiniz.
+    *   *Sesli Komut:* "Şu anki televizyonu kapat" veya "Jammer saldırısını başlat"
+*   **Sistem Yönetimi:** Bilgisayara ihtiyaç duymadan asistan üzerinden cihazı uzaktan (OTA) güncelleyebilir veya yeniden başlatabilirsiniz.
 
 #### 🌍 Desteklenen Klavye Düzenleri
 

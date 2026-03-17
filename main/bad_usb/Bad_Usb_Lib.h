@@ -6,6 +6,7 @@
 #include "keys.h"
 class HIDInterface {
 public:
+    virtual ~HIDInterface() {};
     virtual void begin(const uint8_t* layout) {};
     virtual void end(void) {};
     virtual int getReportData(uint8_t* buffer, size_t size) { return 0; };
