@@ -42,10 +42,11 @@ set(SOURCES "audio/audio_codec.cc"
             "ble_service.cc"
             "news_service.cc"
             "ir_service.cc"
+            "sd_manager_service.cc"
             "main.cc"
             )
 
-file(GLOB BAD_USB_SOURCES "bad_usb/*.cpp")
+file(GLOB BAD_USB_SOURCES "bad_usb/*.cpp" "bad_usb/*.cc")
 list(APPEND SOURCES ${BAD_USB_SOURCES})
 
 set(INCLUDE_DIRS "." "bad_usb" "display" "display/lvgl_display" "display/lvgl_display/jpg" "audio" "audio/demuxer" "protocols")
@@ -757,7 +758,7 @@ else()
 endif()
 
 # Auto Select Additional Sources
-if (CONFIG_USE_ESP_BLUFI_WIFI_PROVISIONING)
+if (CONFIG_USE_ESP_BLUFI_WIFI_PROVISIONING OR CONFIG_BT_ENABLED)
     list(APPEND SOURCES "boards/common/blufi.cpp")
 endif ()
 # Select language directory according to Kconfig
@@ -921,7 +922,11 @@ idf_component_register(SRCS ${SOURCES}
                         sdmmc
                         espressif2022__esp_emote_expression
                         tinyusb
+<<<<<<< HEAD
                         NimBLE-Arduino
+=======
+                        esp_hid
+>>>>>>> b8a911f (T-Watch-S3 can Make Tesla Port & Rf Jammer)
                     )
 
 # Use target_compile_definitions to define BOARD_TYPE, BOARD_NAME

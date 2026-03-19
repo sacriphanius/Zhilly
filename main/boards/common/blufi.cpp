@@ -26,11 +26,6 @@
 #include "nimble/nimble_port.h"
 #include "nimble/nimble_port_freertos.h"
 #include "services/gap/ble_svc_gap.h"
-extern void esp_blufi_gatt_svr_register_cb(struct ble_gatt_register_ctxt* ctxt, void* arg);
-extern int esp_blufi_gatt_svr_init(void);
-extern void esp_blufi_gatt_svr_deinit(void);
-extern void esp_blufi_btc_init(void);
-extern void esp_blufi_btc_deinit(void);
 #endif
 
 extern "C" {
@@ -261,7 +256,7 @@ esp_err_t Blufi::_host_init() {
     ble_store_config_init();
     esp_blufi_btc_init();
 
-    esp_err_t err = esp_nimble_enable(_nimble_host_task);
+    esp_err_t err = esp_nimble_enable((void*)_nimble_host_task);
     if (err) {
         ESP_LOGE(BLUFI_TAG, "%s failed: %s", __func__, esp_err_to_name(err));
         return ESP_FAIL;
@@ -645,7 +640,11 @@ void Blufi::_handle_event(esp_blufi_cb_event_t event, esp_blufi_cb_param_t* para
     switch (event) {
         case ESP_BLUFI_EVENT_INIT_FINISH:
             ESP_LOGI(BLUFI_TAG, "BLUFI init finish");
+#ifdef CONFIG_BT_NIMBLE_ENABLED
+            ble_svc_gap_device_name_set(BLUFI_DEVICE_NAME);
+#else
             esp_ble_gap_set_device_name(BLUFI_DEVICE_NAME);
+#endif
             esp_blufi_adv_start();
             break;
         case ESP_BLUFI_EVENT_DEINIT_FINISH:

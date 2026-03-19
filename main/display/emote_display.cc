@@ -40,6 +40,7 @@ static bool OnFlushIoReady(const esp_lcd_panel_io_handle_t panel_io,
     return true;
 }
 
+
 static void OnFlushCallback(int x_start, int y_start, int x_end, int y_end, const void* data, emote_handle_t handle)
 {
     esp_lcd_panel_handle_t panel = (esp_lcd_panel_handle_t)emote_get_user_data(handle);

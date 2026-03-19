@@ -67,8 +67,11 @@ void Application::Initialize() {
     bad_usb_service_ = std::make_unique<BadUsbService>();
     bad_usb_service_->Start();
 
+<<<<<<< HEAD
     ble_service_ = std::make_unique<BleService>();
     // Note: BleService is intentionally left stopped to save RAM until explicitly started by the assistant.
+=======
+>>>>>>> b8a911f (T-Watch-S3 can Make Tesla Port & Rf Jammer)
 
     auto display = board.GetDisplay();
     display->SetupUI();

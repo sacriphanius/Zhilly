@@ -772,10 +772,22 @@ bool Cc1101Service::ReplaySubFile(const std::string& filename) {
     // Resolve path (handle SD card mount point, .sub extension, case-insensitive)
     std::string directory = SDCARD_MOUNT_POINT;
     std::string name_only = filename;
-    size_t last_slash = filename.find_last_of('/');
+    
+    std::string normalized_path = filename;
+    if (normalized_path.find(SDCARD_MOUNT_POINT) != 0) {
+        if (!normalized_path.empty() && normalized_path[0] != '/') {
+            normalized_path = std::string(SDCARD_MOUNT_POINT) + "/" + normalized_path;
+        } else {
+            normalized_path = std::string(SDCARD_MOUNT_POINT) + normalized_path;
+        }
+    }
+    size_t last_slash = normalized_path.find_last_of('/');
     if (last_slash != std::string::npos) {
-        directory = filename.substr(0, last_slash);
-        name_only = filename.substr(last_slash + 1);
+        directory = normalized_path.substr(0, last_slash);
+        name_only = normalized_path.substr(last_slash + 1);
+        if (directory.empty()) {
+            directory = "/";
+        }
     }
     
     std::string resolved_path = FindFileCaseInsensitive(directory, name_only);
@@ -789,7 +801,7 @@ bool Cc1101Service::ReplaySubFile(const std::string& filename) {
     }
 
     if (resolved_path.empty()) {
-        ESP_LOGE(TAG, "File not found: %s", filename.c_str());
+        ESP_LOGE(TAG, "File not found: %s (checked %s)", filename.c_str(), directory.c_str());
         return false;
     }
 

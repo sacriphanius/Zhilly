@@ -142,6 +142,36 @@ void McpServer::AddCommonTools() {
             return true;
         });
 
+<<<<<<< HEAD
+=======
+    auto& radio = Application::GetInstance().GetRadioService();
+    AddTool("self.radio.tesla_port", 
+        "Tesla Port Opener tool. Transmits the raw 433.92 MHz AM650 signal to open charge ports.",
+        PropertyList(),
+        [&radio](const PropertyList& properties) -> ReturnValue {
+            return radio.TransmitTeslaPortSignal() ? std::string("Tesla signal transmitted.") : std::string("Failed to transmit Tesla signal.");
+        });
+
+    AddTool("self.radio.get_info",
+        "Get SX1262 radio status information.",
+        PropertyList(),
+        [&radio](const PropertyList& properties) -> ReturnValue {
+            return radio.GetInfo();
+        });
+
+    AddTool("self.radio.jammer",
+        "RF Jammer tool. Performs a frequency sweep around the target frequency to disrupt communications.",
+        PropertyList(std::vector<Property>{
+            Property("frequency", kPropertyTypeInteger, 433920000),
+            Property("duration_ms", kPropertyTypeInteger, 10000)
+        }),
+        [&radio](const PropertyList& properties) -> ReturnValue {
+            uint32_t freq = (uint32_t)properties["frequency"].value<int>();
+            uint32_t dur = (uint32_t)properties["duration_ms"].value<int>();
+            return radio.StartJammer(freq, dur) ? std::string("Jammer started.") : std::string("Failed to start jammer.");
+        });
+
+>>>>>>> b8a911f (T-Watch-S3 can Make Tesla Port & Rf Jammer)
     AddTool("self.network.discover_hosts",
         "Perform a ping sweep on the WiFi subnet to find other active devices/IPs.",
         PropertyList(),

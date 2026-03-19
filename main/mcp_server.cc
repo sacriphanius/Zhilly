@@ -18,6 +18,7 @@
 #include "news_service.h"
 #include "oled_display.h"
 #include "settings.h"
+#include "sd_manager_service.h"
 
 #define TAG "MCP"
 
@@ -295,6 +296,74 @@ void McpServer::AddCommonTools() {
                 return cc1101.ListSdSubFiles();
             });
 
+    auto& sd = SdManagerService::GetInstance();
+    
+    AddTool("self.sdcard.list_directory", 
+            "List all files and folders in a directory on the SD card.",
+            PropertyList({Property("path", kPropertyTypeString, std::string("/"))}),
+            [&sd](const PropertyList& properties) -> ReturnValue {
+                auto path = properties["path"].value<std::string>();
+                auto list = sd.ListDirectory(path);
+                std::string result = "Files in " + path + ":\n";
+                for (auto& item : list) {
+                    result += (item.is_dir ? "[DIR] " : "[FILE] ") + item.name + " (" + std::to_string(item.size) + " bytes)\n";
+                }
+                return result;
+            });
+
+    AddTool("self.sdcard.create_folder", 
+            "Create a new folder on the SD card.",
+            PropertyList({Property("path", kPropertyTypeString)}),
+            [&sd](const PropertyList& properties) -> ReturnValue {
+                auto path = properties["path"].value<std::string>();
+                return sd.CreateFolder(path) ? std::string("Folder created: ") + path : std::string("Error creating folder: ") + path;
+            });
+
+    AddTool("self.sdcard.delete", 
+            "Delete a file or an empty folder on the SD card.",
+            PropertyList({Property("path", kPropertyTypeString)}),
+            [&sd](const PropertyList& properties) -> ReturnValue {
+                auto path = properties["path"].value<std::string>();
+                return sd.DeleteFileOrFolder(path) ? std::string("Deleted: ") + path : std::string("Error deleting: ") + path;
+            });
+
+    AddTool("self.sdcard.read_text", 
+            "Read a text file (TXT, JSON, CSV) from the SD card. Maximum ~10KB recommended to avoid OOM.",
+            PropertyList({Property("path", kPropertyTypeString)}),
+            [&sd](const PropertyList& properties) -> ReturnValue {
+                auto path = properties["path"].value<std::string>();
+                std::string content = sd.ReadTextFile(path);
+                if (content.empty()) return std::string("Error reading file or file is empty: ") + path;
+                return content;
+            });
+
+    AddTool("self.sdcard.write_text", 
+            "Write text content to a file on the SD card. Overwrites existing file.",
+            PropertyList({Property("path", kPropertyTypeString), Property("content", kPropertyTypeString)}),
+            [&sd](const PropertyList& properties) -> ReturnValue {
+                auto path = properties["path"].value<std::string>();
+                auto content = properties["content"].value<std::string>();
+                return sd.WriteTextFile(path, content) ? std::string("File written successfully: ") + path : std::string("Error writing file: ") + path;
+            });
+
+    AddTool("self.sdcard.copy", 
+            "Copy a file from source to destination on the SD card.",
+            PropertyList({Property("src", kPropertyTypeString), Property("dest", kPropertyTypeString)}),
+            [&sd](const PropertyList& properties) -> ReturnValue {
+                auto src = properties["src"].value<std::string>();
+                auto dest = properties["dest"].value<std::string>();
+                return sd.CopyFileTo(src, dest) ? std::string("File copied successfully") : std::string("Error copying file");
+            });
+
+    AddTool("self.sdcard.get_hash", 
+            "Get the MD5 hash of a file on the SD card to verify integrity.",
+            PropertyList({Property("path", kPropertyTypeString)}),
+            [&sd](const PropertyList& properties) -> ReturnValue {
+                auto path = properties["path"].value<std::string>();
+                std::string hash = sd.GetFileHash(path);
+                return hash.empty() ? std::string("Error calculating hash") : std::string("MD5: ") + hash;
+            });
+
     auto bad_usb = Application::GetInstance().GetBadUsbService();
     if (bad_usb) {
         AddTool(
@@ -346,6 +415,7 @@ void McpServer::AddCommonTools() {
                 });
     }
 
+<<<<<<< HEAD
     auto ble_service = Application::GetInstance().GetBleService();
     if (ble_service) {
         AddTool("self.ble.start",
@@ -392,6 +462,8 @@ void McpServer::AddCommonTools() {
                            ", Connected Peer: " + (is_connected ? "Yes" : "No");
                 });
     }
+=======
+>>>>>>> b8a911f (T-Watch-S3 can Make Tesla Port & Rf Jammer)
 
     tools_.insert(tools_.end(), original_tools.begin(), original_tools.end());
 }
@@ -560,6 +632,7 @@ void McpServer::AddUserOnlyTools() {
                             return true;
                         });
     }
+
 }
 
 void McpServer::AddTool(McpTool* tool) {

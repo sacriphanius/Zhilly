@@ -7,13 +7,15 @@
 #include <esp_timer.h>
 
 #include <string>
+#include <string_view>
 #include <mutex>
 #include <deque>
 #include <memory>
 
-#include "protocol.h"
+#include "protocols/protocol.h"
 #include "ota.h"
 #include "audio_service.h"
+#include "radio_service.h"
 #include "device_state.h"
 #include "device_state_machine.h"
 
@@ -78,6 +80,7 @@ public:
     AecMode GetAecMode() const { return aec_mode_; }
     void PlaySound(const std::string_view& sound);
     AudioService& GetAudioService() { return audio_service_; }
+    RadioService& GetRadioService() { return RadioService::GetInstance(); }
     
     void ResetProtocol();
 
