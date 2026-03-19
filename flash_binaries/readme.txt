@@ -1,1 +1,0 @@
-esptool.py --port /dev/ttyACM0 --baud 115200 --before default_reset --after hard_reset --chip esp32s3 write_flash --flash_mode dio --flash_freq 80m --flash_size 16MB 0x0 bootloader.bin 0x20000 xiaozhi.bin 0x8000 partition-table.bin 0xd000 ota_data_initial.bin 0x800000 expression_assets.bin
