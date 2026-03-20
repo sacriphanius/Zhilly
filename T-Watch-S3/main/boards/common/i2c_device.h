@@ -15,4 +15,4 @@ protected:
     i2c_master_dev_handle_t i2c_device_;
 };
 
-#endif // I2C_DEVICE_H
+#endif

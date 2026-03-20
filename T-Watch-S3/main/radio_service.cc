@@ -10,7 +10,6 @@
 
 #define TAG "RadioService"
 
-// SX1262 Opcodes
 #define SX126X_CMD_SET_STANDBY              0x80
 #define SX126X_CMD_SET_TX_PARAMS            0x8E
 #define SX126X_CMD_SET_RF_FREQUENCY         0x86
@@ -52,20 +51,20 @@ void RadioService::WriteCommand(uint8_t opcode, const uint8_t* data, size_t len)
     std::lock_guard<std::mutex> lock(spi_mutex_);
     WaitBusy();
     gpio_set_level(RADIO_SPI_CS_PIN, 0);
-    
+
     spi_transaction_t t = {};
     t.length = 8;
     t.flags = SPI_TRANS_USE_TXDATA;
     t.tx_data[0] = opcode;
     spi_device_transmit(spi_handle_, &t);
-    
+
     if (len > 0) {
         t.length = len * 8;
         t.tx_buffer = data;
         t.flags = 0;
         spi_device_transmit(spi_handle_, &t);
     }
-    
+
     gpio_set_level(RADIO_SPI_CS_PIN, 1);
 }
 
@@ -73,14 +72,13 @@ void RadioService::ReadCommand(uint8_t opcode, uint8_t* data, size_t len) {
     std::lock_guard<std::mutex> lock(spi_mutex_);
     WaitBusy();
     gpio_set_level(RADIO_SPI_CS_PIN, 0);
-    
+
     spi_transaction_t t = {};
     t.length = 8;
     t.flags = SPI_TRANS_USE_TXDATA;
     t.tx_data[0] = opcode;
     spi_device_transmit(spi_handle_, &t);
-    
-    // SX1262 requires a dummy byte after opcode for reads
+
     t.length = 8;
     t.tx_data[0] = 0x00;
     t.flags = SPI_TRANS_USE_TXDATA;
@@ -93,7 +91,7 @@ void RadioService::ReadCommand(uint8_t opcode, uint8_t* data, size_t len) {
         t.flags = 0;
         spi_device_transmit(spi_handle_, &t);
     }
-    
+
     gpio_set_level(RADIO_SPI_CS_PIN, 1);
 }
 
@@ -113,7 +111,7 @@ bool RadioService::Initialize() {
     buscfg.sclk_io_num = RADIO_SPI_SCK_PIN;
     buscfg.quadwp_io_num = -1;
     buscfg.quadhd_io_num = -1;
-    
+
     esp_err_t ret = spi_bus_initialize(SPI2_HOST, &buscfg, SPI_DMA_CH_AUTO);
     if (ret != ESP_OK && ret != ESP_ERR_INVALID_STATE) {
         ESP_LOGE(TAG, "Failed to initialize SPI bus");
@@ -123,7 +121,8 @@ bool RadioService::Initialize() {
     spi_device_interface_config_t devcfg = {};
     devcfg.clock_speed_hz = 8 * 1000 * 1000;
     devcfg.mode = 0;
-    devcfg.spics_io_num = -1; // Manual CS
+    devcfg.spics_io_num = -1;
+
     devcfg.queue_size = 7;
 
     ret = spi_bus_add_device(SPI2_HOST, &devcfg, &spi_handle_);
@@ -134,22 +133,21 @@ bool RadioService::Initialize() {
 
     Reset();
 
-    // Basic startup sequence
-    SetStandby(false); // STDBY_RC
-    
-    // Set DIO3 as TCXO ctrl (1.8V, 5ms timeout) - Typical for LilyGO S3
-    uint8_t tcxoBuf[4] = {0x01, 0x00, 0x00, 0x64}; // 1.8V, 5ms
+    SetStandby(false);
+
+    uint8_t tcxoBuf[4] = {0x01, 0x00, 0x00, 0x64};
+
     WriteCommand(0x97, tcxoBuf, 4);
-    
-    // Set DIO2 as RF Switch Ctrl
+
     uint8_t dio2Mode = 0x01;
     WriteCommand(0x9D, &dio2Mode, 1);
 
-    uint8_t regMode = 0x01; // DC-DC
+    uint8_t regMode = 0x01;
+
     WriteCommand(SX126X_CMD_SET_REGULATOR_MODE, &regMode, 1);
-    
+
     SetPaConfig();
-    
+
     uint8_t status;
     ReadCommand(SX126X_CMD_GET_STATUS, &status, 1);
     ESP_LOGI(TAG, "SX1262 Status: 0x%02X", status);
@@ -159,23 +157,29 @@ bool RadioService::Initialize() {
 }
 
 void RadioService::SetStandby(bool xosc) {
-    uint8_t mode = xosc ? 0x01 : 0x00; // STDBY_XOSC or STDBY_RC
+    uint8_t mode = xosc ? 0x01 : 0x00;
+
     WriteCommand(SX126X_CMD_SET_STANDBY, &mode, 1);
 }
 
 void RadioService::SetPaConfig() {
     uint8_t buf[4];
-    buf[0] = 0x04; // dutyCycle
-    buf[1] = 0x07; // hpMax
-    buf[2] = 0x00; // deviceSel (SX1262)
-    buf[3] = 0x01; // paLut
+    buf[0] = 0x04;
+
+    buf[1] = 0x07;
+
+    buf[2] = 0x00;
+
+    buf[3] = 0x01;
+
     WriteCommand(SX126X_CMD_SET_PA_CONFIG, buf, 4);
 }
 
 void RadioService::SetTxParams(int8_t power) {
     uint8_t buf[2];
     buf[0] = power;
-    buf[1] = 0x02; // rampTime (40us)
+    buf[1] = 0x02;
+
     WriteCommand(SX126X_CMD_SET_TX_PARAMS, buf, 2);
 }
 
@@ -198,17 +202,17 @@ bool RadioService::TransmitTeslaPortSignal() {
 
     ESP_LOGI(TAG, "Transmitting Tesla Port Open signal (433.92 MHz Toggled CW)...");
 
-    SetStandby(true); // Ensure XOSC is running
+    SetStandby(true);
+
     SetRfFrequency(433920000);
     SetPaConfig();
-    SetTxParams(22); // Max power
-    
-    // Tesla AM650 Raw timings
+    SetTxParams(22);
+
     static const uint16_t TESLA_RAW[] = {
-        400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 
-        400, 400, 400, 400, 400, 1200, 400, 400, 400, 400, 800, 800, 400, 400, 800, 800, 800, 800, 400, 400, 
-        800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 400, 400, 800, 400, 400, 800, 800, 400, 400, 800, 
-        400, 400, 800, 400, 400, 400, 400, 800, 400, 400, 400, 400, 800, 400, 400, 800, 800, 400, 400, 800, 
+        400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400, 400,
+        400, 400, 400, 400, 400, 1200, 400, 400, 400, 400, 800, 800, 400, 400, 800, 800, 800, 800, 400, 400,
+        800, 800, 800, 800, 800, 800, 800, 800, 800, 800, 400, 400, 800, 400, 400, 800, 800, 400, 400, 800,
+        400, 400, 800, 400, 400, 400, 400, 800, 400, 400, 400, 400, 800, 400, 400, 800, 800, 400, 400, 800,
         800, 800, 400, 400, 400, 400, 400, 400, 800, 400, 400, 800, 400, 400, 800, 1200
     };
 
@@ -225,24 +229,21 @@ bool RadioService::TransmitTeslaPortSignal() {
         vTaskDelay(pdMS_TO_TICKS(50));
     }
 
-    SetStandby(false); // back to RC to save power
+    SetStandby(false);
+
     ESP_LOGI(TAG, "Transmission finished.");
     return true;
 }
 
-// Global for task (simple approach for now)
 static uint32_t jam_center_freq = 433920000;
 
-// ---------------------------------------------------------------------------
-// RF Jammer Implementation
-// ---------------------------------------------------------------------------
 void RadioService::JammerTask(void* arg) {
     RadioService* svc = static_cast<RadioService*>(arg);
-    // Re-initialize for clean state
+
     svc->Initialize();
-    
+
     ESP_LOGI("RadioService", "Jammer task started around %lu Hz", jam_center_freq);
-    
+
     svc->SetStandby(true);
     svc->SetPaConfig();
     svc->SetTxParams(22);

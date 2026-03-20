@@ -25,9 +25,7 @@
 #define VOLUME_UP_BUTTON_GPIO   GPIO_NUM_NC
 #define VOLUME_DOWN_BUTTON_GPIO GPIO_NUM_NC
 
-/* Expander */
 #define DRV_IO_EXP_INPUT_MASK  (IO_EXPANDER_PIN_NUM_2 | IO_EXPANDER_PIN_NUM_12)
-
 
 #define DISPLAY_WIDTH   240
 #define DISPLAY_HEIGHT  320
@@ -41,7 +39,6 @@
 #define DISPLAY_BACKLIGHT_PIN GPIO_NUM_NC
 #define DISPLAY_BACKLIGHT_OUTPUT_INVERT false
 
-/* DFRobot K10 Camera pins */
 #define PWDN_GPIO_NUM       GPIO_NUM_NC
 #define RESET_GPIO_NUM      GPIO_NUM_NC
 #define XCLK_GPIO_NUM       GPIO_NUM_7
@@ -52,7 +49,6 @@
 #define SIOD_GPIO_NUM        GPIO_NUM_20
 #define SIOC_GPIO_NUM        GPIO_NUM_19
 
-/* Camera pins */
 #define CAMERA_PIN_PWDN     PWDN_GPIO_NUM
 #define CAMERA_PIN_RESET    RESET_GPIO_NUM
 #define CAMERA_PIN_XCLK     XCLK_GPIO_NUM
@@ -73,4 +69,4 @@
 
 #define XCLK_FREQ_HZ 6000000
 
-#endif // _BOARD_CONFIG_H_
+#endif

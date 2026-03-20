@@ -34,4 +34,4 @@ public:
     virtual void EnableOutput(bool enable) override;
 };
 
-#endif // _BOX_AUDIO_CODEC_H
+#endif

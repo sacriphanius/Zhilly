@@ -52,4 +52,4 @@ private:
     std::unique_ptr<anim::EmojiPlayer> player_;
 };
 
-} // namespace anim
+}

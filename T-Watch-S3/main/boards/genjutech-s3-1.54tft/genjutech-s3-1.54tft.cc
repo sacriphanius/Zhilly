@@ -21,15 +21,15 @@
 #define TAG "GenJuTech_s3_1_54TFT"
 
 class SparkBotEs8311AudioCodec : public Es8311AudioCodec {
-    private:    
-    
+    private:
+
     public:
         SparkBotEs8311AudioCodec(void* i2c_master_handle, i2c_port_t i2c_port, int input_sample_rate, int output_sample_rate,
                             gpio_num_t mclk, gpio_num_t bclk, gpio_num_t ws, gpio_num_t dout, gpio_num_t din,
                             gpio_num_t pa_pin, uint8_t es8311_addr, bool use_mclk = true)
             : Es8311AudioCodec(i2c_master_handle, i2c_port, input_sample_rate, output_sample_rate,
                                  mclk,  bclk,  ws,  dout,  din,pa_pin,  es8311_addr,  use_mclk = true) {}
-    
+
         void EnableOutput(bool enable) override {
             if (enable == output_enabled_) {
                 return;
@@ -37,14 +37,14 @@ class SparkBotEs8311AudioCodec : public Es8311AudioCodec {
             if (enable) {
                 Es8311AudioCodec::EnableOutput(enable);
             } else {
-               // Nothing todo because the display io and PA io conflict
+
             }
         }
     };
 
 class GenJuTech_s3_1_54TFT : public WifiBoard {
 private:
-    // i2c_master_bus_handle_t display_i2c_bus_;
+
     Button boot_button_;
     Button volume_up_button_;
     Button volume_down_button_;
@@ -65,7 +65,7 @@ private:
     }
 
     void InitializePowerSaveTimer() {
-        // 第一个参数不为 -1 时，进入睡眠会关闭音频输入
+
         power_save_timer_ = new PowerSaveTimer(240, 60);
         power_save_timer_->OnEnterSleepMode([this]() {
             GetDisplay()->SetPowerSaveMode(true);
@@ -77,7 +77,7 @@ private:
     }
 
     void InitializeCodecI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = I2C_NUM_0,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
@@ -114,12 +114,6 @@ private:
             }
             app.ToggleChatState();
         });
-        // boot_button_.OnPressDown([this]() {
-        //     Application::GetInstance().StartListening();
-        // });
-        // boot_button_.OnPressUp([this]() {
-        //     Application::GetInstance().StopListening();
-        // });
 
         volume_up_button_.OnClick([this]() {
             power_save_timer_->WakeUp();
@@ -171,7 +165,7 @@ private:
 
         esp_lcd_panel_io_handle_t panel_io = nullptr;
         esp_lcd_panel_handle_t panel = nullptr;
-        // 液晶屏控制IO初始化
+
         ESP_LOGD(TAG, "Install panel IO");
         esp_lcd_panel_io_spi_config_t io_config = {};
         io_config.cs_gpio_num = DISPLAY_CS;
@@ -183,7 +177,6 @@ private:
         io_config.lcd_param_bits = 8;
         ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi(SPI3_HOST, &io_config, &panel_io));
 
-        // 初始化液晶屏驱动芯片ST7789
         ESP_LOGD(TAG, "Install LCD driver");
         esp_lcd_panel_dev_config_t panel_config = {};
         panel_config.reset_gpio_num = DISPLAY_RES;
@@ -230,7 +223,7 @@ public:
     virtual Display *GetDisplay() override {
         return display_;
     }
-    
+
     virtual Backlight* GetBacklight() override {
         static PwmBacklight backlight(DISPLAY_BACKLIGHT_PIN, DISPLAY_BACKLIGHT_OUTPUT_INVERT);
         return &backlight;

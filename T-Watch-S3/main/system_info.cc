@@ -62,14 +62,13 @@ esp_err_t SystemInfo::PrintTaskCpuUsage(TickType_t xTicksToWait) {
     esp_err_t ret;
     uint32_t total_elapsed_time;
 
-    //Allocate array to store current task states
     start_array_size = uxTaskGetNumberOfTasks() + ARRAY_SIZE_OFFSET;
     start_array = (TaskStatus_t*)malloc(sizeof(TaskStatus_t) * start_array_size);
     if (start_array == NULL) {
         ret = ESP_ERR_NO_MEM;
         goto exit;
     }
-    //Get current task states
+
     start_array_size = uxTaskGetSystemState(start_array, start_array_size, &start_run_time);
     if (start_array_size == 0) {
         ret = ESP_ERR_INVALID_SIZE;
@@ -78,21 +77,19 @@ esp_err_t SystemInfo::PrintTaskCpuUsage(TickType_t xTicksToWait) {
 
     vTaskDelay(xTicksToWait);
 
-    //Allocate array to store tasks states post delay
     end_array_size = uxTaskGetNumberOfTasks() + ARRAY_SIZE_OFFSET;
     end_array = (TaskStatus_t*)malloc(sizeof(TaskStatus_t) * end_array_size);
     if (end_array == NULL) {
         ret = ESP_ERR_NO_MEM;
         goto exit;
     }
-    //Get post delay task states
+
     end_array_size = uxTaskGetSystemState(end_array, end_array_size, &end_run_time);
     if (end_array_size == 0) {
         ret = ESP_ERR_INVALID_SIZE;
         goto exit;
     }
 
-    //Calculate total_elapsed_time in units of run time stats clock period.
     total_elapsed_time = (end_run_time - start_run_time);
     if (total_elapsed_time == 0) {
         ret = ESP_ERR_INVALID_STATE;
@@ -100,19 +97,19 @@ esp_err_t SystemInfo::PrintTaskCpuUsage(TickType_t xTicksToWait) {
     }
 
     printf("| Task | Run Time | Percentage\n");
-    //Match each task in start_array to those in the end_array
+
     for (int i = 0; i < start_array_size; i++) {
         int k = -1;
         for (int j = 0; j < end_array_size; j++) {
             if (start_array[i].xHandle == end_array[j].xHandle) {
                 k = j;
-                //Mark that task have been matched by overwriting their handles
+
                 start_array[i].xHandle = NULL;
                 end_array[j].xHandle = NULL;
                 break;
             }
         }
-        //Check if matching task found
+
         if (k >= 0) {
             uint32_t task_elapsed_time = end_array[k].ulRunTimeCounter - start_array[i].ulRunTimeCounter;
             uint32_t percentage_time = (task_elapsed_time * 100UL) / (total_elapsed_time * CONFIG_FREERTOS_NUMBER_OF_CORES);
@@ -120,7 +117,6 @@ esp_err_t SystemInfo::PrintTaskCpuUsage(TickType_t xTicksToWait) {
         }
     }
 
-    //Print unmatched tasks
     for (int i = 0; i < start_array_size; i++) {
         if (start_array[i].xHandle != NULL) {
             printf("| %s | Deleted\n", start_array[i].pcTaskName);
@@ -133,7 +129,8 @@ esp_err_t SystemInfo::PrintTaskCpuUsage(TickType_t xTicksToWait) {
     }
     ret = ESP_OK;
 
-exit:    //Common return path
+exit:
+
     free(start_array);
     free(end_array);
     return ret;

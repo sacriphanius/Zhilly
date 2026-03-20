@@ -20,5 +20,4 @@
 #define BUILTIN_LED_GPIO        GPIO_NUM_5
 #define BOOT_BUTTON_GPIO        GPIO_NUM_6
 
-
-#endif // _BOARD_CONFIG_H_
+#endif

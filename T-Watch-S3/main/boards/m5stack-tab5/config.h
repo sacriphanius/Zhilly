@@ -3,8 +3,6 @@
 
 #include <driver/gpio.h>
 
-/* ---------------------------------------------------------------- */
-// Audio CODEC ES7210 + ES8311
 #define AUDIO_INPUT_SAMPLE_RATE  24000
 #define AUDIO_OUTPUT_SAMPLE_RATE 24000
 
@@ -16,7 +14,8 @@
 #define AUDIO_I2S_GPIO_DIN       GPIO_NUM_28
 #define AUDIO_I2S_GPIO_DOUT      GPIO_NUM_26
 
-#define AUDIO_CODEC_PA_PIN       GPIO_NUM_NC // PI4IOE 控制 
+#define AUDIO_CODEC_PA_PIN       GPIO_NUM_NC
+
 #define AUDIO_CODEC_I2C_SDA_PIN  GPIO_NUM_31
 #define AUDIO_CODEC_I2C_SCL_PIN  GPIO_NUM_32
 #define AUDIO_CODEC_ES8311_ADDR  ES8311_CODEC_DEFAULT_ADDR
@@ -27,14 +26,10 @@
 #define VOLUME_UP_BUTTON_GPIO    GPIO_NUM_NC
 #define VOLUME_DOWN_BUTTON_GPIO  GPIO_NUM_NC
 
-/* ---------------------------------------------------------------- */
-// 摄像头相关参数配置
 #define CAMERA_SCL  GPIO_NUM_32
 #define CAMERA_SDA  GPIO_NUM_31
 #define CAMERA_MCLK GPIO_NUM_36
 
-/* ---------------------------------------------------------------- */
-// 显示屏相关参数配置
 #define DISPLAY_WIDTH    720
 #define DISPLAY_HEIGHT   1280
 #define DISPLAY_MIRROR_X false
@@ -47,14 +42,13 @@
 #define DISPLAY_BACKLIGHT_PIN GPIO_NUM_22
 #define DISPLAY_BACKLIGHT_OUTPUT_INVERT false
 
-#define TOUCH_INT_GPIO  GPIO_NUM_23  // 触摸中断
+#define TOUCH_INT_GPIO  GPIO_NUM_23
 
 const ili9881c_lcd_init_cmd_t tab5_lcd_ili9881c_specific_init_code_default[] = {
-    // {cmd, { data }, data_size, delay}
-    /**** CMD_Page 1 ****/
+
     {0xFF, (uint8_t[]){0x98, 0x81, 0x01}, 3, 0},
-    {0xB7, (uint8_t[]){0x03}, 1, 0},  // set 2 lane
-    /**** CMD_Page 3 ****/
+    {0xB7, (uint8_t[]){0x03}, 1, 0},
+
     {0xFF, (uint8_t[]){0x98, 0x81, 0x03}, 3, 0},
     {0x01, (uint8_t[]){0x00}, 1, 0},
     {0x02, (uint8_t[]){0x00}, 1, 0},
@@ -186,7 +180,6 @@ const ili9881c_lcd_init_cmd_t tab5_lcd_ili9881c_specific_init_code_default[] = {
     {0x89, (uint8_t[]){0x05}, 1, 0},
     {0x8A, (uint8_t[]){0x01}, 1, 0},
 
-    /**** CMD_Page 4 ****/
     {0xFF, (uint8_t[]){0x98, 0x81, 0x04}, 3, 0},
     {0x38, (uint8_t[]){0x01}, 1, 0},
     {0x39, (uint8_t[]){0x00}, 1, 0},
@@ -198,7 +191,6 @@ const ili9881c_lcd_init_cmd_t tab5_lcd_ili9881c_specific_init_code_default[] = {
     {0x87, (uint8_t[]){0xBA}, 1, 0},
     {0x3B, (uint8_t[]){0x98}, 1, 0},
 
-    /**** CMD_Page 1 ****/
     {0xFF, (uint8_t[]){0x98, 0x81, 0x01}, 3, 0},
     {0x22, (uint8_t[]){0x0A}, 1, 0},
     {0x31, (uint8_t[]){0x00}, 1, 0},
@@ -211,7 +203,6 @@ const ili9881c_lcd_init_cmd_t tab5_lcd_ili9881c_specific_init_code_default[] = {
     {0x62, (uint8_t[]){0x0C}, 1, 0},
     {0x63, (uint8_t[]){0x00}, 1, 0},
 
-    // Gamma P
     {0xA0, (uint8_t[]){0x00}, 1, 0},
     {0xA1, (uint8_t[]){0x15}, 1, 0},
     {0xA2, (uint8_t[]){0x1F}, 1, 0},
@@ -233,7 +224,6 @@ const ili9881c_lcd_init_cmd_t tab5_lcd_ili9881c_specific_init_code_default[] = {
     {0xB2, (uint8_t[]){0x5D}, 1, 0},
     {0xB3, (uint8_t[]){0x39}, 1, 0},
 
-    // Gamma N
     {0xC0, (uint8_t[]){0x00}, 1, 0},
     {0xC1, (uint8_t[]){0x01}, 1, 0},
     {0xC2, (uint8_t[]){0x0C}, 1, 0},
@@ -255,16 +245,14 @@ const ili9881c_lcd_init_cmd_t tab5_lcd_ili9881c_specific_init_code_default[] = {
     {0xD2, (uint8_t[]){0x5F}, 1, 0},
     {0xD3, (uint8_t[]){0x39}, 1, 0},
 
-    /**** CMD_Page 0 ****/
     {0xFF, (uint8_t[]){0x98, 0x81, 0x00}, 3, 0},
     {0x35, (uint8_t[]){0x00}, 0, 0},
-    // {0x11, (uint8_t []){0x00}, 0},
+
     {0xFE, (uint8_t[]){0x00}, 0, 0},
     {0x29, (uint8_t[]){0x00}, 0, 0},
-    //============ Gamma END===========
+
 };
 
-// ST7123 vendor specific initialization commands
 const st7123_lcd_init_cmd_t st7123_vendor_specific_init_default[] = {
     {0x60, (uint8_t[]){0x71, 0x23, 0xa2}, 3, 0},
     {0x60, (uint8_t[]){0x71, 0x23, 0xa3}, 3, 0},
@@ -322,4 +310,4 @@ const st7123_lcd_init_cmd_t st7123_vendor_specific_init_default[] = {
     {0x35, (uint8_t[]){0x00}, 1, 100},
 };
 
-#endif // _BOARD_CONFIG_H_
+#endif

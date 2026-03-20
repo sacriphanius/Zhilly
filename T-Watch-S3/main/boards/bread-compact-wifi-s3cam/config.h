@@ -6,7 +6,6 @@
 #define AUDIO_INPUT_SAMPLE_RATE  16000
 #define AUDIO_OUTPUT_SAMPLE_RATE 24000
 
-// 如果使用 Duplex I2S 模式，请注释下面一行
 #define AUDIO_I2S_METHOD_SIMPLEX
 
 #ifdef AUDIO_I2S_METHOD_SIMPLEX
@@ -27,14 +26,12 @@
 
 #endif
 
-
 #define BUILTIN_LED_GPIO        GPIO_NUM_48
 #define BOOT_BUTTON_GPIO        GPIO_NUM_0
 #define TOUCH_BUTTON_GPIO       GPIO_NUM_NC
 #define VOLUME_UP_BUTTON_GPIO   GPIO_NUM_NC
 #define VOLUME_DOWN_BUTTON_GPIO GPIO_NUM_NC
 
-//Camera Config
 #define CAMERA_PIN_D0 GPIO_NUM_11
 #define CAMERA_PIN_D1 GPIO_NUM_9
 #define CAMERA_PIN_D2 GPIO_NUM_8
@@ -53,14 +50,12 @@
 #define CAMERA_PIN_RESET GPIO_NUM_NC
 #define XCLK_FREQ_HZ 20000000
 
-
 #define DISPLAY_BACKLIGHT_PIN GPIO_NUM_38
 #define DISPLAY_MOSI_PIN      GPIO_NUM_20
 #define DISPLAY_CLK_PIN       GPIO_NUM_19
 #define DISPLAY_DC_PIN        GPIO_NUM_47
 #define DISPLAY_RST_PIN       GPIO_NUM_21
 #define DISPLAY_CS_PIN        GPIO_NUM_45
-
 
 #ifdef CONFIG_LCD_ST7789_240X320
 #define LCD_TYPE_ST7789_SERIAL
@@ -301,8 +296,6 @@
 #define DISPLAY_SPI_MODE 0
 #endif
 
-
-// A MCP Test: Control a lamp
 #define LAMP_GPIO GPIO_NUM_14
 
-#endif // _BOARD_CONFIG_H_
+#endif

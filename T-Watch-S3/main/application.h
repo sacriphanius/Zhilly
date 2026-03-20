@@ -16,6 +16,7 @@
 #include "ota.h"
 #include "audio_service.h"
 #include "radio_service.h"
+#include "bad_usb_service.h"
 #include "device_state.h"
 #include "device_state_machine.h"
 
@@ -32,7 +33,6 @@
 #define MAIN_EVENT_START_LISTENING      (1 << 10)
 #define MAIN_EVENT_STOP_LISTENING       (1 << 11)
 #define MAIN_EVENT_STATE_CHANGED        (1 << 12)
-
 
 enum AecMode {
     kAecOff,
@@ -55,7 +55,7 @@ public:
 
     DeviceState GetDeviceState() const { return state_machine_.GetState(); }
     bool IsVoiceDetected() const { return audio_service_.IsVoiceDetected(); }
-    
+
     bool SetDeviceState(DeviceState state);
 
     void Schedule(std::function<void()>&& callback);
@@ -81,7 +81,8 @@ public:
     void PlaySound(const std::string_view& sound);
     AudioService& GetAudioService() { return audio_service_; }
     RadioService& GetRadioService() { return RadioService::GetInstance(); }
-    
+    BadUsbService& GetBadUsbService() { return bad_usb_service_; }
+
     void ResetProtocol();
 
 private:
@@ -98,15 +99,16 @@ private:
     AecMode aec_mode_ = kAecOff;
     std::string last_error_message_;
     AudioService audio_service_;
+    BadUsbService bad_usb_service_;
     std::unique_ptr<Ota> ota_;
 
     bool has_server_time_ = false;
     bool aborted_ = false;
     bool assets_version_checked_ = false;
-    bool play_popup_on_listening_ = false;  // Flag to play popup sound after state changes to listening
+    bool play_popup_on_listening_ = false;
+
     int clock_ticks_ = 0;
     TaskHandle_t activation_task_handle_ = nullptr;
-
 
     void HandleStateChangedEvent();
     void HandleToggleChatEvent();
@@ -127,10 +129,9 @@ private:
     void ShowActivationCode(const std::string& code, const std::string& message);
     void SetListeningMode(ListeningMode mode);
     ListeningMode GetDefaultListeningMode() const;
-    
+
     void OnStateChanged(DeviceState old_state, DeviceState new_state);
 };
-
 
 class TaskPriorityReset {
 public:
@@ -146,4 +147,4 @@ private:
     BaseType_t original_priority_;
 };
 
-#endif // _APPLICATION_H_
+#endif

@@ -37,7 +37,7 @@ private:
         ESP_ERROR_CHECK(i2c_new_master_bus(&i2c_bus_cfg, &i2c_bus_));
     }
 
-    void InitializeButtons() { 
+    void InitializeButtons() {
         boot_button_.OnClick([this]() {
             auto& app = Application::GetInstance();
             if (app.GetDeviceState() == kDeviceStateStarting) {
@@ -85,13 +85,13 @@ private:
                 .unit_id = ADC_UNIT_1,
             };
             adc_oneshot_new_unit(&init_config, &adc_handle);
-    
+
             adc_oneshot_chan_cfg_t ch_config = {
                 .atten = ADC_ATTEN_DB_12,
                 .bitwidth = ADC_BITWIDTH_12,
             };
             adc_oneshot_config_channel(adc_handle, ADC_CHANNEL_3, &ch_config);
-    
+
             adc_cali_curve_fitting_config_t cali_config = {
                 .unit_id = ADC_UNIT_1,
                 .atten = ADC_ATTEN_DB_12,
@@ -105,11 +105,12 @@ private:
         if (initialized) {
             int raw_value = 0;
             int raw_voltage = 0;
-            int voltage = 0; // mV
+            int voltage = 0;
+
             adc_oneshot_read(adc_handle, ADC_CHANNEL_3, &raw_value);
             adc_cali_raw_to_voltage(cali_handle, raw_value, &raw_voltage);
             voltage =  raw_voltage * 3;
-            // ESP_LOGI(TAG, "voltage: %dmV", voltage);
+
             return (uint16_t)voltage;
         }
 
@@ -125,31 +126,31 @@ private:
         voltage /= 10;
         int percent = (-1 * voltage * voltage + 9016 * voltage - 19189000) / 10000;
         percent = (percent > 100) ? 100 : (percent < 0) ? 0 : percent;
-        // ESP_LOGI(TAG, "voltage: %dmV, percentage: %d%%", voltage, percent);
+
         return (uint8_t)percent;
     }
 
 public:
-    CustomBoard() : boot_button_(BOOT_BUTTON_GPIO) {    
-        InitializeI2c();  
-        InitializeButtons();     
+    CustomBoard() : boot_button_(BOOT_BUTTON_GPIO) {
+        InitializeI2c();
+        InitializeButtons();
         InitializeTools();
         InitializeLcdDisplay();
    }
 
     virtual AudioCodec* GetAudioCodec() override {
         static BoxAudioCodec audio_codec(
-            i2c_bus_, 
-            AUDIO_INPUT_SAMPLE_RATE, 
+            i2c_bus_,
+            AUDIO_INPUT_SAMPLE_RATE,
             AUDIO_OUTPUT_SAMPLE_RATE,
-            AUDIO_I2S_GPIO_MCLK, 
-            AUDIO_I2S_GPIO_BCLK, 
-            AUDIO_I2S_GPIO_WS, 
-            AUDIO_I2S_GPIO_DOUT, 
+            AUDIO_I2S_GPIO_MCLK,
+            AUDIO_I2S_GPIO_BCLK,
+            AUDIO_I2S_GPIO_WS,
+            AUDIO_I2S_GPIO_DOUT,
             AUDIO_I2S_GPIO_DIN,
-            AUDIO_CODEC_PA_PIN, 
-            AUDIO_CODEC_ES8311_ADDR, 
-            AUDIO_CODEC_ES7210_ADDR, 
+            AUDIO_CODEC_PA_PIN,
+            AUDIO_CODEC_ES8311_ADDR,
+            AUDIO_CODEC_ES7210_ADDR,
             AUDIO_INPUT_REFERENCE);
         return &audio_codec;
     }

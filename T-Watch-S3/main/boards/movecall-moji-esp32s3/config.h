@@ -1,8 +1,6 @@
 #ifndef _BOARD_CONFIG_H_
 #define _BOARD_CONFIG_H_
 
-// Movecall Moji configuration
-
 #include <driver/gpio.h>
 
 #define AUDIO_INPUT_SAMPLE_RATE  24000
@@ -42,4 +40,4 @@
 
 #define DISPLAY_SPI_SCLK_HZ     (40 * 1000 * 1000)
 
-#endif // _BOARD_CONFIG_H_
+#endif

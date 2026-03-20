@@ -43,7 +43,7 @@ class Hu087Board : public WifiBoard {
     }
 
     void InitializeSsd1306Display() {
-        // SSD1306 config
+
         esp_lcd_panel_io_i2c_config_t io_config = {
             .dev_addr = 0x3C,
             .on_color_trans_done = nullptr,
@@ -77,7 +77,6 @@ class Hu087Board : public WifiBoard {
             esp_lcd_new_panel_ssd1306(panel_io_, &panel_config, &panel_));
         ESP_LOGI(TAG, "SSD1306 driver installed");
 
-        // Reset the display
         ESP_ERROR_CHECK(esp_lcd_panel_reset(panel_));
         if (esp_lcd_panel_init(panel_) != ESP_OK) {
             ESP_LOGE(TAG, "Failed to initialize display");
@@ -85,7 +84,6 @@ class Hu087Board : public WifiBoard {
             return;
         }
 
-        // Set the display to on
         ESP_LOGI(TAG, "Turning display on");
         ESP_ERROR_CHECK(esp_lcd_panel_disp_on_off(panel_, true));
 
@@ -95,11 +93,16 @@ class Hu087Board : public WifiBoard {
 
     void initializeAmpCtrl() {
         gpio_config_t io_conf = {
-            .pin_bit_mask = (1ULL << AUDIO_I2S_SPK_GPIO_CTLR),  // Select GPIO 2
-            .mode = GPIO_MODE_OUTPUT,                           // Set as output
-            .pull_up_en = GPIO_PULLUP_ENABLE,                   // Disable pull-up
-            .pull_down_en = GPIO_PULLDOWN_DISABLE,              // Disable pull-down
-            .intr_type = GPIO_INTR_DISABLE  // Disable interrupts
+            .pin_bit_mask = (1ULL << AUDIO_I2S_SPK_GPIO_CTLR),
+
+            .mode = GPIO_MODE_OUTPUT,
+
+            .pull_up_en = GPIO_PULLUP_ENABLE,
+
+            .pull_down_en = GPIO_PULLDOWN_DISABLE,
+
+            .intr_type = GPIO_INTR_DISABLE
+
         };
         gpio_config(&io_conf);
         gpio_set_level(AUDIO_I2S_SPK_GPIO_CTLR, 1);
@@ -120,7 +123,8 @@ class Hu087Board : public WifiBoard {
             auto volume = codec->output_volume() + 10;
             if (volume > 100) {
                 volume = 100;
-            }  // Need to implement logic to lower volume
+            }
+
             codec->SetOutputVolume(volume);
             GetDisplay()->ShowNotification(Lang::Strings::VOLUME +
                                            std::to_string(volume));
@@ -132,8 +136,8 @@ class Hu087Board : public WifiBoard {
         InitializeDisplayI2c();
         InitializeSsd1306Display();
         InitializeButtons();
-        initializeAmpCtrl();  // Could control the amp ctrl pin throught voice
-                              // detection i guess
+        initializeAmpCtrl();
+
     }
 
     virtual AudioCodec* GetAudioCodec() override {

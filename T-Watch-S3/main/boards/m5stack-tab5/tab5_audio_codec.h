@@ -5,7 +5,6 @@
 #include <esp_codec_dev.h>
 #include <esp_codec_dev_defaults.h>
 
-
 class Tab5AudioCodec : public AudioCodec {
 private:
     const audio_codec_data_if_t* data_if_ = nullptr;
@@ -34,4 +33,4 @@ public:
     virtual void EnableOutput(bool enable) override;
 };
 
-#endif // _TAB5_AUDIO_CODEC_H
+#endif

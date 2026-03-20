@@ -4,7 +4,7 @@ Executing action: all (aliases: build)
 Running cmake in directory /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/build
 Executing "cmake -G Ninja -DPYTHON_DEPS_CHECKED=1 -DPYTHON=/home/sacriphanius/.espressif/python_env/idf5.5_py3.11_env/bin/python -DESP_PLATFORM=1 -DCCACHE_ENABLE=0 /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32"...
 -- IDF_TARGET is not set, guessed 'esp32s3' from sdkconfig '/home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/sdkconfig'
--- Found Git: /usr/bin/git (found version "2.39.5") 
+-- Found Git: /usr/bin/git (found version "2.39.5")
 -- Minimal build - ON
 -- The C compiler identification is GNU 14.2.0
 -- The CXX compiler identification is GNU 14.2.0
@@ -115,13 +115,13 @@ NOTICE: Skipping optional dependency: espressif/esp_ipa
 NOTICE: Skipping optional dependency: espressif/usb
 -- Project sdkconfig file /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/sdkconfig
 Loading defaults file /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/sdkconfig.defaults...
-/home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/sdkconfig.defaults:32 CONFIG_NEWLIB_NANO_FORMAT was replaced with CONFIG_LIBC_NEWLIB_NANO_FORMAT 
+/home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/sdkconfig.defaults:32 CONFIG_NEWLIB_NANO_FORMAT was replaced with CONFIG_LIBC_NEWLIB_NANO_FORMAT
 Loading defaults file /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/sdkconfig.defaults.esp32s3...
 -- Compiler supported targets: xtensa-esp-elf
--- Found Python3: /home/sacriphanius/.espressif/python_env/idf5.5_py3.11_env/bin/python (found version "3.11.2") found components: Interpreter 
+-- Found Python3: /home/sacriphanius/.espressif/python_env/idf5.5_py3.11_env/bin/python (found version "3.11.2") found components: Interpreter
 -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
 -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
--- Found Threads: TRUE  
+-- Found Threads: TRUE
 -- Performing Test C_COMPILER_SUPPORTS_WFORMAT_SIGNEDNESS
 -- Performing Test C_COMPILER_SUPPORTS_WFORMAT_SIGNEDNESS - Success
 -- USING O3
@@ -167,7 +167,7 @@ Loading defaults file /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/sd
 -- IOT_USBH_CDC: 3.0.0
 -- IOT_USBH_RNDIS: 0.3.1
 -- KNOB: 1.0.2
--- Found PkgConfig: /usr/bin/pkg-config (found version "1.8.1") 
+-- Found PkgConfig: /usr/bin/pkg-config (found version "1.8.1")
 -- ESP_EMOTE_EXPRESSION: 0.1.0
 -- Otto Emoji GIF Component: gifs only at /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/managed_components/txp666__otto-emoji-gif-component/gifs
 -- ESP_LCD_SH8601: 1.0.2
@@ -209,8 +209,7 @@ Successfully generated language config file: /home/sacriphanius/Masaüstü/xiaoz
 [13/2163] Generating ../../partition_table/partition-table.bin
 Partition table binary generated. Contents:
 *******************************************************************************
-# ESP-IDF Partition Table
-# Name, Type, SubType, Offset, Size, Flags
+
 nvs,data,nvs,0x9000,16K,
 otadata,data,ota,0xd000,8K,
 phy_init,data,phy,0xf000,4K,
@@ -651,7 +650,7 @@ Completed! Builds: 1/1
 [428/2163] Building ASM object esp-idf/freertos/CMakeFiles/__idf_freertos.dir/FreeRTOS-Kernel/portable/xtensa/portasm.S.obj
 [429/2163] Building C object esp-idf/esp_hw_support/CMakeFiles/__idf_esp_hw_support.dir/mspi_timing_tuning/port/esp32s3/mspi_timing_by_mspi_delay.c.obj
 [430/2163] Performing configure step for 'bootloader'
--- Found Git: /usr/bin/git (found version "2.39.5") 
+-- Found Git: /usr/bin/git (found version "2.39.5")
 -- Minimal build - OFF
 -- The C compiler identification is GNU 14.2.0
 -- The CXX compiler identification is GNU 14.2.0
@@ -2491,7 +2490,7 @@ In file included from /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/ma
                  from /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/main/display/lvgl_display/jpg/image_to_jpeg.h:12,
                  from /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/main/display/lvgl_display/lvgl_display.cc:14:
 /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/managed_components/espressif__esp_video/include/linux/ioctl.h:54:9: warning: "_IO" redefined
-   54 | #define _IO(type,nr)        _IOC(_IOC_NONE,(type),(nr),0)
+   54 |
       |         ^~~
 In file included from /home/sacriphanius/esp/esp-idf/components/lwip/include/lwip/sockets.h:8,
                  from /home/sacriphanius/esp/esp-idf/components/lwip/port/esp32xx/include/sys/socket.h:15,
@@ -2500,19 +2499,19 @@ In file included from /home/sacriphanius/esp/esp-idf/components/lwip/include/lwi
                  from /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/main/application.h:16,
                  from /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/main/display/lvgl_display/lvgl_display.cc:10:
 /home/sacriphanius/esp/esp-idf/components/lwip/lwip/src/include/lwip/sockets.h:419:9: note: this is the location of the previous definition
-  419 | #define _IO(x,y)        ((long)(IOC_VOID|((x)<<8)|(y)))
+  419 |
       |         ^~~
 /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/managed_components/espressif__esp_video/include/linux/ioctl.h:55:9: warning: "_IOR" redefined
-   55 | #define _IOR(type,nr,size)  _IOC(_IOC_READ,(type),(nr),(_IOC_TYPECHECK(size)))
+   55 |
       |         ^~~~
 /home/sacriphanius/esp/esp-idf/components/lwip/lwip/src/include/lwip/sockets.h:421:9: note: this is the location of the previous definition
-  421 | #define _IOR(x,y,t)     ((long)(IOC_OUT|((sizeof(t)&IOCPARM_MASK)<<16)|((x)<<8)|(y)))
+  421 |
       |         ^~~~
 /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/managed_components/espressif__esp_video/include/linux/ioctl.h:56:9: warning: "_IOW" redefined
-   56 | #define _IOW(type,nr,size)  _IOC(_IOC_WRITE,(type),(nr),(_IOC_TYPECHECK(size)))
+   56 |
       |         ^~~~
 /home/sacriphanius/esp/esp-idf/components/lwip/lwip/src/include/lwip/sockets.h:423:9: note: this is the location of the previous definition
-  423 | #define _IOW(x,y,t)     ((long)(IOC_IN|((sizeof(t)&IOCPARM_MASK)<<16)|((x)<<8)|(y)))
+  423 |
       |         ^~~~
 [2100/2163] Building CXX object esp-idf/main/CMakeFiles/__idf_main.dir/system_info.cc.obj
 [2101/2163] Building CXX object esp-idf/main/CMakeFiles/__idf_main.dir/settings.cc.obj
@@ -2883,11 +2882,7 @@ expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
 
-
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
-
-
-
 
 ELF file SHA256: ed6c5c29c
 
@@ -2955,11 +2950,7 @@ expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
 
-
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
-
-
-
 
 ELF file SHA256: ed6c5c29c
 
@@ -3027,11 +3018,7 @@ expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
 
-
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
-
-
-
 
 ELF file SHA256: ed6c5c29c
 
@@ -3099,11 +3086,7 @@ expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
 
-
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
-
-
-
 
 ELF file SHA256: ed6c5c29c
 
@@ -3171,11 +3154,7 @@ expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
 
-
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
-
-
-
 
 ELF file SHA256: ed6c5c29c
 
@@ -3242,14 +3221,10 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fc
 b55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -3315,13 +3290,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -3387,13 +3358,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -3459,13 +3426,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -3531,14 +3494,10 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fc
 b55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -3604,13 +3563,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -3676,13 +3631,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -3748,13 +3699,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -3820,13 +3767,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -3892,13 +3835,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -3964,13 +3903,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -4036,13 +3971,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -4108,13 +4039,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -4180,13 +4107,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -4252,13 +4175,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -4324,13 +4243,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -4396,13 +4311,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -4468,13 +4379,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -4540,13 +4447,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -4612,13 +4515,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -4684,13 +4583,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -4756,13 +4651,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -4828,13 +4719,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -4900,13 +4787,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -4972,13 +4855,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -5044,13 +4923,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -5116,13 +4991,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -5188,14 +5059,10 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fc
 b55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -5261,13 +5128,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -5333,14 +5196,10 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fc
 b55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -5406,13 +5265,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -5478,13 +5333,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -5550,13 +5401,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -5622,13 +5469,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -5694,15 +5537,11 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb543
 0 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fc
 b55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -5768,13 +5607,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -5840,13 +5675,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -5912,13 +5743,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -5984,13 +5811,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -6056,13 +5879,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -6128,13 +5947,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -6200,13 +6015,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -6272,13 +6083,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -6344,15 +6151,11 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb543
 0 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fc
 b55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -6418,13 +6221,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -6490,13 +6289,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -6562,13 +6357,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -6634,13 +6425,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -6706,13 +6493,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -6778,13 +6561,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -6850,13 +6629,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -6922,13 +6697,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -6994,13 +6765,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -7066,13 +6833,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -7138,13 +6901,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -7210,13 +6969,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -7282,13 +7037,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -7354,13 +7105,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -7426,13 +7173,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -7498,13 +7241,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -7570,13 +7309,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -7642,13 +7377,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -7714,13 +7445,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -7786,13 +7513,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -7858,13 +7581,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -7930,13 +7649,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -8002,13 +7717,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -8074,13 +7785,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -8146,13 +7853,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -8218,13 +7921,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -8290,13 +7989,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -8362,13 +8057,9 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
-
-
-
 ELF file SHA256: ed6c5c29c
 
 Rebooting...
@@ -8434,13 +8125,77 @@ func: uint8_t I2cDevice::ReadReg(uint8_t)
 expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
-
 
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fc
 b55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
+ELF file SHA256: ed6c5c29c
 
+Rebooting...
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0xc (RTC_SW_CPU_RST),boot:0x8 (SPI_FAST_FLASH_BOOT)
+Saved PC:0x40387b85
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x548
+load:0x403c8700,len:0xc3c
+load:0x403cb700,len:0x2e70
+entry 0x403c8908
+[0;32mI (34) octal_psram: vendor id    : 0x0d (AP)[0m
+[0;32mI (34) octal_psram: dev id       : 0x02 (generation 3)[0m
+[0;32mI (35) octal_psram: density      : 0x03 (64 Mbit)[0m
+[0;32mI (36) octal_psram: good-die     : 0x01 (Pass)[0m
+[0;32mI (40) octal_psram: Latency      : 0x01 (Fixed)[0m
+[0;32mI (45) octal_psram: VCC          : 0x01 (3V)[0m
+[0;32mI (49) octal_psram: SRF          : 0x01 (Fast Refresh)[0m
+[0;32mI (54) octal_psram: BurstType    : 0x01 (Hybrid Wrap)[0m
+[0;32mI (58) octal_psram: BurstLen     : 0x01 (32 Byte)[0m
+[0;32mI (63) octal_psram: Readlatency  : 0x02 (10 cycles@Fixed)[0m
+[0;32mI (68) octal_psram: DriveStrength: 0x00 (1/1)[0m
+[0;32mI (72) MSPI Timing: Enter psram timing tuning[0m
+[0;32mI (77) esp_psram: Found 8MB PSRAM device[0m
+[0;32mI (80) esp_psram: Speed: 80MHz[0m
+[0;32mI (83) cpu_start: Multicore app[0m
+[0;32mI (97) cpu_start: GPIO 44 and 43 are used as console UART I/O pins[0m
+[0;32mI (97) cpu_start: Pro cpu start user code[0m
+[0;32mI (97) cpu_start: cpu freq: 240000000 Hz[0m
+[0;32mI (99) app_init: Application information:[0m
+[0;32mI (102) app_init: Project name:     xiaozhi[0m
+[0;32mI (106) app_init: App version:      2.2.3[0m
+[0;32mI (110) app_init: Compile time:     Mar 16 2026 20:27:12[0m
+[0;32mI (115) app_init: ELF file SHA256:  ed6c5c29c...[0m
+[0;32mI (119) app_init: ESP-IDF:          v5.5.2[0m
+[0;32mI (123) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (127) efuse_init: Max chip rev:     v0.99 [0m
+[0;32mI (131) efuse_init: Chip rev:         v0.2[0m
+[0;32mI (135) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (141) heap_init: At 3FCB0B18 len 00038BF8 (226 KiB): RAM[0m
+[0;32mI (146) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM[0m
+[0;32mI (152) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM[0m
+[0;32mI (157) heap_init: At 600FE000 len 00001FD8 (7 KiB): RTCRAM[0m
+[0;32mI (162) esp_psram: Adding pool of 8192K of PSRAM memory to heap allocator[0m
+[0;32mI (169) spi_flash: detected chip: winbond[0m
+[0;32mI (172) spi_flash: flash io: qio[0m
+[0;32mI (176) sleep_gpio: Configure to isolate all GPIO pins in sleep state[0m
+[0;32mI (182) sleep_gpio: Enable automatic switching of GPIO sleep configuration[0m
+[0;32mI (188) main_task: Started on CPU0[0m
+[0;32mI (198) esp_psram: Reserving pool of 96K of internal memory for DMA/internal allocations[0m
+[0;32mI (198) main_task: Calling app_main()[0m
+[0;32mI (208) Board: UUID=1dc10284-86e1-4a70-a275-ca9f88ede83c SKU=t-watch-s3[0m
+[0;32mI (208) button: IoT Button Version: 4.1.6[0m
+[0;32mI (208) TWatchS3: Initialize I2C bus[0m
+[0;32mI (218) TWatchS3: Initialize AXP2101 PMU[0m
+[0;32mI (218) TWatchS3: AXP2101 power rails configured and enabled[0m
+[0;32mI (228) TWatchS3: Initialize CST816 touch controller[0m
+ESP_ERROR_CHECK failed: esp_err_t 0x103 (ESP_ERR_INVALID_STATE) at 0x4201d6fe
+file: "./main/boards/common/i2c_device.cc" line 29
+func: uint8_t I2cDevice::ReadReg(uint8_t)
+expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
+abort() was called at PC 0x403879cf on core 0
+
+Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
 
 ELF file SHA256: ed6c5c29c
 
@@ -8508,11 +8263,7 @@ expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
 
-
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
-
-
-
 
 ELF file SHA256: ed6c5c29c
 
@@ -8580,11 +8331,7 @@ expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
 
-
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
-
-
-
 
 ELF file SHA256: ed6c5c29c
 
@@ -8652,11 +8399,7 @@ expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
 
-
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
-
-
-
 
 ELF file SHA256: ed6c5c29c
 
@@ -8724,11 +8467,7 @@ expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
 
-
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
-
-
-
 
 ELF file SHA256: ed6c5c29c
 
@@ -8796,11 +8535,7 @@ expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
 
-
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
-
-
-
 
 ELF file SHA256: ed6c5c29c
 
@@ -8868,11 +8603,7 @@ expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
 
-
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
-
-
-
 
 ELF file SHA256: ed6c5c29c
 
@@ -8940,11 +8671,7 @@ expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
 
-
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
-
-
-
 
 ELF file SHA256: ed6c5c29c
 
@@ -9012,11 +8739,7 @@ expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
 
-
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
-
-
-
 
 ELF file SHA256: ed6c5c29c
 
@@ -9084,11 +8807,7 @@ expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
 
-
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
-
-
-
 
 ELF file SHA256: ed6c5c29c
 
@@ -9156,11 +8875,7 @@ expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
 
-
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
-
-
-
 
 ELF file SHA256: ed6c5c29c
 
@@ -9228,11 +8943,7 @@ expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
 
-
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
-
-
-
 
 ELF file SHA256: ed6c5c29c
 
@@ -9300,11 +9011,7 @@ expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
 
-
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
-
-
-
 
 ELF file SHA256: ed6c5c29c
 
@@ -9372,11 +9079,7 @@ expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
 
-
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
-
-
-
 
 ELF file SHA256: ed6c5c29c
 
@@ -9444,11 +9147,7 @@ expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
 
-
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
-
-
-
 
 ELF file SHA256: ed6c5c29c
 
@@ -9516,11 +9215,7 @@ expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
 
-
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
-
-
-
 
 ELF file SHA256: ed6c5c29c
 
@@ -9588,11 +9283,7 @@ expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
 
-
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
-
-
-
 
 ELF file SHA256: ed6c5c29c
 
@@ -9660,11 +9351,7 @@ expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
 
-
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
-
-
-
 
 ELF file SHA256: ed6c5c29c
 
@@ -9732,11 +9419,7 @@ expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
 
-
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
-
-
-
 
 ELF file SHA256: ed6c5c29c
 
@@ -9804,11 +9487,7 @@ expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
 
-
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
-
-
-
 
 ELF file SHA256: ed6c5c29c
 
@@ -9876,83 +9555,7 @@ expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
 
 abort() was called at PC 0x403879cf on core 0
 
-
 Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
-
-
-
-
-ELF file SHA256: ed6c5c29c
-
-Rebooting...
-ESP-ROM:esp32s3-20210327
-Build:Mar 27 2021
-rst:0xc (RTC_SW_CPU_RST),boot:0x8 (SPI_FAST_FLASH_BOOT)
-Saved PC:0x40387b85
-SPIWP:0xee
-mode:DIO, clock div:1
-load:0x3fce2820,len:0x548
-load:0x403c8700,len:0xc3c
-load:0x403cb700,len:0x2e70
-entry 0x403c8908
-[0;32mI (34) octal_psram: vendor id    : 0x0d (AP)[0m
-[0;32mI (34) octal_psram: dev id       : 0x02 (generation 3)[0m
-[0;32mI (35) octal_psram: density      : 0x03 (64 Mbit)[0m
-[0;32mI (36) octal_psram: good-die     : 0x01 (Pass)[0m
-[0;32mI (40) octal_psram: Latency      : 0x01 (Fixed)[0m
-[0;32mI (45) octal_psram: VCC          : 0x01 (3V)[0m
-[0;32mI (49) octal_psram: SRF          : 0x01 (Fast Refresh)[0m
-[0;32mI (54) octal_psram: BurstType    : 0x01 (Hybrid Wrap)[0m
-[0;32mI (58) octal_psram: BurstLen     : 0x01 (32 Byte)[0m
-[0;32mI (63) octal_psram: Readlatency  : 0x02 (10 cycles@Fixed)[0m
-[0;32mI (68) octal_psram: DriveStrength: 0x00 (1/1)[0m
-[0;32mI (72) MSPI Timing: Enter psram timing tuning[0m
-[0;32mI (77) esp_psram: Found 8MB PSRAM device[0m
-[0;32mI (80) esp_psram: Speed: 80MHz[0m
-[0;32mI (83) cpu_start: Multicore app[0m
-[0;32mI (97) cpu_start: GPIO 44 and 43 are used as console UART I/O pins[0m
-[0;32mI (97) cpu_start: Pro cpu start user code[0m
-[0;32mI (97) cpu_start: cpu freq: 240000000 Hz[0m
-[0;32mI (99) app_init: Application information:[0m
-[0;32mI (102) app_init: Project name:     xiaozhi[0m
-[0;32mI (106) app_init: App version:      2.2.3[0m
-[0;32mI (110) app_init: Compile time:     Mar 16 2026 20:27:12[0m
-[0;32mI (115) app_init: ELF file SHA256:  ed6c5c29c...[0m
-[0;32mI (119) app_init: ESP-IDF:          v5.5.2[0m
-[0;32mI (123) efuse_init: Min chip rev:     v0.0[0m
-[0;32mI (127) efuse_init: Max chip rev:     v0.99 [0m
-[0;32mI (131) efuse_init: Chip rev:         v0.2[0m
-[0;32mI (135) heap_init: Initializing. RAM available for dynamic allocation:[0m
-[0;32mI (141) heap_init: At 3FCB0B18 len 00038BF8 (226 KiB): RAM[0m
-[0;32mI (146) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM[0m
-[0;32mI (152) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM[0m
-[0;32mI (157) heap_init: At 600FE000 len 00001FD8 (7 KiB): RTCRAM[0m
-[0;32mI (162) esp_psram: Adding pool of 8192K of PSRAM memory to heap allocator[0m
-[0;32mI (169) spi_flash: detected chip: winbond[0m
-[0;32mI (172) spi_flash: flash io: qio[0m
-[0;32mI (176) sleep_gpio: Configure to isolate all GPIO pins in sleep state[0m
-[0;32mI (182) sleep_gpio: Enable automatic switching of GPIO sleep configuration[0m
-[0;32mI (188) main_task: Started on CPU0[0m
-[0;32mI (198) esp_psram: Reserving pool of 96K of internal memory for DMA/internal allocations[0m
-[0;32mI (198) main_task: Calling app_main()[0m
-[0;32mI (208) Board: UUID=1dc10284-86e1-4a70-a275-ca9f88ede83c SKU=t-watch-s3[0m
-[0;32mI (208) button: IoT Button Version: 4.1.6[0m
-[0;32mI (208) TWatchS3: Initialize I2C bus[0m
-[0;32mI (218) TWatchS3: Initialize AXP2101 PMU[0m
-[0;32mI (218) TWatchS3: AXP2101 power rails configured and enabled[0m
-[0;32mI (228) TWatchS3: Initialize CST816 touch controller[0m
-ESP_ERROR_CHECK failed: esp_err_t 0x103 (ESP_ERR_INVALID_STATE) at 0x4201d6fe
-file: "./main/boards/common/i2c_device.cc" line 29
-func: uint8_t I2cDevice::ReadReg(uint8_t)
-expression: i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100)
-
-abort() was called at PC 0x403879cf on core 0
-
-
-Backtrace: 0x40387a11:0x3fcb53f0 0x403879d9:0x3fcb5410 0x4038f4de:0x3fcb5430 0x403879cf:0x3fcb54a0 0x4201d6fe:0x3fcb54d0 0x4201da96:0x3fcb5510 0x4201dca1:0x3fcb5540 0x4201dd79:0x3fcb55a0 0x420104db:0x3fcb55c0 0x4201651e:0x3fcb55e0 0x4201b151:0x3fcb5670 0x4218b053:0x3fcb5690
-
-
-
 
 ELF file SHA256: ed6c5c29c
 

@@ -1,8 +1,6 @@
 #ifndef _BOARD_CONFIG_H_
 #define _BOARD_CONFIG_H_
 
-// AtomS3+EchoBase Board configuration
-
 #include <driver/gpio.h>
 
 #define AUDIO_INPUT_REFERENCE    true
@@ -39,5 +37,4 @@
 #define DISPLAY_BACKLIGHT_PIN GPIO_NUM_16
 #define DISPLAY_BACKLIGHT_OUTPUT_INVERT false
 
-
-#endif // _BOARD_CONFIG_H_
+#endif

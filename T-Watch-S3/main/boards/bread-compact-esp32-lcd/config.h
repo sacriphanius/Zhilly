@@ -6,7 +6,6 @@
 #define AUDIO_INPUT_SAMPLE_RATE  16000
 #define AUDIO_OUTPUT_SAMPLE_RATE 24000
 
-// 如果使用 Duplex I2S 模式，请注释下面一行
 #define AUDIO_I2S_METHOD_SIMPLEX
 
 #ifdef AUDIO_I2S_METHOD_SIMPLEX
@@ -28,7 +27,6 @@
 
 #endif
 
-
 #define BOOT_BUTTON_GPIO        GPIO_NUM_0
 #define TOUCH_BUTTON_GPIO       GPIO_NUM_5
 #define ASR_BUTTON_GPIO         GPIO_NUM_19
@@ -49,7 +47,6 @@
 #define DISPLAY_CLK_PIN       GPIO_NUM_15
 #define DISPLAY_DC_PIN        GPIO_NUM_21
 #define DISPLAY_RST_PIN       GPIO_NUM_18
-
 
 #ifdef CONFIG_LCD_ST7789_240X320
 #define LCD_TYPE_ST7789_SERIAL
@@ -275,4 +272,4 @@
 #define DISPLAY_SPI_MODE 0
 #endif
 
-#endif // _BOARD_CONFIG_H_
+#endif

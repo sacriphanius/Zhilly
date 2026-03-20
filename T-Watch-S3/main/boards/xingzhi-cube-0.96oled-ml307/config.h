@@ -27,4 +27,4 @@
 #define ML307_RX_PIN GPIO_NUM_11
 #define ML307_TX_PIN GPIO_NUM_12
 
-#endif // _BOARD_CONFIG_H_
+#endif

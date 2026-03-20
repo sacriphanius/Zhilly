@@ -6,7 +6,6 @@
 
 #define TAG "PowerSaveTimer"
 
-
 PowerSaveTimer::PowerSaveTimer(int cpu_max_freq, int seconds_to_sleep, int seconds_to_shutdown)
     : cpu_max_freq_(cpu_max_freq), seconds_to_sleep_(seconds_to_sleep), seconds_to_shutdown_(seconds_to_shutdown) {
     esp_timer_create_args_t timer_args = {
@@ -76,14 +75,14 @@ void PowerSaveTimer::PowerSaveCheck() {
             }
 
             if (cpu_max_freq_ != -1) {
-                // Disable wake word detection
+
                 auto& audio_service = app.GetAudioService();
                 is_wake_word_running_ = audio_service.IsWakeWordRunning();
                 if (is_wake_word_running_) {
                     audio_service.EnableWakeWordDetection(false);
                     vTaskDelay(pdMS_TO_TICKS(100));
                 }
-                // Disable audio input
+
                 auto codec = Board::GetInstance().GetAudioCodec();
                 if (codec) {
                     codec->EnableInput(false);
@@ -117,7 +116,6 @@ void PowerSaveTimer::WakeUp() {
             };
             esp_pm_configure(&pm_config);
 
-            // Enable wake word detection
             auto& app = Application::GetInstance();
             auto& audio_service = app.GetAudioService();
             if (is_wake_word_running_) {

@@ -6,7 +6,6 @@
 
 #define TAG "Backlight"
 
-
 Backlight::Backlight() {
     const esp_timer_create_args_t timer_args = {
         .callback = [](void* arg) {
@@ -29,14 +28,15 @@ Backlight::~Backlight() {
 }
 
 void Backlight::RestoreBrightness() {
-    Settings settings("display");  
+    Settings settings("display");
     int saved_brightness = settings.GetInt("brightness", 75);
-    
+
     if (saved_brightness <= 0) {
         ESP_LOGW(TAG, "Brightness value (%d) is too small, setting to default (10)", saved_brightness);
-        saved_brightness = 10;  // 设置一个较低的默认值
+        saved_brightness = 10;
+
     }
-    
+
     SetBrightness(saved_brightness);
 }
 
@@ -82,7 +82,8 @@ PwmBacklight::PwmBacklight(gpio_num_t pin, bool output_invert, uint32_t freq_hz)
         .speed_mode = LEDC_LOW_SPEED_MODE,
         .duty_resolution = LEDC_TIMER_10_BIT,
         .timer_num = LEDC_TIMER_0,
-        .freq_hz = freq_hz, //背光pwm频率需要高一点，防止电感啸叫
+        .freq_hz = freq_hz,
+
         .clk_cfg = LEDC_AUTO_CLK,
         .deconfigure = false
     };
@@ -112,4 +113,3 @@ void PwmBacklight::SetBrightnessImpl(uint8_t brightness) {
     ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, duty_cycle);
     ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
 }
-

@@ -1,7 +1,6 @@
 #ifndef _WEBSOCKET_PROTOCOL_H_
 #define _WEBSOCKET_PROTOCOL_H_
 
-
 #include "protocol.h"
 
 #include <web_socket.h>

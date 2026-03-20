@@ -14,7 +14,7 @@
 
 #if CONFIG_IDF_TARGET_ESP32P4 || CONFIG_IDF_TARGET_ESP32S3
 
-static const char *TAG = "RndisBoard"; 
+static const char *TAG = "RndisBoard";
 #define EVENT_GOT_IP_BIT (1 << 0)
 
 RndisBoard::RndisBoard() {
@@ -30,20 +30,18 @@ std::string RndisBoard::GetBoardType() {
 void RndisBoard::StartNetwork() {
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-        /* NVS partition was truncated and needs to be erased
-         * Retry nvs_flash_init */
+
         ESP_ERROR_CHECK(nvs_flash_erase());
         ESP_ERROR_CHECK(nvs_flash_init());
     }
-     /* Initialize default TCP/IP stack */
+
      ESP_ERROR_CHECK(esp_netif_init());
      ESP_ERROR_CHECK(esp_event_loop_create_default());
- 
+
      s_event_group = xEventGroupCreate();
      esp_event_handler_register(IOT_ETH_EVENT, ESP_EVENT_ANY_ID, iot_event_handle, this);
      esp_event_handler_register(IP_EVENT, IP_EVENT_ETH_GOT_IP, iot_event_handle, this);
- 
-     // install usbh cdc driver
+
      usbh_cdc_driver_config_t config = {
          .task_stack_size = 1024 * 4,
          .task_priority = configMAX_PRIORITIES - 1,
@@ -51,11 +49,10 @@ void RndisBoard::StartNetwork() {
          .skip_init_usb_host_driver = false,
      };
      ESP_ERROR_CHECK(usbh_cdc_driver_install(&config));
- 
+
      install_rndis(USB_DEVICE_VENDOR_ANY, USB_DEVICE_PRODUCT_ANY, "USB RNDIS0");
      xEventGroupWaitBits(s_event_group, EVENT_GOT_IP_BIT, pdFALSE, pdFALSE, portMAX_DELAY);
 }
- 
 
 void RndisBoard::iot_event_handle(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
 {
@@ -85,7 +82,6 @@ void RndisBoard::iot_event_handle(void *arg, esp_event_base_t event_base, int32_
         xEventGroupSetBits(static_cast<RndisBoard*>(arg)->s_event_group, EVENT_GOT_IP_BIT);
     }
 }
- 
 
 void RndisBoard::OnNetworkEvent(NetworkEvent event, const std::string& data) {
     switch (event) {
@@ -105,7 +101,6 @@ void RndisBoard::OnNetworkEvent(NetworkEvent event, const std::string& data) {
             break;
     }
 
-    // Notify external callback if set
     if (network_event_callback_) {
         network_event_callback_(event, data);
     }
@@ -125,7 +120,8 @@ void RndisBoard::install_rndis(uint16_t idVendor, uint16_t idProduct, const char
     dev_match_id[0].match_flags = USB_DEVICE_ID_MATCH_VID_PID;
     dev_match_id[0].idVendor = idVendor;
     dev_match_id[0].idProduct = idProduct;
-    memset(&dev_match_id[1], 0, sizeof(usb_device_match_id_t)); // end of list
+    memset(&dev_match_id[1], 0, sizeof(usb_device_match_id_t));
+
     iot_usbh_rndis_config_t rndis_cfg = {
         .match_id_list = dev_match_id,
     };
@@ -168,7 +164,6 @@ void RndisBoard::install_rndis(uint16_t idVendor, uint16_t idProduct, const char
     esp_netif_attach(s_rndis_netif, glue);
     iot_eth_start(eth_handle);
 }
- 
 
 NetworkInterface* RndisBoard::GetNetwork() {
     static EspNetwork network;
@@ -180,7 +175,7 @@ const char* RndisBoard::GetNetworkStateIcon() {
 }
 
 std::string RndisBoard::GetBoardJson() {
- 
+
     std::string json = R"({"type":")" + std::string(BOARD_TYPE) + R"(",)";
     json += R"("name":")" + std::string(BOARD_NAME) + R"(",)";
 
@@ -189,21 +184,19 @@ std::string RndisBoard::GetBoardJson() {
 }
 
 void RndisBoard::SetPowerSaveLevel(PowerSaveLevel level) {
- 
+
 }
 
 std::string RndisBoard::GetDeviceStatusJson() {
     auto& board = Board::GetInstance();
     auto root = cJSON_CreateObject();
 
-    // Audio speaker
     auto audio_speaker = cJSON_CreateObject();
     if (auto codec = board.GetAudioCodec()) {
         cJSON_AddNumberToObject(audio_speaker, "volume", codec->output_volume());
     }
     cJSON_AddItemToObject(root, "audio_speaker", audio_speaker);
 
-    // Screen
     auto screen = cJSON_CreateObject();
     if (auto backlight = board.GetBacklight()) {
         cJSON_AddNumberToObject(screen, "brightness", backlight->brightness());
@@ -215,7 +208,6 @@ std::string RndisBoard::GetDeviceStatusJson() {
     }
     cJSON_AddItemToObject(root, "screen", screen);
 
-    // Battery
     int level = 0;
     bool charging = false, discharging = false;
     if (board.GetBatteryLevel(level, charging, discharging)) {
@@ -225,12 +217,10 @@ std::string RndisBoard::GetDeviceStatusJson() {
         cJSON_AddItemToObject(root, "battery", battery);
     }
 
-    // Network
     auto network = cJSON_CreateObject();
     cJSON_AddStringToObject(network, "type", "rndis");
     cJSON_AddItemToObject(root, "network", network);
 
-    // Chip temperature
     float temp = 0.0f;
     if (board.GetTemperature(temp)) {
         auto chip = cJSON_CreateObject();
@@ -244,4 +234,4 @@ std::string RndisBoard::GetDeviceStatusJson() {
     cJSON_Delete(root);
     return result;
 }
-#endif // CONFIG_IDF_TARGET_ESP32P4 || CONFIG_IDF_TARGET_ESP32S3
+#endif

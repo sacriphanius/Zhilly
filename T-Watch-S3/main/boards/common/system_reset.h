@@ -5,7 +5,8 @@
 
 class SystemReset {
 public:
-    SystemReset(gpio_num_t reset_nvs_pin, gpio_num_t reset_factory_pin); // 构造函数私有化
+    SystemReset(gpio_num_t reset_nvs_pin, gpio_num_t reset_factory_pin);
+
     void CheckButtons();
 
 private:
@@ -16,6 +17,5 @@ private:
     void ResetToFactory();
     void RestartInSeconds(int seconds);
 };
-
 
 #endif

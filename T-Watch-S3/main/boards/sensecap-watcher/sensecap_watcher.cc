@@ -35,7 +35,7 @@
 
 class CustomLcdDisplay : public SpiLcdDisplay {
     public:
-        CustomLcdDisplay(esp_lcd_panel_io_handle_t io_handle, 
+        CustomLcdDisplay(esp_lcd_panel_io_handle_t io_handle,
                         esp_lcd_panel_handle_t panel_handle,
                         int width,
                         int height,
@@ -43,14 +43,13 @@ class CustomLcdDisplay : public SpiLcdDisplay {
                         int offset_y,
                         bool mirror_x,
                         bool mirror_y,
-                        bool swap_xy) 
+                        bool swap_xy)
             : SpiLcdDisplay(io_handle, panel_handle, width, height, offset_x, offset_y, mirror_x, mirror_y, swap_xy) {
-            // Note: UI customization should be done in SetupUI(), not in constructor
-            // to ensure lvgl objects are created before accessing them
+
         }
 
         virtual void SetupUI() override {
-            // Call parent SetupUI() first to create all lvgl objects
+
             SpiLcdDisplay::SetupUI();
 
             DisplayLockGuard lock(this);
@@ -70,18 +69,14 @@ class CustomLcdDisplay : public SpiLcdDisplay {
             lv_obj_set_y(status_bar_, text_font->line_height);
             lv_obj_add_flag(status_bar_, LV_OBJ_FLAG_IGNORE_LAYOUT);
 
-            // Reparent mute and battery labels to top_bar_ to allow absolute positioning
             lv_obj_set_parent(mute_label_, top_bar_);
             lv_obj_set_parent(battery_label_, top_bar_);
             lv_obj_set_style_margin_left(battery_label_, 0, 0);
 
-            // 针对圆形屏幕调整位置
-            //      network  mute  battery     //
-            //               status            //
             lv_obj_align(network_label_, LV_ALIGN_TOP_MID, -1.5 * icon_font->line_height, 0);
             lv_obj_align(mute_label_, LV_ALIGN_TOP_MID, 1.0 * icon_font->line_height, 0);
             lv_obj_align(battery_label_, LV_ALIGN_TOP_MID, 2.5 * icon_font->line_height, 0);
-            
+
             lv_obj_align(status_label_, LV_ALIGN_BOTTOM_MID, 0, 0);
             lv_obj_set_flex_grow(status_label_, 0);
             lv_obj_set_width(status_label_, LV_HOR_RES * 0.75);
@@ -96,9 +91,9 @@ class CustomLcdDisplay : public SpiLcdDisplay {
             lv_obj_set_width(low_battery_label_, LV_HOR_RES * 0.75);
             lv_label_set_long_mode(low_battery_label_, LV_LABEL_LONG_SCROLL_CIRCULAR);
 
-            // 针对圆形屏幕调整底部对话框位置，避免被圆角遮挡
             lv_obj_set_style_pad_bottom(bottom_bar_, 30, 0);
-            lv_obj_set_width(chat_message_label_, LV_HOR_RES * 0.75); // 限制宽度，避免文字贴边
+            lv_obj_set_width(chat_message_label_, LV_HOR_RES * 0.75);
+
         }
 };
 
@@ -141,7 +136,7 @@ private:
     }
 
     void InitializeI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = (i2c_port_t)0,
             .sda_io_num = BSP_GENERAL_I2C_SDA,
@@ -156,7 +151,6 @@ private:
         };
         ESP_ERROR_CHECK(i2c_new_master_bus(&i2c_bus_cfg, &i2c_bus_));
 
-        // pulldown for lcd i2c
         const gpio_config_t io_config = {
             .pin_bit_mask = (1ULL << BSP_TOUCH_I2C_SDA) | (1ULL << BSP_TOUCH_I2C_SCL) | (1ULL << BSP_SPI3_HOST_PCLK) | (1ULL << BSP_SPI3_HOST_DATA0) | (1ULL << BSP_SPI3_HOST_DATA1)
                             | (1ULL << BSP_SPI3_HOST_DATA2) | (1ULL << BSP_SPI3_HOST_DATA3) | (1ULL << BSP_LCD_SPI_CS) | (1UL << DISPLAY_BACKLIGHT_PIN),
@@ -169,7 +163,7 @@ private:
 
         gpio_set_level(BSP_TOUCH_I2C_SDA, 0);
         gpio_set_level(BSP_TOUCH_I2C_SCL, 0);
-    
+
         gpio_set_level(BSP_LCD_SPI_CS, 0);
         gpio_set_level(DISPLAY_BACKLIGHT_PIN, 0);
         gpio_set_level(BSP_SPI3_HOST_PCLK, 0);
@@ -202,20 +196,19 @@ private:
         vTaskDelay(100 / portTICK_PERIOD_MS);
         ret |= esp_io_expander_set_level(io_exp_handle, BSP_PWR_START_UP, 1);
         vTaskDelay(50 / portTICK_PERIOD_MS);
-    
+
         uint32_t pin_val = 0;
         ret |= esp_io_expander_get_level(io_exp_handle, DRV_IO_EXP_INPUT_MASK, &pin_val);
         ESP_LOGI(TAG, "IO expander initialized: %x", DRV_IO_EXP_OUTPUT_MASK | (uint16_t)pin_val);
-    
+
         assert(ret == ESP_OK);
     }
 
     void OnKnobRotate(bool clockwise) {
         auto codec = GetAudioCodec();
         int current_volume = codec->output_volume();
-        int new_volume = current_volume + (clockwise ? -5 : 5); 
+        int new_volume = current_volume + (clockwise ? -5 : 5);
 
-        // 确保音量在有效范围内
         if (new_volume > 100) {
             new_volume = 100;
             ESP_LOGW(TAG, "Volume reached maximum limit: %d", new_volume);
@@ -226,10 +219,9 @@ private:
 
         codec->SetOutputVolume(new_volume);
         ESP_LOGI(TAG, "Volume changed from %d to %d", current_volume, new_volume);
-        
-        // 显示通知前检查实际变化
+
         if (new_volume != codec->output_volume()) {
-            ESP_LOGE(TAG, "Failed to set volume! Expected:%d Actual:%d", 
+            ESP_LOGE(TAG, "Failed to set volume! Expected:%d Actual:%d",
                    new_volume, codec->output_volume());
         }
         GetDisplay()->ShowNotification(std::string(Lang::Strings::VOLUME) + ": "+std::to_string(codec->output_volume()));
@@ -246,10 +238,9 @@ private:
     }
 
     void InitializeButton() {
-        // 设置静态实例指针
+
         instance_ = this;
-        
-        // watcher 是通过长按滚轮进行开机的, 需要等待滚轮释放, 否则用户开机松手时可能会误触成单击
+
         ESP_LOGI(TAG, "waiting for knob button release");
         while(IoExpanderGetLevel(BSP_KNOB_BTN) == 0) {
             vTaskDelay(pdMS_TO_TICKS(50));
@@ -264,9 +255,9 @@ private:
         btn_driver_->get_key_level = [](button_driver_t *button_driver) -> uint8_t {
             return !instance_->IoExpanderGetLevel(BSP_KNOB_BTN);
         };
-        
+
         ESP_ERROR_CHECK(iot_button_create(&btn_config, btn_driver_, &btns));
-        
+
         iot_button_register_cb(btns, BUTTON_SINGLE_CLICK, nullptr, [](void* button_handle, void* usr_data) {
             auto self = static_cast<SensecapWatcher*>(usr_data);
             self->power_save_timer_->WakeUp();
@@ -278,7 +269,7 @@ private:
             }
             app.ToggleChatState();
         }, this);
-        
+
         iot_button_register_cb(btns, BUTTON_LONG_PRESS_START, nullptr, [](void* button_handle, void* usr_data) {
             auto self = static_cast<SensecapWatcher*>(usr_data);
             bool is_charging = (self->IoExpanderGetLevel(BSP_PWR_VBUS_IN_DET) == 0);
@@ -293,8 +284,8 @@ private:
 
         iot_button_register_cb(btns, BUTTON_LONG_PRESS_HOLD, nullptr, [](void* button_handle, void* usr_data) {
             auto self = static_cast<SensecapWatcher*>(usr_data);
-            self->long_press_cnt_++; // 每隔20ms加一
-            // 长按10s 恢复出厂设置: 2+0.02*400 = 10
+            self->long_press_cnt_++;
+
             if (self->long_press_cnt_ > 400) {
                 ESP_LOGI(TAG, "Factory reset");
                 nvs_flash_erase();
@@ -314,7 +305,7 @@ private:
         spi_cfg.quadhd_io_num = -1;
         spi_cfg.isr_cpu_id = ESP_INTR_CPU_AFFINITY_1;
         spi_cfg.max_transfer_sz = 4095;
-   
+
         ESP_ERROR_CHECK(spi_bus_initialize(SPI2_HOST, &spi_cfg, SPI_DMA_CH_AUTO));
 
         ESP_LOGI(TAG, "Initialize QSPI bus");
@@ -326,7 +317,7 @@ private:
         qspi_cfg.data2_io_num = BSP_SPI3_HOST_DATA2;
         qspi_cfg.data3_io_num = BSP_SPI3_HOST_DATA3;
         qspi_cfg.max_transfer_sz = DISPLAY_WIDTH * DISPLAY_HEIGHT * DRV_LCD_BITS_PER_PIXEL / 8 / CONFIG_BSP_LCD_SPI_DMA_SIZE_DIV;
-    
+
         ESP_ERROR_CHECK(spi_bus_initialize(SPI3_HOST, &qspi_cfg, SPI_DMA_CH_AUTO));
     }
 
@@ -350,10 +341,11 @@ private:
             },
         };
         esp_lcd_new_panel_io_spi((esp_lcd_spi_bus_handle_t)BSP_LCD_SPI_NUM, &io_config, &panel_io_);
-    
+
         ESP_LOGD(TAG, "Install LCD driver");
         const esp_lcd_panel_dev_config_t panel_config = {
-            .reset_gpio_num = BSP_LCD_GPIO_RST, // Shared with Touch reset
+            .reset_gpio_num = BSP_LCD_GPIO_RST,
+
             .rgb_ele_order = DRV_LCD_RGB_ELEMENT_ORDER,
             .bits_per_pixel = DRV_LCD_BITS_PER_PIXEL,
             .vendor_config = &vendor_config,
@@ -367,18 +359,17 @@ private:
 
         display_ = new CustomLcdDisplay(panel_io_, panel_,
             DISPLAY_WIDTH, DISPLAY_HEIGHT, DISPLAY_OFFSET_X, DISPLAY_OFFSET_Y, DISPLAY_MIRROR_X, DISPLAY_MIRROR_Y, DISPLAY_SWAP_XY);
-        
-        // 使每次刷新的起始列数索引是4的倍数且列数总数是4的倍数，以满足SPD2010的要求
+
         lv_display_add_event_cb(lv_display_get_default(), [](lv_event_t *e) {
             lv_area_t *area = (lv_area_t *)lv_event_get_param(e);
             uint16_t x1 = area->x1;
             uint16_t x2 = area->x2;
-            // round the start of area down to the nearest 4N number
+
             area->x1 = (x1 >> 2) << 2;
-            // round the end of area up to the nearest 4M+3 number
+
             area->x2 = ((x2 >> 2) << 2) + 3;
         }, LV_EVENT_INVALIDATE_AREA, NULL);
-        
+
     }
 
     uint16_t BatterygetVoltage(void) {
@@ -390,13 +381,13 @@ private:
                 .unit_id = ADC_UNIT_1,
             };
             adc_oneshot_new_unit(&init_config, &adc_handle);
-    
+
             adc_oneshot_chan_cfg_t ch_config = {
                 .atten = BSP_BAT_ADC_ATTEN,
                 .bitwidth = ADC_BITWIDTH_DEFAULT,
             };
             adc_oneshot_config_channel(adc_handle, BSP_BAT_ADC_CHAN, &ch_config);
-    
+
             adc_cali_curve_fitting_config_t cali_config = {
                 .unit_id = ADC_UNIT_1,
                 .chan = BSP_BAT_ADC_CHAN,
@@ -409,11 +400,12 @@ private:
         }
         if (initialized) {
             int raw_value = 0;
-            int voltage = 0; // mV
+            int voltage = 0;
+
             adc_oneshot_read(adc_handle, BSP_BAT_ADC_CHAN, &raw_value);
             adc_cali_raw_to_voltage(cali_handle, raw_value, &voltage);
             voltage = voltage * 82 / 20;
-            // ESP_LOGI(TAG, "voltage: %dmV", voltage);
+
             return (uint16_t)voltage;
         }
         return 0;
@@ -438,7 +430,7 @@ private:
         esp_console_repl_config_t repl_config = ESP_CONSOLE_REPL_CONFIG_DEFAULT();
         repl_config.max_cmdline_length = 1024;
         repl_config.prompt = "SenseCAP>";
-        
+
         const esp_console_cmd_t cmd1 = {
             .command = "reboot",
             .help = "reboot the device",
@@ -567,7 +559,6 @@ private:
 
         ESP_LOGI(TAG, "Initialize Camera");
 
-        // !!!NOTE: SD Card use same SPI bus as sscma client, so we need to disable SD card CS pin first
         const gpio_config_t io_config = {
             .pin_bit_mask = (1ULL << BSP_SD_SPI_CS),
             .mode = GPIO_MODE_OUTPUT,
@@ -591,27 +582,29 @@ public:
         InitializeI2c();
         InitializeSpi();
         InitializeExpander();
-        InitializeCmd();  //工厂生产测试使用
+        InitializeCmd();
+
         InitializeButton();
         InitializeKnob();
         Initializespd2010Display();
-        GetBacklight()->RestoreBrightness();  // 对于不带摄像头的版本，InitializeCamera需要3s, 所以先恢复背光亮度
+        GetBacklight()->RestoreBrightness();
+
         InitializeCamera();
     }
 
     virtual AudioCodec* GetAudioCodec() override {
         static SensecapAudioCodec audio_codec(
-            i2c_bus_, 
-            AUDIO_INPUT_SAMPLE_RATE, 
+            i2c_bus_,
+            AUDIO_INPUT_SAMPLE_RATE,
             AUDIO_OUTPUT_SAMPLE_RATE,
-            AUDIO_I2S_GPIO_MCLK, 
-            AUDIO_I2S_GPIO_BCLK, 
-            AUDIO_I2S_GPIO_WS, 
-            AUDIO_I2S_GPIO_DOUT, 
+            AUDIO_I2S_GPIO_MCLK,
+            AUDIO_I2S_GPIO_BCLK,
+            AUDIO_I2S_GPIO_WS,
+            AUDIO_I2S_GPIO_DOUT,
             AUDIO_I2S_GPIO_DIN,
-            AUDIO_CODEC_PA_PIN, 
-            AUDIO_CODEC_ES8311_ADDR, 
-            AUDIO_CODEC_ES7243E_ADDR, 
+            AUDIO_CODEC_PA_PIN,
+            AUDIO_CODEC_ES8311_ADDR,
+            AUDIO_CODEC_ES7243E_ADDR,
             AUDIO_INPUT_REFERENCE);
         return &audio_codec;
     }
@@ -619,15 +612,12 @@ public:
     virtual Display* GetDisplay() override {
         return display_;
     }
-    
+
     virtual Backlight* GetBacklight() override {
         static PwmBacklight backlight(DISPLAY_BACKLIGHT_PIN, DISPLAY_BACKLIGHT_OUTPUT_INVERT);
         return &backlight;
     }
 
-    // 根据 https://github.com/Seeed-Studio/OSHW-SenseCAP-Watcher/blob/main/Hardware/SenseCAP_Watcher_v1.0_SCH.pdf
-    // RGB LED型号为 ws2813 mini, 连接在GPIO 40，供电电压 3.3v, 没有连接 BIN 双信号线
-    // 可以直接兼容SingleLED采用的ws2812
     virtual Led* GetLed() override {
         static SingleLed led(BUILTIN_LED_GPIO);
         return &led;
@@ -664,5 +654,4 @@ public:
 
 DECLARE_BOARD(SensecapWatcher);
 
-// 定义静态成员变量
 SensecapWatcher* SensecapWatcher::instance_ = nullptr;

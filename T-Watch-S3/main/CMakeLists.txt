@@ -1,4 +1,4 @@
-# Define source files
+
 set(SOURCES "audio/audio_codec.cc"
             "audio/audio_service.cc"
             "audio/demuxer/ogg_demuxer.cc"
@@ -40,11 +40,14 @@ set(SOURCES "audio/audio_codec.cc"
             "radio_service.cc"
             "main.cc"
             "ir/ir_service.cc"
+            "bad_usb_service.cc"
             )
 
-set(INCLUDE_DIRS "." "display" "display/lvgl_display" "display/lvgl_display/jpg" "audio" "audio/demuxer" "protocols" "ir")
+file(GLOB BAD_USB_SOURCES "bad_usb/*.cpp" "bad_usb/*.cc")
+list(APPEND SOURCES ${BAD_USB_SOURCES})
 
-# Add board common files
+set(INCLUDE_DIRS "." "bad_usb" "display" "display/lvgl_display" "display/lvgl_display/jpg" "audio" "audio/demuxer" "protocols" "ir")
+
 list(APPEND SOURCES
     "boards/common/board.cc"
     "boards/common/wifi_board.cc"
@@ -66,9 +69,8 @@ list(APPEND SOURCES
 )
 list(APPEND INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/boards/common)
 
-
 idf_build_get_property(build_components BUILD_COMPONENTS)
-# Function to find component dynamically by pattern
+
 function(find_component_by_pattern PATTERN COMPONENT_VAR PATH_VAR)
     foreach(COMPONENT ${build_components})
         if(COMPONENT MATCHES "${PATTERN}")
@@ -80,14 +82,11 @@ function(find_component_by_pattern PATTERN COMPONENT_VAR PATH_VAR)
     endforeach()
 endfunction()
 
-# Set default BUILTIN_TEXT_FONT and BUILTIN_ICON_FONT
 set(BUILTIN_TEXT_FONT font_puhui_14_1)
 set(BUILTIN_ICON_FONT font_awesome_14_1)
 
 set(EMOTE_RESOLUTION "320_240")
 
-# Add board files according to BOARD_TYPE
-# Set default assets if the board uses partition table V2
 if(CONFIG_BOARD_TYPE_BREAD_COMPACT_WIFI)
     set(BOARD_TYPE "bread-compact-wifi")
     set(BUILTIN_TEXT_FONT font_puhui_basic_14_1)
@@ -163,7 +162,7 @@ elseif(CONFIG_BOARD_TYPE_LICHUANG_DEV_C3)
     set(DEFAULT_EMOJI_COLLECTION twemoji_32)
 elseif(CONFIG_BOARD_TYPE_EDA_TV_PRO)
     set(MANUFACTURER "lceda-course-examples")
-    set(BOARD_TYPE "eda-tv-pro")    
+    set(BOARD_TYPE "eda-tv-pro")
 elseif(CONFIG_BOARD_TYPE_EDA_ROBOT_PRO)
     set(MANUFACTURER "lceda-course-examples")
     set(BOARD_TYPE "eda-robot-pro")
@@ -256,7 +255,7 @@ elseif(CONFIG_BOARD_TYPE_ESP_SPOT_C5)
     set(BOARD_TYPE "esp-spot")
 elseif(CONFIG_BOARD_TYPE_ESP_HI)
     set(BOARD_TYPE "esp-hi")
-    # Set ESP_HI emoji directory for DEFAULT_ASSETS_EXTRA_FILES
+
     set(DEFAULT_ASSETS_EXTRA_FILES "${CMAKE_BINARY_DIR}/emoji")
 elseif(CONFIG_BOARD_TYPE_ECHOEAR)
     set(BOARD_TYPE "echoear")
@@ -264,7 +263,7 @@ elseif(CONFIG_BOARD_TYPE_ECHOEAR)
     set(BUILTIN_ICON_FONT font_awesome_20_4)
     set(DEFAULT_EMOJI_COLLECTION twemoji_64)
     set(EMOTE_RESOLUTION "360_360")
-    # set(EMOTE_EXTERNAL_PATH "${CMAKE_CURRENT_SOURCE_DIR}/boards/echoear/assets")
+
 elseif(CONFIG_BOARD_TYPE_ESP_SENSAIRSHUTTLE)
     set(BOARD_TYPE "esp-sensairshuttle")
     set(BUILTIN_TEXT_FONT font_puhui_basic_16_4)
@@ -590,7 +589,7 @@ elseif(CONFIG_BOARD_TYPE_XINGZHI_METAL_1_54_WIFI)
     set(BOARD_TYPE "xingzhi-metal-1.54-wifi")
     set(BUILTIN_TEXT_FONT font_noto_basic_20_4)
     set(BUILTIN_ICON_FONT font_awesome_20_4)
-    set(DEFAULT_EMOJI_COLLECTION noto-emoji_128)  
+    set(DEFAULT_EMOJI_COLLECTION noto-emoji_128)
 elseif(CONFIG_BOARD_TYPE_SEEED_STUDIO_SENSECAP_WATCHER)
     set(BOARD_TYPE "sensecap-watcher")
     set(BUILTIN_TEXT_FONT font_noto_basic_30_4)
@@ -650,7 +649,7 @@ elseif(CONFIG_BOARD_TYPE_ZHENGCHEN_CAM_ML307)
     set(BOARD_TYPE "zhengchen-cam-ml307")
     set(BUILTIN_TEXT_FONT font_puhui_basic_20_4)
     set(BUILTIN_ICON_FONT font_awesome_20_4)
-    set(DEFAULT_EMOJI_COLLECTION twemoji_64)    
+    set(DEFAULT_EMOJI_COLLECTION twemoji_64)
 elseif(CONFIG_BOARD_TYPE_SPOTPEAR_ESP32_S3_1_54_MUMA)
     set(BOARD_TYPE "sp-esp32-s3-1.54-muma")
     set(BUILTIN_TEXT_FONT font_puhui_basic_16_4)
@@ -736,7 +735,6 @@ else()
 endif()
 list(APPEND SOURCES ${BOARD_SOURCES})
 
-# Select audio processor according to Kconfig
 if(CONFIG_USE_AUDIO_PROCESSOR)
     list(APPEND SOURCES "audio/processors/afe_audio_processor.cc")
 else()
@@ -749,11 +747,10 @@ else()
     list(APPEND SOURCES "audio/wake_words/esp_wake_word.cc")
 endif()
 
-# Auto Select Additional Sources
 if (CONFIG_USE_ESP_BLUFI_WIFI_PROVISIONING)
     list(APPEND SOURCES "boards/common/blufi.cpp")
 endif ()
-# Select language directory according to Kconfig
+
 if(CONFIG_LANGUAGE_ZH_CN)
     set(LANG_DIR "zh-CN")
 elseif(CONFIG_LANGUAGE_ZH_TW)
@@ -832,25 +829,20 @@ elseif(CONFIG_LANGUAGE_SR_RS)
     set(LANG_DIR "sr-RS")
 endif()
 
-# Define generation path
 set(LANG_JSON "${CMAKE_CURRENT_SOURCE_DIR}/assets/locales/${LANG_DIR}/language.json")
 set(LANG_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/assets/lang_config.h")
 
-# Collect current language audio files
 file(GLOB LANG_SOUNDS ${CMAKE_CURRENT_SOURCE_DIR}/assets/locales/${LANG_DIR}/*.ogg)
 
-# If not en-US, collect en-US audio files as fallback for missing files
 if(NOT LANG_DIR STREQUAL "en-US")
     file(GLOB EN_US_SOUNDS ${CMAKE_CURRENT_SOURCE_DIR}/assets/locales/en-US/*.ogg)
-    
-    # Extract filenames (without path) from current language
+
     set(EXISTING_NAMES "")
     foreach(SOUND_FILE ${LANG_SOUNDS})
         get_filename_component(FILENAME ${SOUND_FILE} NAME)
         list(APPEND EXISTING_NAMES ${FILENAME})
     endforeach()
-    
-    # Only add en-US audio files that are missing in current language
+
     foreach(EN_SOUND ${EN_US_SOUNDS})
         get_filename_component(FILENAME ${EN_SOUND} NAME)
         if(NOT ${FILENAME} IN_LIST EXISTING_NAMES)
@@ -862,7 +854,6 @@ endif()
 
 file(GLOB COMMON_SOUNDS ${CMAKE_CURRENT_SOURCE_DIR}/assets/common/*.ogg)
 
-# If target chip is ESP32, exclude specific files to avoid build errors
 if(CONFIG_IDF_TARGET_ESP32)
     list(REMOVE_ITEM SOURCES "audio/codecs/box_audio_codec.cc"
                              "audio/codecs/es8388_audio_codec.cc"
@@ -876,14 +867,12 @@ if(CONFIG_IDF_TARGET_ESP32)
                              )
 endif()
 
-# Include EspVideo if target is ESP32S3 or ESP32P4
 if(CONFIG_IDF_TARGET_ESP32S3 OR CONFIG_IDF_TARGET_ESP32P4)
     list(APPEND SOURCES "boards/common/esp_video.cc"
                         "boards/common/rndis_board.cc"
                         )
 endif()
 
-# Include Esp32Camera if target is ESP32S3
 if(CONFIG_IDF_TARGET_ESP32S3)
     list(APPEND SOURCES "boards/common/esp32_camera.cc")
 endif()
@@ -910,10 +899,9 @@ idf_component_register(SRCS ${SOURCES}
                         console
                         efuse
                         bt
+                        tinyusb
                     )
 
-# Use target_compile_definitions to define BOARD_TYPE, BOARD_NAME
-# If BOARD_NAME is empty, use BOARD_TYPE
 if(NOT BOARD_NAME)
     set(BOARD_NAME ${BOARD_TYPE})
 endif()
@@ -971,7 +959,7 @@ list(APPEND FILES_TO_DOWNLOAD "panic_return.aaf" "wake.aaf")
 foreach(FILENAME IN LISTS FILES_TO_DOWNLOAD)
     set(REMOTE_FILE "${URL}/${FILENAME}")
     set(LOCAL_FILE "${EMOJI_DIR}/${FILENAME}")
-    
+
     # Check if local file exists
     if(EXISTS ${LOCAL_FILE})
         message(STATUS "File ${FILENAME} already exists, skipping download")
@@ -988,36 +976,35 @@ endforeach()
 
 endif()
 
-
 # Function to build default assets based on configuration
 function(build_default_assets_bin)
     # Set output path for generated assets.bin
     set(GENERATED_ASSETS_BIN "${CMAKE_BINARY_DIR}/generated_assets.bin")
-    
+
     # Prepare arguments for build script
     set(BUILD_ARGS
         "--sdkconfig" "${SDKCONFIG}"
         "--output" "${GENERATED_ASSETS_BIN}"
     )
-    
+
     # Add builtin text font if defined
     if(BUILTIN_TEXT_FONT)
         list(APPEND BUILD_ARGS "--builtin_text_font" "${BUILTIN_TEXT_FONT}")
     endif()
-    
+
     # Add default emoji collection if defined
     if(DEFAULT_EMOJI_COLLECTION)
         list(APPEND BUILD_ARGS "--emoji_collection" "${DEFAULT_EMOJI_COLLECTION}")
     endif()
-    
+
     # Add default assets extra files if defined
     if(DEFAULT_ASSETS_EXTRA_FILES)
         list(APPEND BUILD_ARGS "--extra_files" "${DEFAULT_ASSETS_EXTRA_FILES}")
     endif()
-    
+
     list(APPEND BUILD_ARGS "--esp_sr_model_path" "${ESP_SR_MODEL_PATH}")
     list(APPEND BUILD_ARGS "--xiaozhi_fonts_path" "${XIAOZHI_FONTS_PATH}")
-    
+
     # Create custom command to build assets
     add_custom_command(
         OUTPUT ${GENERATED_ASSETS_BIN}
@@ -1028,18 +1015,17 @@ function(build_default_assets_bin)
         COMMENT "Building default assets.bin based on configuration"
         VERBATIM
     )
-    
+
     # Create target for generated assets
     add_custom_target(generated_default_assets ALL
         DEPENDS ${GENERATED_ASSETS_BIN}
     )
-    
+
     # Set the generated file path in parent scope
     set(GENERATED_ASSETS_LOCAL_FILE ${GENERATED_ASSETS_BIN} PARENT_SCOPE)
-    
+
     message(STATUS "Default assets build configured: ${GENERATED_ASSETS_BIN}")
 endfunction()
-
 
 # Function to get local assets file path (handles both URL and local file)
 function(get_assets_local_file assets_source assets_local_file_var)
@@ -1049,18 +1035,18 @@ function(get_assets_local_file assets_source assets_local_file_var)
         get_filename_component(ASSETS_FILENAME "${assets_source}" NAME)
         set(ASSETS_LOCAL_FILE "${CMAKE_BINARY_DIR}/${ASSETS_FILENAME}")
         set(ASSETS_TEMP_FILE "${CMAKE_BINARY_DIR}/${ASSETS_FILENAME}.tmp")
-        
+
         # Check if local file exists
         if(EXISTS ${ASSETS_LOCAL_FILE})
             message(STATUS "Assets file ${ASSETS_FILENAME} already exists, skipping download")
         else()
             message(STATUS "Downloading ${ASSETS_FILENAME}")
-            
+
             # Clean up any existing temp file
             if(EXISTS ${ASSETS_TEMP_FILE})
                 file(REMOVE ${ASSETS_TEMP_FILE})
             endif()
-            
+
             # Download to temporary file first
             file(DOWNLOAD ${assets_source} ${ASSETS_TEMP_FILE}
                  STATUS DOWNLOAD_STATUS)
@@ -1072,7 +1058,7 @@ function(get_assets_local_file assets_source assets_local_file_var)
                 endif()
                 message(FATAL_ERROR "Failed to download ${ASSETS_FILENAME} from ${assets_source}")
             endif()
-            
+
             # Move temp file to final location (atomic operation)
             file(RENAME ${ASSETS_TEMP_FILE} ${ASSETS_LOCAL_FILE})
             message(STATUS "Successfully downloaded ${ASSETS_FILENAME}")
@@ -1084,18 +1070,17 @@ function(get_assets_local_file assets_source assets_local_file_var)
         else()
             set(ASSETS_LOCAL_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${assets_source}")
         endif()
-        
+
         # Check if local file exists
         if(NOT EXISTS ${ASSETS_LOCAL_FILE})
             message(FATAL_ERROR "Assets file not found: ${ASSETS_LOCAL_FILE}")
         endif()
-        
+
         message(STATUS "Using assets file: ${ASSETS_LOCAL_FILE}")
     endif()
-    
+
     set(${assets_local_file_var} ${ASSETS_LOCAL_FILE} PARENT_SCOPE)
 endfunction()
-
 
 partition_table_get_partition_info(size "--partition-name assets" "size")
 partition_table_get_partition_info(offset "--partition-name assets" "offset")

@@ -3,7 +3,6 @@
 
 #include <driver/gpio.h>
 
-
 #define AUDIO_INPUT_SAMPLE_RATE 24000
 #define AUDIO_OUTPUT_SAMPLE_RATE 24000
 
@@ -33,7 +32,7 @@
 
 #define DISPLAY_WIDTH 410
 #define DISPLAY_HEIGHT 502
- 
+
 #define DISPLAY_MIRROR_X false
 #define DISPLAY_MIRROR_Y false
 #define DISPLAY_SWAP_XY false
@@ -43,4 +42,4 @@
 
 #define DISPLAY_BACKLIGHT_PIN GPIO_NUM_NC
 #define DISPLAY_BACKLIGHT_OUTPUT_INVERT false
-#endif // _BOARD_CONFIG_H_
+#endif

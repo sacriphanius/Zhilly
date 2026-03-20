@@ -17,7 +17,7 @@ private:
 
     esp_codec_dev_handle_t output_dev_ = nullptr;
     esp_codec_dev_handle_t input_dev_ = nullptr;
-    // ref buffer used for aec
+
     std::vector<int16_t> ref_buffer_;
     int read_pos_ = 0;
     int write_pos_ = 0;
@@ -38,4 +38,4 @@ public:
     virtual void EnableOutput(bool enable) override;
 };
 
-#endif // _BOX_AUDIO_CODEC_LITE_H
+#endif

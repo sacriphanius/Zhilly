@@ -38,7 +38,7 @@ enum PowerSupply {
 #define XIO_CHG_CTRL (IO_EXPANDER_PIN_NUM_14)
 #define XIO_CHRG (IO_EXPANDER_PIN_NUM_15)
 
-#define DRV_IO_EXP_OUTPUT_MASK 0x3F18  
+#define DRV_IO_EXP_OUTPUT_MASK 0x3F18
 #define DRV_IO_EXP_INPUT_MASK 0xC0E7
 
 #define LCD_PIN_CS GPIO_NUM_14
@@ -67,5 +67,4 @@ enum PowerSupply {
 #define DISPLAY_BACKLIGHT_PIN GPIO_NUM_21
 #define DISPLAY_BACKLIGHT_OUTPUT_INVERT false
 
-#endif // _BOARD_CONFIG_H_
-
+#endif

@@ -3,7 +3,6 @@
 
 #include <driver/gpio.h>
 
-
 #define AUDIO_INPUT_SAMPLE_RATE 24000
 #define AUDIO_OUTPUT_SAMPLE_RATE 24000
 
@@ -28,7 +27,7 @@
 
 #define LCD_CS       GPIO_NUM_10
 #define LCD_PCLK     GPIO_NUM_11
-#define LCD_D0       GPIO_NUM_4 
+#define LCD_D0       GPIO_NUM_4
 #define LCD_D1       GPIO_NUM_5
 #define LCD_D2       GPIO_NUM_6
 #define LCD_D3       GPIO_NUM_7
@@ -37,7 +36,7 @@
 
 #define EXAMPLE_LCD_H_RES 466
 #define EXAMPLE_LCD_V_RES 466
- 
+
 #define DISPLAY_MIRROR_X false
 #define DISPLAY_MIRROR_Y false
 #define DISPLAY_SWAP_XY false
@@ -45,5 +44,4 @@
 #define DISPLAY_OFFSET_X  0
 #define DISPLAY_OFFSET_Y  0
 
-
-#endif // _BOARD_CONFIG_H_
+#endif

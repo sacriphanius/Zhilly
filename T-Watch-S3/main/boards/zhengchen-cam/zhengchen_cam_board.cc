@@ -19,13 +19,11 @@
 #include <lvgl.h>
 #include "settings.h"
 
-#define FIRST_BOOT_NS "boot_config"  
-#define FIRST_BOOT_KEY "is_first"    
-
+#define FIRST_BOOT_NS "boot_config"
+#define FIRST_BOOT_KEY "is_first"
 
 #define TAG "ZhengchenCamBoard"
 
-//控制器初始化函数声明
 void InitializeMCPController();
 
 LV_FONT_DECLARE(font_puhui_20_4);
@@ -50,18 +48,18 @@ private:
     Pca9557* pca9557_;
 
 public:
-    CustomAudioCodec(i2c_master_bus_handle_t i2c_bus, Pca9557* pca9557) 
-        : BoxAudioCodec(i2c_bus, 
-                       AUDIO_INPUT_SAMPLE_RATE, 
+    CustomAudioCodec(i2c_master_bus_handle_t i2c_bus, Pca9557* pca9557)
+        : BoxAudioCodec(i2c_bus,
+                       AUDIO_INPUT_SAMPLE_RATE,
                        AUDIO_OUTPUT_SAMPLE_RATE,
-                       AUDIO_I2S_GPIO_MCLK, 
-                       AUDIO_I2S_GPIO_BCLK, 
-                       AUDIO_I2S_GPIO_WS, 
-                       AUDIO_I2S_GPIO_DOUT, 
+                       AUDIO_I2S_GPIO_MCLK,
+                       AUDIO_I2S_GPIO_BCLK,
+                       AUDIO_I2S_GPIO_WS,
+                       AUDIO_I2S_GPIO_DOUT,
                        AUDIO_I2S_GPIO_DIN,
-                       GPIO_NUM_NC, 
-                       AUDIO_CODEC_ES8311_ADDR, 
-                       AUDIO_CODEC_ES7210_ADDR, 
+                       GPIO_NUM_NC,
+                       AUDIO_CODEC_ES8311_ADDR,
+                       AUDIO_CODEC_ES7210_ADDR,
                        AUDIO_INPUT_REFERENCE),
           pca9557_(pca9557) {
     }
@@ -89,7 +87,7 @@ private:
     PowerManager* power_manager_ = new PowerManager(GPIO_NUM_47);
 
     void InitializeI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = (i2c_port_t)1,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
@@ -104,7 +102,6 @@ private:
         };
         ESP_ERROR_CHECK(i2c_new_master_bus(&i2c_bus_cfg, &i2c_bus_));
 
-        // Initialize PCA9557
         pca9557_ = new Pca9557(i2c_bus_, 0x19);
     }
 
@@ -122,7 +119,7 @@ private:
     void InitializeButtons() {
         boot_button_.OnClick([this]() {
             auto& app = Application::GetInstance();
-            // During startup (before connected), pressing BOOT button enters Wi-Fi config mode without reboot
+
             if (app.GetDeviceState() == kDeviceStateStarting) {
                 EnterWifiConfigMode();
                 return;
@@ -141,7 +138,6 @@ private:
                 }
                 settings.SetInt(FIRST_BOOT_KEY, 0);
 
-                
             } else {
                 ESP_LOGI(TAG, "非首次启动，禁用双击拍照功能");
                 auto& app = Application::GetInstance();
@@ -164,7 +160,7 @@ private:
             }
             GetDisplay()->ShowNotification(Lang::Strings::VOLUME + std::to_string(volume/10));
             codec->SetOutputVolume(volume);
-            
+
         });
 
         volume_up_button_.OnLongPress([this]() {
@@ -191,7 +187,7 @@ private:
     void InitializeSt7789Display() {
         esp_lcd_panel_io_handle_t panel_io = nullptr;
         esp_lcd_panel_handle_t panel = nullptr;
-        // 液晶屏控制IO初始化
+
         ESP_LOGD(TAG, "Install panel IO");
         esp_lcd_panel_io_spi_config_t io_config = {};
         io_config.cs_gpio_num = GPIO_NUM_NC;
@@ -203,14 +199,13 @@ private:
         io_config.lcd_param_bits = 8;
         ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi(SPI3_HOST, &io_config, &panel_io));
 
-        // 初始化液晶屏驱动芯片ST7789
         ESP_LOGD(TAG, "Install LCD driver");
         esp_lcd_panel_dev_config_t panel_config = {};
         panel_config.reset_gpio_num = GPIO_NUM_NC;
         panel_config.rgb_ele_order = LCD_RGB_ELEMENT_ORDER_RGB;
         panel_config.bits_per_pixel = 16;
         ESP_ERROR_CHECK(esp_lcd_new_panel_st7789(panel_io, &panel_config, &panel));
-        
+
         esp_lcd_panel_reset(panel);
         pca9557_->SetOutputState(0, 0);
 
@@ -219,31 +214,33 @@ private:
 
         Settings settings("lcd_display", true);
         bool is_landscape = settings.GetInt("lcd_mode", 1) != 0;
-        
+
         if(is_landscape) {
-            // 横屏模式
+
             esp_lcd_panel_swap_xy(panel, DISPLAY_SWAP_XY);
             esp_lcd_panel_mirror(panel, DISPLAY_MIRROR_X, DISPLAY_MIRROR_Y);
             display_ = new SpiLcdDisplay(panel_io, panel,
                                         DISPLAY_WIDTH, DISPLAY_HEIGHT, DISPLAY_OFFSET_X, DISPLAY_OFFSET_Y, DISPLAY_MIRROR_X, DISPLAY_MIRROR_Y, DISPLAY_SWAP_XY);
 
         } else {
-            // 竖屏模式
+
             esp_lcd_panel_swap_xy(panel, DISPLAY_SWAP_XY_1);
             esp_lcd_panel_mirror(panel, DISPLAY_MIRROR_X_1, DISPLAY_MIRROR_Y_1);
             display_ = new SpiLcdDisplay(panel_io, panel,
                                         DISPLAY_WIDTH_1, DISPLAY_HEIGHT_1, DISPLAY_OFFSET_X, DISPLAY_OFFSET_Y, DISPLAY_MIRROR_X_1, DISPLAY_MIRROR_Y_1, DISPLAY_SWAP_XY_1);
         }
-        
+
     }
 
     void InitializeCamera() {
-        // Open camera power
+
         pca9557_->SetOutputState(2, 0);
 
         camera_config_t config = {};
-        config.ledc_channel = LEDC_CHANNEL_2;  // LEDC通道选择  用于生成XCLK时钟 但是S3不用
-        config.ledc_timer = LEDC_TIMER_2; // LEDC timer选择  用于生成XCLK时钟 但是S3不用
+        config.ledc_channel = LEDC_CHANNEL_2;
+
+        config.ledc_timer = LEDC_TIMER_2;
+
         config.pin_d0 = CAMERA_PIN_D0;
         config.pin_d1 = CAMERA_PIN_D1;
         config.pin_d2 = CAMERA_PIN_D2;
@@ -256,7 +253,8 @@ private:
         config.pin_pclk = CAMERA_PIN_PCLK;
         config.pin_vsync = CAMERA_PIN_VSYNC;
         config.pin_href = CAMERA_PIN_HREF;
-        config.pin_sccb_sda = -1;   // 这里写-1 表示使用已经初始化的I2C接口
+        config.pin_sccb_sda = -1;
+
         config.pin_sccb_scl = CAMERA_PIN_SIOC;
         config.sccb_i2c_port = 1;
         config.pin_pwdn = CAMERA_PIN_PWDN;
@@ -275,7 +273,7 @@ private:
 	void InitializeController() { InitializeMCPController(); }
 
 public:
-    ZhengchenCamBoard() : 
+    ZhengchenCamBoard() :
     boot_button_(BOOT_BUTTON_GPIO),
     volume_up_button_(VOLUME_UP_BUTTON_GPIO),
     volume_down_button_(VOLUME_DOWN_BUTTON_GPIO) {
@@ -290,7 +288,7 @@ public:
 
     virtual AudioCodec* GetAudioCodec() override {
         static CustomAudioCodec audio_codec(
-            i2c_bus_, 
+            i2c_bus_,
             pca9557_);
         return &audio_codec;
     }
@@ -314,12 +312,12 @@ public:
         level = std::max<uint32_t>(power_manager_->GetBatteryLevel(), 20);
         return true;
     }
-    
+
     virtual bool GetTemperature(float& esp32temp)  override {
         esp32temp = power_manager_->GetTemperature();
         return true;
     }
-    
+
     virtual Backlight* GetBacklight() override {
         static PwmBacklight backlight(DISPLAY_BACKLIGHT_PIN, DISPLAY_BACKLIGHT_OUTPUT_INVERT);
         return &backlight;

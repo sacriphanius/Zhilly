@@ -23,11 +23,10 @@
 
 static const char *TAG = "WifiBoard";
 
-// Connection timeout in seconds
 static constexpr int CONNECT_TIMEOUT_SEC = 60;
 
 WifiBoard::WifiBoard() {
-    // Create connection timeout timer
+
     esp_timer_create_args_t timer_args = {
         .callback = OnWifiConnectTimeout,
         .arg = this,
@@ -52,13 +51,11 @@ std::string WifiBoard::GetBoardType() {
 void WifiBoard::StartNetwork() {
     auto& wifi_manager = WifiManager::GetInstance();
 
-    // Initialize WiFi manager
     WifiManagerConfig config;
     config.ssid_prefix = "Xiaozhi";
     config.language = Lang::CODE;
     wifi_manager.Initialize(config);
 
-    // Set unified event callback - forward to NetworkEvent with SSID data
     wifi_manager.SetEventCallback([this](WifiEvent event, const std::string& data) {
         switch (event) {
             case WifiEvent::Scanning:
@@ -82,7 +79,6 @@ void WifiBoard::StartNetwork() {
         }
     });
 
-    // Try to connect or enter config mode
     TryWifiConnect();
 }
 
@@ -91,13 +87,12 @@ void WifiBoard::TryWifiConnect() {
     bool have_ssid = !ssid_manager.GetSsidList().empty();
 
     if (have_ssid) {
-        // Start connection attempt with timeout
+
         ESP_LOGI(TAG, "Starting WiFi connection attempt");
         esp_timer_start_once(connect_timer_, CONNECT_TIMEOUT_SEC * 1000000ULL);
         WifiManager::GetInstance().StartStation();
     } else {
-        // No SSID configured, enter config mode
-        // Wait for the board version to be shown
+
         vTaskDelay(pdMS_TO_TICKS(1500));
         StartWifiConfigMode();
     }
@@ -106,10 +101,10 @@ void WifiBoard::TryWifiConnect() {
 void WifiBoard::OnNetworkEvent(NetworkEvent event, const std::string& data) {
     switch (event) {
         case NetworkEvent::Connected:
-            // Stop timeout timer
+
             esp_timer_stop(connect_timer_);
 #ifdef CONFIG_USE_ESP_BLUFI_WIFI_PROVISIONING
-            // make sure blufi resources has been released
+
             Blufi::GetInstance().deinit();
 #endif
             in_config_mode_ = false;
@@ -131,14 +126,13 @@ void WifiBoard::OnNetworkEvent(NetworkEvent event, const std::string& data) {
         case NetworkEvent::WifiConfigModeExit:
             ESP_LOGI(TAG, "WiFi config mode exited");
             in_config_mode_ = false;
-            // Try to connect with the new credentials
+
             TryWifiConnect();
             break;
         default:
             break;
     }
 
-    // Notify external callback if set
     if (network_event_callback_) {
         network_event_callback_(event, data);
     }
@@ -158,14 +152,13 @@ void WifiBoard::OnWifiConnectTimeout(void* arg) {
 
 void WifiBoard::StartWifiConfigMode() {
     in_config_mode_ = true;
-    // Transition to wifi configuring state
+
     Application::GetInstance().SetDeviceState(kDeviceStateWifiConfiguring);
 #ifdef CONFIG_USE_HOTSPOT_WIFI_PROVISIONING
     auto& wifi_manager = WifiManager::GetInstance();
 
     wifi_manager.StartConfigAp();
 
-    // Show config prompt after a short delay
     Application::GetInstance().Schedule([&wifi_manager]() {
         std::string hint = Lang::Strings::CONNECT_TO_HOTSPOT;
         hint += wifi_manager.GetApSsid();
@@ -176,11 +169,11 @@ void WifiBoard::StartWifiConfigMode() {
     });
 #elif CONFIG_USE_ESP_BLUFI_WIFI_PROVISIONING
     auto &blufi = Blufi::GetInstance();
-    // initialize esp-blufi protocol
+
     blufi.init();
 #endif
 #if CONFIG_USE_ACOUSTIC_WIFI_PROVISIONING
-    // Start acoustic provisioning task
+
     auto codec = Board::GetInstance().GetAudioCodec();
     int channel = codec ? codec->input_channels() : 1;
     ESP_LOGI(TAG, "Starting acoustic WiFi provisioning, channels: %d", channel);
@@ -204,20 +197,17 @@ void WifiBoard::EnterWifiConfigMode() {
     auto state = app.GetDeviceState();
 
     if (state == kDeviceStateSpeaking || state == kDeviceStateListening || state == kDeviceStateIdle) {
-        // Reset protocol (close audio channel, reset protocol)
+
         Application::GetInstance().ResetProtocol();
 
         xTaskCreate([](void* arg) {
             auto* board = static_cast<WifiBoard*>(arg);
 
-            // Wait for 1 second to allow speaking to finish gracefully
             vTaskDelay(pdMS_TO_TICKS(1000));
 
-            // Stop any ongoing connection attempt
             esp_timer_stop(board->connect_timer_);
             WifiManager::GetInstance().StopStation();
 
-            // Enter config mode
             board->StartWifiConfigMode();
 
             vTaskDelete(NULL);
@@ -230,7 +220,6 @@ void WifiBoard::EnterWifiConfigMode() {
         return;
     }
 
-    // Stop any ongoing connection attempt
     esp_timer_stop(connect_timer_);
     WifiManager::GetInstance().StopStation();
 
@@ -302,14 +291,12 @@ std::string WifiBoard::GetDeviceStatusJson() {
     auto& board = Board::GetInstance();
     auto root = cJSON_CreateObject();
 
-    // Audio speaker
     auto audio_speaker = cJSON_CreateObject();
     if (auto codec = board.GetAudioCodec()) {
         cJSON_AddNumberToObject(audio_speaker, "volume", codec->output_volume());
     }
     cJSON_AddItemToObject(root, "audio_speaker", audio_speaker);
 
-    // Screen
     auto screen = cJSON_CreateObject();
     if (auto backlight = board.GetBacklight()) {
         cJSON_AddNumberToObject(screen, "brightness", backlight->brightness());
@@ -321,7 +308,6 @@ std::string WifiBoard::GetDeviceStatusJson() {
     }
     cJSON_AddItemToObject(root, "screen", screen);
 
-    // Battery
     int level = 0;
     bool charging = false, discharging = false;
     if (board.GetBatteryLevel(level, charging, discharging)) {
@@ -331,7 +317,6 @@ std::string WifiBoard::GetDeviceStatusJson() {
         cJSON_AddItemToObject(root, "battery", battery);
     }
 
-    // Network
     auto& wifi = WifiManager::GetInstance();
     auto network = cJSON_CreateObject();
     cJSON_AddStringToObject(network, "type", "wifi");
@@ -341,7 +326,6 @@ std::string WifiBoard::GetDeviceStatusJson() {
     cJSON_AddStringToObject(network, "signal", signal);
     cJSON_AddItemToObject(root, "network", network);
 
-    // Chip temperature
     float temp = 0.0f;
     if (board.GetTemperature(temp)) {
         auto chip = cJSON_CreateObject();

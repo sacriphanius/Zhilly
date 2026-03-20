@@ -24,29 +24,29 @@
 class Pmic : public Axp2101 {
 public:
     Pmic(i2c_master_bus_handle_t i2c_bus, uint8_t addr) : Axp2101(i2c_bus, addr) {
-        WriteReg(0x22, 0b110); // PWRON > OFFLEVEL as POWEROFF Source enable
-        WriteReg(0x27, 0x10);  // hold 4s to power off
+        WriteReg(0x22, 0b110);
 
-        // Disable All DCs but DC1
+        WriteReg(0x27, 0x10);
+
         WriteReg(0x80, 0x01);
-        // Disable All LDOs
+
         WriteReg(0x90, 0x00);
         WriteReg(0x91, 0x00);
 
-        // Set DC1 to 3.3V
         WriteReg(0x82, (3300 - 1500) / 100);
 
-        // Set ALDO1 to 3.3V
         WriteReg(0x92, (3300 - 500) / 100);
 
-        // Enable ALDO1(MIC)
         WriteReg(0x90, 0x01);
 
-        WriteReg(0x64, 0x02); // CV charger voltage setting to 4.1V
+        WriteReg(0x64, 0x02);
 
-        WriteReg(0x61, 0x02); // set Main battery precharge current to 50mA
-        WriteReg(0x62, 0x08); // set Main battery charger current to 400mA ( 0x08-200mA, 0x09-300mA, 0x0A-400mA )
-        WriteReg(0x63, 0x01); // set Main battery term charge current to 25mA
+        WriteReg(0x61, 0x02);
+
+        WriteReg(0x62, 0x08);
+
+        WriteReg(0x63, 0x01);
+
     }
 };
 
@@ -66,13 +66,13 @@ private:
         power_save_timer_->OnExitSleepMode([this]() {
             GetDisplay()->SetPowerSaveMode(false);
             GetBacklight()->RestoreBrightness(); });
-        power_save_timer_->OnShutdownRequest([this](){ 
+        power_save_timer_->OnShutdownRequest([this](){
             pmic_->PowerOff(); });
         power_save_timer_->SetEnabled(true);
     }
 
     void InitializeCodecI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = I2C_NUM_0,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
@@ -125,7 +125,6 @@ private:
         esp_lcd_panel_io_handle_t panel_io = nullptr;
         esp_lcd_panel_handle_t panel = nullptr;
 
-        // 液晶屏控制IO初始化
         ESP_LOGD(TAG, "Install panel IO");
         esp_lcd_panel_io_spi_config_t io_config = {};
         io_config.cs_gpio_num = DISPLAY_CS_PIN;
@@ -137,7 +136,6 @@ private:
         io_config.lcd_param_bits = 8;
         ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi(DISPLAY_SPI_MODE, &io_config, &panel_io));
 
-        // 初始化液晶屏驱动芯片
         ESP_LOGD(TAG, "Install LCD driver");
         esp_lcd_panel_dev_config_t panel_config = {};
         panel_config.reset_gpio_num = DISPLAY_RST_PIN;
@@ -147,7 +145,7 @@ private:
         esp_lcd_panel_reset(panel);
         esp_lcd_panel_init(panel);
         esp_lcd_panel_invert_color(panel, true);
-        // esp_lcd_panel_mirror(panel, DISPLAY_MIRROR_X, DISPLAY_MIRROR_Y);
+
         esp_lcd_panel_disp_on_off(panel, true);
         display_ = new SpiLcdDisplay(panel_io, panel,
                                     DISPLAY_WIDTH, DISPLAY_HEIGHT, DISPLAY_OFFSET_X, DISPLAY_OFFSET_Y, DISPLAY_MIRROR_X, DISPLAY_MIRROR_Y, DISPLAY_SWAP_XY);
@@ -184,7 +182,6 @@ private:
         ESP_LOGI(TAG, "Touch panel initialized successfully");
     }
 
-    // 初始化工具
     void InitializeTools() {
         auto &mcp_server = McpServer::GetInstance();
         mcp_server.AddTool("self.system.reconfigure_wifi",
@@ -211,17 +208,17 @@ public:
 
     virtual AudioCodec* GetAudioCodec() override {
         static BoxAudioCodec audio_codec(
-            i2c_bus_, 
-            AUDIO_INPUT_SAMPLE_RATE, 
+            i2c_bus_,
+            AUDIO_INPUT_SAMPLE_RATE,
             AUDIO_OUTPUT_SAMPLE_RATE,
-            AUDIO_I2S_GPIO_MCLK, 
-            AUDIO_I2S_GPIO_BCLK, 
-            AUDIO_I2S_GPIO_WS, 
-            AUDIO_I2S_GPIO_DOUT, 
+            AUDIO_I2S_GPIO_MCLK,
+            AUDIO_I2S_GPIO_BCLK,
+            AUDIO_I2S_GPIO_WS,
+            AUDIO_I2S_GPIO_DOUT,
             AUDIO_I2S_GPIO_DIN,
-            AUDIO_CODEC_PA_PIN, 
-            AUDIO_CODEC_ES8311_ADDR, 
-            AUDIO_CODEC_ES7210_ADDR, 
+            AUDIO_CODEC_PA_PIN,
+            AUDIO_CODEC_ES8311_ADDR,
+            AUDIO_CODEC_ES7210_ADDR,
             AUDIO_INPUT_REFERENCE);
         return &audio_codec;
     }
@@ -248,14 +245,14 @@ public:
         level = pmic_->GetBatteryLevel();
         return true;
     }
-    
+
     virtual void SetPowerSaveLevel(PowerSaveLevel level) override {
         if (level != PowerSaveLevel::LOW_POWER) {
             power_save_timer_->WakeUp();
         }
         WifiBoard::SetPowerSaveLevel(level);
     }
-    
+
 };
 
 DECLARE_BOARD(WaveshareEsp32c6TouchLCD1inch83);

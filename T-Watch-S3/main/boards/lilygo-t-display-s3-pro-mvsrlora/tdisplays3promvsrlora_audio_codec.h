@@ -34,4 +34,4 @@ Tdisplays3promvsrloraAudioCodec(int input_sample_rate, int output_sample_rate,
     virtual void EnableOutput(bool enable) override;
 };
 
-#endif // _BOX_AUDIO_CODEC_H
+#endif

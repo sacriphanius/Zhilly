@@ -47,4 +47,4 @@
 #define DISPLAY_BACKLIGHT_PIN   GPIO_NUM_6
 #define DISPLAY_BACKLIGHT_OUTPUT_INVERT false
 
-#endif // _BOARD_CONFIG_H_
+#endif

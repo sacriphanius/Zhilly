@@ -26,7 +26,7 @@
 #define PIN_NUM_LCD_RST            GPIO_NUM_NC
 
 #define DELAY_TIME_MS                      (3000)
-#define LCD_MIPI_DSI_LANE_NUM          (2)    // 2 data lanes
+#define LCD_MIPI_DSI_LANE_NUM          (2)
 
 #define MIPI_DSI_PHY_PWR_LDO_CHAN          (3)
 #define MIPI_DSI_PHY_PWR_LDO_VOLTAGE_MV    (2500)
@@ -41,4 +41,4 @@
 #define DISPLAY_BACKLIGHT_PIN GPIO_NUM_NC
 #define DISPLAY_BACKLIGHT_OUTPUT_INVERT false
 
-#endif // _BOARD_CONFIG_H_
+#endif

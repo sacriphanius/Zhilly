@@ -6,7 +6,6 @@
 #include <driver/gpio.h>
 #include <esp_timer.h>
 
-
 class Backlight {
 public:
     Backlight();
@@ -25,7 +24,6 @@ protected:
     uint8_t target_brightness_ = 0;
     uint8_t step_ = 1;
 };
-
 
 class PwmBacklight : public Backlight {
 public:

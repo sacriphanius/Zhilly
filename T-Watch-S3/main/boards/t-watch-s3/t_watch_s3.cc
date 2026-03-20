@@ -101,13 +101,13 @@ private:
     void InitializePmu() {
         ESP_LOGI(TAG, "Initialize AXP2101 PMU");
         pmu_ = new Axp2101(i2c_bus_, AXP2101_ADDR);
-        
+
         pmu_->WriteReg(0x10, 0x00);
         pmu_->WriteReg(0x16, 0x08);
-        pmu_->WriteReg(0x31, 0x00); 
-        
+        pmu_->WriteReg(0x31, 0x00);
+
         pmu_->WriteReg(0x90, 0xBF);
-        
+
         pmu_->WriteReg(0x91, 0x1C);
         pmu_->WriteReg(0x92, 0x1C);
         pmu_->WriteReg(0x93, 0x1C);
@@ -115,14 +115,14 @@ private:
         pmu_->WriteReg(0x95, 0x1C);
         pmu_->WriteReg(0x96, 0x1C);
         pmu_->WriteReg(0x99, 0x1C);
-        
+
         ESP_LOGI(TAG, "AXP2101 power rails configured and enabled");
     }
 
     void InitializeTouch() {
         ESP_LOGI(TAG, "Scanning touch controller...");
         vTaskDelay(pdMS_TO_TICKS(100));
-        
+
         touch_ = new Cst816x(touch_bus_, 0x15);
         if (touch_->ReadReg(0xA7) == 0) {
             delete touch_;
@@ -167,7 +167,7 @@ private:
                 }
             } else {
                 was_touched = false;
-                
+
                 if (!board->display_dimmed_ && (esp_timer_get_time() - board->last_activity_time_) > 15000000) {
                     board->display_dimmed_ = true;
                     board->GetBacklight()->SetBrightness(0);

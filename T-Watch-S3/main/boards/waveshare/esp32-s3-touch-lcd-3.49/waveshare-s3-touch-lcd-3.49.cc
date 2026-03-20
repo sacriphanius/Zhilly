@@ -25,7 +25,6 @@
 
 #define TAG "waveshare_lcd_3_39"
 
-
 static const axs15231b_lcd_init_cmd_t lcd_init_cmds[] = {
     {0x11, (uint8_t []){0x00}, 0, 100},
     {0x29, (uint8_t []){0x00}, 0, 100},
@@ -39,11 +38,12 @@ private:
     esp_io_expander_handle_t io_expander = NULL;
     LcdDisplay* display_;
     i2c_master_dev_handle_t disp_touch_dev_handle = NULL;
-    lv_indev_t *touch_indev = NULL;    //touch
+    lv_indev_t *touch_indev = NULL;
+
     bool is_PwrControlEn = false;
 
     void InitializeI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = (i2c_port_t)I2C_NUM_0,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
@@ -58,12 +58,12 @@ private:
         };
         ESP_ERROR_CHECK(i2c_new_master_bus(&i2c_bus_cfg, &i2c_bus_));
     }
-    
+
     void InitializeTca9554(void) {
         esp_err_t ret = esp_io_expander_new_i2c_tca9554(i2c_bus_, ESP_IO_EXPANDER_I2C_TCA9554_ADDRESS_000, &io_expander);
         if(ret != ESP_OK)
-        ESP_LOGE(TAG, "TCA9554 create returned error");        
-        ret = esp_io_expander_set_dir(io_expander, IO_EXPANDER_PIN_NUM_7 | IO_EXPANDER_PIN_NUM_6, IO_EXPANDER_OUTPUT);         
+        ESP_LOGE(TAG, "TCA9554 create returned error");
+        ret = esp_io_expander_set_dir(io_expander, IO_EXPANDER_PIN_NUM_7 | IO_EXPANDER_PIN_NUM_6, IO_EXPANDER_OUTPUT);
         ESP_ERROR_CHECK(ret);
         vTaskDelay(pdMS_TO_TICKS(100));
         ret = esp_io_expander_set_level(io_expander, IO_EXPANDER_PIN_NUM_7 | IO_EXPANDER_PIN_NUM_6, 1);
@@ -85,7 +85,7 @@ private:
     void InitializeLcdDisplay() {
         esp_lcd_panel_io_handle_t panel_io = nullptr;
         esp_lcd_panel_handle_t panel = nullptr;
-        // RESET PIN INIT
+
         gpio_config_t gpio_conf = {};
         gpio_conf.intr_type = GPIO_INTR_DISABLE;
         gpio_conf.mode = GPIO_MODE_OUTPUT;
@@ -93,8 +93,7 @@ private:
         gpio_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;
         gpio_conf.pull_up_en = GPIO_PULLUP_ENABLE;
         ESP_ERROR_CHECK_WITHOUT_ABORT(gpio_config(&gpio_conf));
-        
-        // 液晶屏控制IO初始化
+
         ESP_LOGI(TAG, "Install panel IO");
         esp_lcd_panel_io_spi_config_t io_config = AXS15231B_PANEL_IO_QSPI_CONFIG(
             LCD_CS,
@@ -102,10 +101,10 @@ private:
             NULL);
         ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi(SPI3_HOST, &io_config, &panel_io));
 
-        // 初始化液晶屏驱动芯片
         ESP_LOGI(TAG, "Install LCD driver");
         const axs15231b_vendor_config_t vendor_config = {
-            .init_cmds = lcd_init_cmds, // Uncomment these line if use custom initialization commands
+            .init_cmds = lcd_init_cmds,
+
             .init_cmds_size = sizeof(lcd_init_cmds) / sizeof(lcd_init_cmds[0]),
             .flags = {
                 .use_qspi_interface = 1,
@@ -118,7 +117,7 @@ private:
             .vendor_config = (void *)&vendor_config,
         };
         esp_lcd_new_panel_axs15231b(panel_io, &panel_config, &panel);
-        
+
         gpio_set_level(LCD_RST,1);
         vTaskDelay(pdMS_TO_TICKS(30));
         gpio_set_level(LCD_RST,0);
@@ -157,7 +156,7 @@ private:
 
     void InitializeTouch() {
         i2c_master_bus_handle_t touch_i2c_bus_;
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {};
             i2c_bus_cfg.i2c_port = (i2c_port_t)I2C_NUM_1;
             i2c_bus_cfg.sda_io_num = I2C_Touch_SDA_PIN;
@@ -168,7 +167,7 @@ private:
             i2c_bus_cfg.trans_queue_depth = 0;
             i2c_bus_cfg.flags.enable_internal_pullup = 1;
         ESP_ERROR_CHECK(i2c_new_master_bus(&i2c_bus_cfg, &touch_i2c_bus_));
-    
+
         i2c_device_config_t dev_cfg = {
             .dev_addr_length = I2C_ADDR_BIT_LEN_7,
             .device_address = I2C_Touch_ADDRESS,
@@ -225,17 +224,17 @@ public:
 
     virtual AudioCodec* GetAudioCodec() override {
         static BoxAudioCodec audio_codec(
-            i2c_bus_, 
-            AUDIO_INPUT_SAMPLE_RATE, 
+            i2c_bus_,
+            AUDIO_INPUT_SAMPLE_RATE,
             AUDIO_OUTPUT_SAMPLE_RATE,
-            AUDIO_I2S_GPIO_MCLK, 
-            AUDIO_I2S_GPIO_BCLK, 
-            AUDIO_I2S_GPIO_WS, 
-            AUDIO_I2S_GPIO_DOUT, 
+            AUDIO_I2S_GPIO_MCLK,
+            AUDIO_I2S_GPIO_BCLK,
+            AUDIO_I2S_GPIO_WS,
+            AUDIO_I2S_GPIO_DOUT,
             AUDIO_I2S_GPIO_DIN,
-            AUDIO_CODEC_PA_PIN, 
-            AUDIO_CODEC_ES8311_ADDR, 
-            AUDIO_CODEC_ES7210_ADDR, 
+            AUDIO_CODEC_PA_PIN,
+            AUDIO_CODEC_ES8311_ADDR,
+            AUDIO_CODEC_ES7210_ADDR,
             AUDIO_INPUT_REFERENCE);
         return &audio_codec;
     }
@@ -243,7 +242,7 @@ public:
     virtual Display* GetDisplay() override {
         return display_;
     }
-    
+
     virtual Backlight* GetBacklight() override {
         static PwmBacklight backlight(DISPLAY_BACKLIGHT_PIN, DISPLAY_BACKLIGHT_OUTPUT_INVERT);
         return &backlight;

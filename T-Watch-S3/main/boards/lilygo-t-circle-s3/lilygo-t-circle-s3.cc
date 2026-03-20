@@ -71,7 +71,7 @@ private:
     }
 
     void InitI2c(){
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_config = {
             .i2c_port = I2C_NUM_0,
             .sda_io_num = TOUCH_I2C_SDA_PIN,
@@ -116,13 +116,13 @@ private:
         while (1) {
             touchpad->UpdateTouchPoint();
             if (touchpad->GetTouchPoint().num > 0){
-                // On press
+
                 if (!was_touched) {
                     was_touched = true;
                     Application::GetInstance().ToggleChatState();
                 }
             }
-            // On release
+
             else if (was_touched) {
                 was_touched = false;
             }
@@ -244,7 +244,7 @@ public:
         }
         WifiBoard::SetPowerSaveLevel(level);
     }
-    
+
     virtual Backlight* GetBacklight() override {
         static PwmBacklight backlight(DISPLAY_BACKLIGHT_PIN, DISPLAY_BACKLIGHT_OUTPUT_INVERT);
         return &backlight;

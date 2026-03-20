@@ -1,4 +1,4 @@
-# T-Watch S3 V1.1.1 Flashing Guide
+
 
 To flash all binaries with a single command, open a terminal in this folder and run:
 

@@ -32,12 +32,11 @@ public:
                     bool swap_xy)
         : SpiLcdDisplay(io_handle, panel_handle,
                     width, height, offset_x, offset_y, mirror_x, mirror_y, swap_xy) {
-        // Note: UI customization should be done in SetupUI(), not in constructor
-        // to ensure lvgl objects are created before accessing them
+
     }
 
     virtual void SetupUI() override {
-        // Call parent SetupUI() first to create all lvgl objects
+
         SpiLcdDisplay::SetupUI();
 
         DisplayLockGuard lock(this);
@@ -93,7 +92,7 @@ private:
     }
 
     void InitializeI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = (i2c_port_t)I2C_NUM_0,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
@@ -108,7 +107,7 @@ private:
         };
         ESP_ERROR_CHECK(i2c_new_master_bus(&i2c_bus_cfg, &i2c_bus_));
     }
-    
+
     void InitializeSpi() {
         ESP_LOGI(TAG, "Initialize QSPI bus");
         spi_bus_config_t buscfg = {};
@@ -125,7 +124,6 @@ private:
         esp_lcd_panel_io_handle_t panel_io = nullptr;
         esp_lcd_panel_handle_t panel = nullptr;
 
-        // 液晶屏控制IO初始化
         ESP_LOGI(TAG, "Install panel IO");
         esp_lcd_panel_io_spi_config_t io_config = {};
         io_config.cs_gpio_num = DISPLAY_CS_PIN;
@@ -137,13 +135,12 @@ private:
         io_config.lcd_param_bits = 8;
         ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi(SPI2_HOST, &io_config, &panel_io));
 
-        // 初始化液晶屏驱动芯片
         ESP_LOGI(TAG, "Install LCD driver");
         esp_lcd_panel_dev_config_t panel_config = {};
         panel_config.reset_gpio_num = DISPLAY_RST_PIN;
         panel_config.rgb_ele_order = DISPLAY_RGB_ORDER;
         panel_config.bits_per_pixel = 16;
-        ESP_ERROR_CHECK(esp_lcd_new_panel_st7789(panel_io, &panel_config, &panel)); 
+        ESP_ERROR_CHECK(esp_lcd_new_panel_st7789(panel_io, &panel_config, &panel));
         esp_lcd_panel_reset(panel);
         esp_lcd_panel_init(panel);
         esp_lcd_panel_invert_color(panel, DISPLAY_INVERT_COLOR);
@@ -151,14 +148,14 @@ private:
         esp_lcd_panel_mirror(panel, DISPLAY_MIRROR_X, DISPLAY_MIRROR_Y);
 
         display_ = new CustomLcdDisplay(
-            panel_io, 
+            panel_io,
             panel,
-            DISPLAY_WIDTH, 
-            DISPLAY_HEIGHT, 
-            DISPLAY_OFFSET_X, 
-            DISPLAY_OFFSET_Y, 
-            DISPLAY_MIRROR_X, 
-            DISPLAY_MIRROR_Y, 
+            DISPLAY_WIDTH,
+            DISPLAY_HEIGHT,
+            DISPLAY_OFFSET_X,
+            DISPLAY_OFFSET_Y,
+            DISPLAY_MIRROR_X,
+            DISPLAY_MIRROR_Y,
             DISPLAY_SWAP_XY
         );
     }
@@ -191,7 +188,7 @@ private:
             });
 
             pwr_button_.OnLongPress([this]() {
-                // printf("Power button long press\n");
+
                 if (power_manager_ != nullptr){
                     power_manager_->PowerOff();
                 }
@@ -215,16 +212,16 @@ public:
 
     virtual AudioCodec* GetAudioCodec() override {
         static Es8311AudioCodec audio_codec(
-            i2c_bus_, 
-            I2C_NUM_0, 
-            AUDIO_INPUT_SAMPLE_RATE, 
+            i2c_bus_,
+            I2C_NUM_0,
+            AUDIO_INPUT_SAMPLE_RATE,
             AUDIO_OUTPUT_SAMPLE_RATE,
-            AUDIO_I2S_GPIO_MCLK, 
-            AUDIO_I2S_GPIO_BCLK, 
-            AUDIO_I2S_GPIO_WS, 
-            AUDIO_I2S_GPIO_DOUT, 
+            AUDIO_I2S_GPIO_MCLK,
+            AUDIO_I2S_GPIO_BCLK,
+            AUDIO_I2S_GPIO_WS,
+            AUDIO_I2S_GPIO_DOUT,
             AUDIO_I2S_GPIO_DIN,
-            AUDIO_CODEC_PA_PIN, 
+            AUDIO_CODEC_PA_PIN,
             AUDIO_CODEC_ES8311_ADDR
         );
         return &audio_codec;
@@ -233,7 +230,7 @@ public:
     virtual Display* GetDisplay() override {
         return display_;
     }
-    
+
     virtual Backlight* GetBacklight() override {
         static PwmBacklight backlight(DISPLAY_BACKLIGHT_PIN, DISPLAY_BACKLIGHT_OUTPUT_INVERT);
         return &backlight;

@@ -34,9 +34,6 @@ void Otto::Init(int right_pitch, int right_roll, int left_pitch, int left_roll, 
     is_otto_resting_ = false;
 }
 
-///////////////////////////////////////////////////////////////////
-//-- ATTACH & DETACH FUNCTIONS ----------------------------------//
-///////////////////////////////////////////////////////////////////
 void Otto::AttachServos() {
     for (int i = 0; i < SERVO_COUNT; i++) {
         if (servo_pins_[i] != -1) {
@@ -53,9 +50,6 @@ void Otto::DetachServos() {
     }
 }
 
-///////////////////////////////////////////////////////////////////
-//-- OSCILLATORS TRIMS ------------------------------------------//
-///////////////////////////////////////////////////////////////////
 void Otto::SetTrims(int right_pitch, int right_roll, int left_pitch, int left_roll, int body,
                     int head) {
     servo_trim_[RIGHT_PITCH] = right_pitch;
@@ -72,9 +66,6 @@ void Otto::SetTrims(int right_pitch, int right_roll, int left_pitch, int left_ro
     }
 }
 
-///////////////////////////////////////////////////////////////////
-//-- BASIC MOTION FUNCTIONS -------------------------------------//
-///////////////////////////////////////////////////////////////////
 void Otto::MoveServos(int time, int servo_target[]) {
     if (GetRestState() == true) {
         SetRestState(false);
@@ -106,7 +97,6 @@ void Otto::MoveServos(int time, int servo_target[]) {
         vTaskDelay(pdMS_TO_TICKS(time));
     }
 
-    // final adjustment to the target.
     bool f = true;
     int adjustment_count = 0;
     while (f && adjustment_count < 10) {
@@ -177,21 +167,17 @@ void Otto::Execute(int amplitude[SERVO_COUNT], int offset[SERVO_COUNT], int peri
 
     int cycles = (int)steps;
 
-    //-- Execute complete cycles
     if (cycles >= 1)
         for (int i = 0; i < cycles; i++)
             OscillateServos(amplitude, offset, period, phase_diff);
 
-    //-- Execute the final not complete cycle
     OscillateServos(amplitude, offset, period, phase_diff, (float)steps - cycles);
     vTaskDelay(pdMS_TO_TICKS(10));
 }
 
-///////////////////////////////////////////////////////////////////
-//-- HOME = Otto at rest position -------------------------------//
-///////////////////////////////////////////////////////////////////
 void Otto::Home(bool hands_down) {
-    if (is_otto_resting_ == false) {  // Go to rest position only if necessary
+    if (is_otto_resting_ == false) {
+
         MoveServos(1000, servo_initial_);
         is_otto_resting_ = true;
     }
@@ -207,21 +193,8 @@ void Otto::SetRestState(bool state) {
     is_otto_resting_ = state;
 }
 
-///////////////////////////////////////////////////////////////////
-//-- PREDETERMINED MOTION SEQUENCES -----------------------------//
-///////////////////////////////////////////////////////////////////
-
-//---------------------------------------------------------
-//-- 统一手部动作函数
-//--  Parameters:
-//--    action: 动作类型 1=举左手, 2=举右手, 3=举双手, 4=放左手, 5=放右手, 6=放双手,
-//--            7=挥左手, 8=挥右手, 9=挥双手, 10=拍打左手, 11=拍打右手, 12=拍打双手
-//--    times: 重复次数
-//--    amount: 动作幅度 (10-50)
-//--    period: 动作时间
-//---------------------------------------------------------
 void Otto::HandAction(int action, int times, int amount, int period) {
-    // 限制参数范围
+
     times = 2 * std::max(3, std::min(100, times));
     amount = std::max(10, std::min(50, amount));
     period = std::max(100, std::min(1000, period));
@@ -232,31 +205,37 @@ void Otto::HandAction(int action, int times, int amount, int period) {
     }
 
     switch (action) {
-        case 1:  // 举左手
+        case 1:
+
             current_positions[LEFT_PITCH] = 180;
             MoveServos(period, current_positions);
             break;
 
-        case 2:  // 举右手
+        case 2:
+
             current_positions[RIGHT_PITCH] = 0;
             MoveServos(period, current_positions);
             break;
 
-        case 3:  // 举双手
+        case 3:
+
             current_positions[LEFT_PITCH] = 180;
             current_positions[RIGHT_PITCH] = 0;
             MoveServos(period, current_positions);
             break;
 
-        case 4:  // 放左手
-        case 5:  // 放右手
-        case 6:  // 放双手
-            // 回到初始位置
+        case 4:
+
+        case 5:
+
+        case 6:
+
             memcpy(current_positions, servo_initial_, sizeof(current_positions));
             MoveServos(period, current_positions);
             break;
 
-        case 7:  // 挥左手
+        case 7:
+
             current_positions[LEFT_PITCH] = 150;
             MoveServos(period, current_positions);
             for (int i = 0; i < times; i++) {
@@ -268,7 +247,8 @@ void Otto::HandAction(int action, int times, int amount, int period) {
             MoveServos(period, current_positions);
             break;
 
-        case 8:  // 挥右手
+        case 8:
+
             current_positions[RIGHT_PITCH] = 30;
             MoveServos(period, current_positions);
             for (int i = 0; i < times; i++) {
@@ -280,7 +260,8 @@ void Otto::HandAction(int action, int times, int amount, int period) {
             MoveServos(period, current_positions);
             break;
 
-        case 9:  // 挥双手
+        case 9:
+
             current_positions[LEFT_PITCH] = 150;
             current_positions[RIGHT_PITCH] = 30;
             MoveServos(period, current_positions);
@@ -294,7 +275,8 @@ void Otto::HandAction(int action, int times, int amount, int period) {
             MoveServos(period, current_positions);
             break;
 
-        case 10:  // 拍打左手
+        case 10:
+
             current_positions[LEFT_ROLL] = 20;
             MoveServos(period, current_positions);
             for (int i = 0; i < times; i++) {
@@ -307,7 +289,8 @@ void Otto::HandAction(int action, int times, int amount, int period) {
             MoveServos(period, current_positions);
             break;
 
-        case 11:  // 拍打右手
+        case 11:
+
             current_positions[RIGHT_ROLL] = 160;
             MoveServos(period, current_positions);
             for (int i = 0; i < times; i++) {
@@ -320,7 +303,8 @@ void Otto::HandAction(int action, int times, int amount, int period) {
             MoveServos(period, current_positions);
             break;
 
-        case 12:  // 拍打双手
+        case 12:
+
             current_positions[LEFT_ROLL] = 20;
             current_positions[RIGHT_ROLL] = 160;
             MoveServos(period, current_positions);
@@ -339,16 +323,8 @@ void Otto::HandAction(int action, int times, int amount, int period) {
     }
 }
 
-//---------------------------------------------------------
-//-- 统一身体动作函数
-//--  Parameters:
-//--    action: 动作类型 1=左转, 2=右转，3=回中心
-//--    times: 转动次数
-//--    amount: 旋转角度 (0-90度，以90度为中心左右旋转)
-//--    period: 动作时间
-//---------------------------------------------------------
 void Otto::BodyAction(int action, int times, int amount, int period) {
-    // 限制参数范围
+
     times = std::max(1, std::min(10, times));
     amount = std::max(0, std::min(90, amount));
     period = std::max(500, std::min(3000, period));
@@ -366,19 +342,23 @@ void Otto::BodyAction(int action, int times, int amount, int period) {
     int target_angle = body_center;
 
     switch (action) {
-        case 1:  // 左转
+        case 1:
+
             target_angle = body_center + amount;
             target_angle = std::min(180, target_angle);
             break;
-        case 2:  // 右转
+        case 2:
+
             target_angle = body_center - amount;
             target_angle = std::max(0, target_angle);
             break;
-        case 3:  // 回中心
+        case 3:
+
             target_angle = body_center;
             break;
         default:
-            return;  // 无效动作
+            return;
+
     }
 
     current_positions[BODY] = target_angle;
@@ -386,16 +366,8 @@ void Otto::BodyAction(int action, int times, int amount, int period) {
     vTaskDelay(pdMS_TO_TICKS(100));
 }
 
-//---------------------------------------------------------
-//-- 统一头部动作函数
-//--  Parameters:
-//--    action: 动作类型 1=抬头, 2=低头, 3=点头, 4=回中心, 5=连续点头
-//--    times: 重复次数 (仅对连续点头有效)
-//--    amount: 角度偏移 (1-15度范围内)
-//--    period: 动作时间
-//---------------------------------------------------------
 void Otto::HeadAction(int action, int times, int amount, int period) {
-    // 限制参数范围
+
     times = std::max(1, std::min(10, times));
     amount = std::max(1, std::min(15, abs(amount)));
     period = std::max(300, std::min(3000, period));
@@ -409,60 +381,63 @@ void Otto::HeadAction(int action, int times, int amount, int period) {
         }
     }
 
-    int head_center = 90;  // 头部中心位置
+    int head_center = 90;
 
     switch (action) {
-        case 1:                                              // 抬头
-            current_positions[HEAD] = head_center + amount;  // 抬头是增加角度
+        case 1:
+
+            current_positions[HEAD] = head_center + amount;
+
             MoveServos(period, current_positions);
             break;
 
-        case 2:                                              // 低头
-            current_positions[HEAD] = head_center - amount;  // 低头是减少角度
+        case 2:
+
+            current_positions[HEAD] = head_center - amount;
+
             MoveServos(period, current_positions);
             break;
 
-        case 3:  // 点头 (上下运动)
-            // 先抬头
+        case 3:
+
             current_positions[HEAD] = head_center + amount;
             MoveServos(period / 3, current_positions);
             vTaskDelay(pdMS_TO_TICKS(period / 6));
 
-            // 再低头
             current_positions[HEAD] = head_center - amount;
             MoveServos(period / 3, current_positions);
             vTaskDelay(pdMS_TO_TICKS(period / 6));
 
-            // 回到中心
             current_positions[HEAD] = head_center;
             MoveServos(period / 3, current_positions);
             break;
 
-        case 4:  // 回到中心位置
+        case 4:
+
             current_positions[HEAD] = head_center;
             MoveServos(period, current_positions);
             break;
 
-        case 5:  // 连续点头
+        case 5:
+
             for (int i = 0; i < times; i++) {
-                // 抬头
+
                 current_positions[HEAD] = head_center + amount;
                 MoveServos(period / 2, current_positions);
 
-                // 低头
                 current_positions[HEAD] = head_center - amount;
                 MoveServos(period / 2, current_positions);
 
-                vTaskDelay(pdMS_TO_TICKS(50));  // 短暂停顿
+                vTaskDelay(pdMS_TO_TICKS(50));
+
             }
 
-            // 回到中心
             current_positions[HEAD] = head_center;
             MoveServos(period / 2, current_positions);
             break;
 
         default:
-            // 无效动作，回到中心
+
             current_positions[HEAD] = head_center;
             MoveServos(period, current_positions);
             break;

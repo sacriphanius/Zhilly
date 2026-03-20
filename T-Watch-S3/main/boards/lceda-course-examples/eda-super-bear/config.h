@@ -26,4 +26,4 @@
 
 #define EDA_SUPER_BEAR_VERSION "1.0.0"
 
-#endif  // _BOARD_CONFIG_H_
+#endif

@@ -6,7 +6,6 @@
 #include <driver/gpio.h>
 #include <esp_adc/adc_oneshot.h>
 
-
 class PowerManager {
 private:
     esp_timer_handle_t timer_handle_;
@@ -26,7 +25,7 @@ private:
     adc_oneshot_unit_handle_t adc_handle_;
 
     void CheckBatteryStatus() {
-        // Get charging status
+
         bool new_charging_status = gpio_get_level(charging_pin_) == 1;
         if (new_charging_status != is_charging_) {
             is_charging_ = new_charging_status;
@@ -37,13 +36,11 @@ private:
             return;
         }
 
-        // 如果电池电量数据不足，则读取电池电量数据
         if (adc_values_.size() < kBatteryAdcDataCount) {
             ReadBatteryAdcData();
             return;
         }
 
-        // 如果电池电量数据充足，则每 kBatteryAdcInterval 个 tick 读取一次电池电量数据
         ticks_++;
         if (ticks_ % kBatteryAdcInterval == 0) {
             ReadBatteryAdcData();
@@ -54,7 +51,6 @@ private:
         int adc_value;
         ESP_ERROR_CHECK(adc_oneshot_read(adc_handle_, ADC_CHANNEL_2, &adc_value));
 
-        // 将 ADC 值添加到队列中
         adc_values_.push_back(adc_value);
         if (adc_values_.size() > kBatteryAdcDataCount) {
             adc_values_.erase(adc_values_.begin());
@@ -65,7 +61,6 @@ private:
         }
         average_adc /= adc_values_.size();
 
-        // 定义电池电量区间
         const struct {
             uint16_t adc;
             uint8_t level;
@@ -78,15 +73,14 @@ private:
             {3760, 100}
         };
 
-        // 低于最低值时
         if (average_adc < levels[0].adc) {
             battery_level_ = 0;
         }
-        // 高于最高值时
+
         else if (average_adc >= levels[5].adc) {
             battery_level_ = 100;
         } else {
-            // 线性插值计算中间值
+
             for (int i = 0; i < 5; i++) {
                 if (average_adc >= levels[i].adc && average_adc < levels[i+1].adc) {
                     float ratio = static_cast<float>(average_adc - levels[i].adc) / (levels[i+1].adc - levels[i].adc);
@@ -96,7 +90,6 @@ private:
             }
         }
 
-        // Check low battery status
         if (adc_values_.size() >= kBatteryAdcDataCount) {
             bool new_low_battery_status = battery_level_ <= kLowBatteryLevel;
             if (new_low_battery_status != is_low_battery_) {
@@ -113,21 +106,17 @@ private:
 public:
     PowerManager(gpio_num_t pin) : charging_pin_(pin) {
 
-        
         if (charging_pin_ != GPIO_NUM_NC) {
-            // 不初始化 ADC，不检测
-            // 初始化充电引脚
+
             gpio_config_t io_conf = {};
             io_conf.intr_type = GPIO_INTR_DISABLE;
             io_conf.mode = GPIO_MODE_INPUT;
             io_conf.pin_bit_mask = (1ULL << charging_pin_);
-            io_conf.pull_down_en = GPIO_PULLDOWN_DISABLE; 
-            io_conf.pull_up_en = GPIO_PULLUP_DISABLE;     
+            io_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;
+            io_conf.pull_up_en = GPIO_PULLUP_DISABLE;
             gpio_config(&io_conf);
         }
-        
 
-        // 创建电池电量检查定时器
         esp_timer_create_args_t timer_args = {
             .callback = [](void* arg) {
                 PowerManager* self = static_cast<PowerManager*>(arg);
@@ -141,21 +130,20 @@ public:
         ESP_ERROR_CHECK(esp_timer_create(&timer_args, &timer_handle_));
         ESP_ERROR_CHECK(esp_timer_start_periodic(timer_handle_, 1000000));
 
-        // 初始化 ADC
         adc_oneshot_unit_init_cfg_t init_config = {
-            .unit_id = ADC_UNIT_1,  
+            .unit_id = ADC_UNIT_1,
             .ulp_mode = ADC_ULP_MODE_DISABLE,
         };
         ESP_ERROR_CHECK(adc_oneshot_new_unit(&init_config, &adc_handle_));
-        
+
         adc_oneshot_chan_cfg_t chan_config = {
             .atten = ADC_ATTEN_DB_2_5,
             .bitwidth = ADC_BITWIDTH_DEFAULT,
         };
         ESP_ERROR_CHECK(adc_oneshot_config_channel(adc_handle_, ADC_CHANNEL_2, &chan_config));
-        ESP_LOGI("PowerManager ADC INIT------------------", 
+        ESP_LOGI("PowerManager ADC INIT------------------",
             "ADC atten: ADC_ATTEN_DB_2_5, bitwidth: ADC_BITWIDTH_DEFAULT ADC chan: ADC_CHANNEL_2");
-        
+
     }
 
     ~PowerManager() {
@@ -168,8 +156,8 @@ public:
         }
     }
 
-    bool IsCharging() {        
-        // 如果电量已经满了，则不再显示充电中
+    bool IsCharging() {
+
         if (battery_level_ == 100) {
             return false;
         }
@@ -183,7 +171,7 @@ public:
         if (charging_pin_ == GPIO_NUM_NC) {
             return false;
         }
-        // 没有区分充电和放电，所以直接返回相反状态
+
         return !is_charging_;
     }
 

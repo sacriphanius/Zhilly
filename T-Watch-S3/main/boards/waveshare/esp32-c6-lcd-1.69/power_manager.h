@@ -9,7 +9,6 @@
 #include "esp_adc/adc_cali_scheme.h"
 #include <math.h>
 
-
 class PowerManager {
 private:
     gpio_num_t charging_pin_ = GPIO_NUM_NC;
@@ -55,7 +54,7 @@ private:
 public:
     PowerManager(gpio_num_t charging_pin, gpio_num_t bat_adc_pin, gpio_num_t bat_power_pin)
         : charging_pin_(charging_pin), bat_adc_pin_(bat_adc_pin), bat_power_pin_(bat_power_pin) {
-        // 初始化充电引脚
+
         if (charging_pin_ != GPIO_NUM_NC) {
             gpio_config_t io_conf = {};
             io_conf.intr_type = GPIO_INTR_DISABLE;
@@ -66,7 +65,6 @@ public:
             gpio_config(&io_conf);
         }
 
-        // 初始化电池使能引脚
         if (bat_power_pin_ != GPIO_NUM_NC) {
             gpio_config_t io_conf = {};
             io_conf.intr_type = GPIO_INTR_DISABLE;
@@ -76,8 +74,7 @@ public:
             io_conf.pull_up_en = GPIO_PULLUP_DISABLE;
             gpio_config(&io_conf);
         }
-        
-        // 初始化adc
+
         if (bat_adc_pin_ != GPIO_NUM_NC) {
             adc_oneshot_unit_init_cfg_t init_config = {};
             init_config.ulp_mode = ADC_ULP_MODE_DISABLE;
@@ -145,7 +142,7 @@ public:
         }
         return false;
     }
-    
+
     bool IsDischarging(void) {
         if (charging_pin_ != GPIO_NUM_NC) {
             return gpio_get_level(charging_pin_) == 1;

@@ -1,11 +1,5 @@
-//--------------------------------------------------------------
-//-- Oscillator.pde
-//-- Generate sinusoidal oscillations in the servos
-//--------------------------------------------------------------
-//-- (c) Juan Gonzalez-Gomez (Obijuan), Dec 2011
-//-- (c) txp666 for esp32, 202503
-//-- GPL license
-//--------------------------------------------------------------
+
+
 #ifndef __OSCILLATOR_H__
 #define __OSCILLATOR_H__
 
@@ -20,12 +14,17 @@
 #define DEG2RAD(g) ((g) * M_PI) / 180
 #endif
 
-#define SERVO_MIN_PULSEWIDTH_US 500          // 最小脉宽（微秒）
-#define SERVO_MAX_PULSEWIDTH_US 2500         // 最大脉宽（微秒）
-#define SERVO_MIN_DEGREE -90                 // 最小角度
-#define SERVO_MAX_DEGREE 90                  // 最大角度
-#define SERVO_TIMEBASE_RESOLUTION_HZ 1000000 // 1MHz, 1us per tick
-#define SERVO_TIMEBASE_PERIOD 20000          // 20000 ticks, 20ms
+#define SERVO_MIN_PULSEWIDTH_US 500
+
+#define SERVO_MAX_PULSEWIDTH_US 2500
+
+#define SERVO_MIN_DEGREE -90
+
+#define SERVO_MAX_DEGREE 90
+
+#define SERVO_TIMEBASE_RESOLUTION_HZ 1000000
+
+#define SERVO_TIMEBASE_PERIOD 20000
 
 class Oscillator {
 public:
@@ -57,28 +56,33 @@ private:
 private:
   bool is_attached_;
 
-  //-- Oscillators parameters
-  unsigned int amplitude_; //-- Amplitude (degrees)
-  int offset_;             //-- Offset (degrees)
-  unsigned int period_;    //-- Period (miliseconds)
-  double phase0_;          //-- Phase (radians)
+  unsigned int amplitude_;
 
-  //-- Internal variables
-  int pos_;                      //-- Current servo pos
-  int pin_;                      //-- Pin where the servo is connected
-  int trim_;                     //-- Calibration offset
-  double phase_;                 //-- Current phase
-  double inc_;                   //-- Increment of phase
-  double number_samples_;        //-- Number of samples
-  unsigned int sampling_period_; //-- sampling period (ms)
+  int offset_;
+
+  unsigned int period_;
+
+  double phase0_;
+
+  int pos_;
+
+  int pin_;
+
+  int trim_;
+
+  double phase_;
+
+  double inc_;
+
+  double number_samples_;
+
+  unsigned int sampling_period_;
 
   long previous_millis_;
   long current_millis_;
 
-  //-- Oscillation mode. If true, the servo is stopped
   bool stop_;
 
-  //-- Reverse mode
   bool rev_;
 
   int diff_limit_;
@@ -88,4 +92,4 @@ private:
   ledc_mode_t ledc_speed_mode_;
 };
 
-#endif // __OSCILLATOR_H__
+#endif

@@ -19,7 +19,7 @@
 
 class Pmic : public Axp2101 {
 public:
-    // Power Init
+
     Pmic(i2c_master_bus_handle_t i2c_bus, uint8_t addr) : Axp2101(i2c_bus, addr) {
         uint8_t data = ReadReg(0x90);
         data |= 0b10110100;
@@ -54,15 +54,22 @@ private:
 
 class Aw9523 : public I2cDevice {
 public:
-    // Exanpd IO Init
+
     Aw9523(i2c_master_bus_handle_t i2c_bus, uint8_t addr) : I2cDevice(i2c_bus, addr) {
-        WriteReg(0x02, 0b00000111);  // P0
-        WriteReg(0x03, 0b10001111);  // P1
-        WriteReg(0x04, 0b00011000);  // CONFIG_P0
-        WriteReg(0x05, 0b00001100);  // CONFIG_P1
-        WriteReg(0x11, 0b00010000);  // GCR P0 port is Push-Pull mode.
-        WriteReg(0x12, 0b11111111);  // LEDMODE_P0
-        WriteReg(0x13, 0b11111111);  // LEDMODE_P1
+        WriteReg(0x02, 0b00000111);
+
+        WriteReg(0x03, 0b10001111);
+
+        WriteReg(0x04, 0b00011000);
+
+        WriteReg(0x05, 0b00001100);
+
+        WriteReg(0x11, 0b00010000);
+
+        WriteReg(0x12, 0b11111111);
+
+        WriteReg(0x13, 0b11111111);
+
     }
 
     void ResetAw88298() {
@@ -89,7 +96,7 @@ public:
         int x = -1;
         int y = -1;
     };
-    
+
     Ft6336(i2c_master_bus_handle_t i2c_bus, uint8_t addr) : I2cDevice(i2c_bus, addr) {
         uint8_t chip_id = ReadReg(0xA3);
         ESP_LOGI(TAG, "Get chip ID: 0x%02X", chip_id);
@@ -144,7 +151,7 @@ private:
     }
 
     void InitializeI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = (i2c_port_t)1,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
@@ -195,22 +202,21 @@ private:
     void PollTouchpad() {
         static bool was_touched = false;
         static int64_t touch_start_time = 0;
-        const int64_t TOUCH_THRESHOLD_MS = 500;  // 触摸时长阈值，超过500ms视为长按
-        
+        const int64_t TOUCH_THRESHOLD_MS = 500;
+
         ft6336_->UpdateTouchPoint();
         auto& touch_point = ft6336_->GetTouchPoint();
-        
-        // 检测触摸开始
+
         if (touch_point.num > 0 && !was_touched) {
             was_touched = true;
-            touch_start_time = esp_timer_get_time() / 1000; // 转换为毫秒
-        } 
-        // 检测触摸释放
+            touch_start_time = esp_timer_get_time() / 1000;
+
+        }
+
         else if (touch_point.num == 0 && was_touched) {
             was_touched = false;
             int64_t touch_duration = (esp_timer_get_time() / 1000) - touch_start_time;
-            
-            // 只有短触才触发
+
             if (touch_duration < TOUCH_THRESHOLD_MS) {
                 auto& app = Application::GetInstance();
                 if (app.GetDeviceState() == kDeviceStateStarting) {
@@ -225,8 +231,7 @@ private:
     void InitializeFt6336TouchPad() {
         ESP_LOGI(TAG, "Init FT6336");
         ft6336_ = new Ft6336(i2c_bus_, 0x38);
-        
-        // 创建定时器，20ms 间隔
+
         esp_timer_create_args_t timer_args = {
             .callback = [](void* arg) {
                 M5StackCoreS3Board* board = (M5StackCoreS3Board*)arg;
@@ -237,7 +242,7 @@ private:
             .name = "touchpad_timer",
             .skip_unhandled_events = true,
         };
-        
+
         ESP_ERROR_CHECK(esp_timer_create(&timer_args, &touchpad_timer_));
         ESP_ERROR_CHECK(esp_timer_start_periodic(touchpad_timer_, 20 * 1000));
     }
@@ -276,7 +281,7 @@ private:
         panel_config.rgb_ele_order = LCD_RGB_ELEMENT_ORDER_BGR;
         panel_config.bits_per_pixel = 16;
         ESP_ERROR_CHECK(esp_lcd_new_panel_ili9341(panel_io, &panel_config, &panel));
-        
+
         esp_lcd_panel_reset(panel);
         aw9523_->ResetIli9342();
 

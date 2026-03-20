@@ -19,7 +19,6 @@
 
 #define TAG "CustomLcdDisplay"
 
-
 static SemaphoreHandle_t trans_done_sem = NULL;
 static uint16_t *trans_act;
 static uint16_t *trans_buf_1;
@@ -51,12 +50,10 @@ void CustomLcdDisplay::lvgl_port_flush_callback(lv_display_t *drv, const lv_area
     const int y_end = area->y2;
     const int width = x_end - x_start + 1;
     const int height = y_end - y_start + 1;
-    
+
     int32_t hor_res = lv_display_get_horizontal_resolution(drv);
     int32_t ver_res = lv_display_get_vertical_resolution(drv);
 
-    // printf("hor_res: %ld, ver_res: %ld\r\n", hor_res, ver_res);
-    // printf("x_start: %d, x_end: %d, y_start: %d, y_end: %d, width: %d, height: %d\r\n", x_start, x_end, y_start, y_end, width, height);
     uint16_t *from = (uint16_t *)color_map;
     uint16_t *to = NULL;
 
@@ -165,14 +162,12 @@ void CustomLcdDisplay::lvgl_port_flush_callback(lv_display_t *drv, const lv_area
             }
 
             if (0 == i) {
-                // if (disp_ctx->draw_wait_cb) {
-                //     disp_ctx->draw_wait_cb(disp_ctx->panel_handle->user_data);
-                // }
+
                 xSemaphoreGive(trans_done_sem);
             }
 
             xSemaphoreTake(trans_done_sem, portMAX_DELAY);
-            // printf("i: %d, x_draw_start: %d, x_draw_end: %d, y_draw_start: %d, y_draw_end: %d\r\n", i, x_draw_start, x_draw_end, y_draw_start, y_draw_end);
+
             esp_lcd_panel_draw_bitmap(panel_handle, x_draw_start, y_draw_start, x_draw_end + 1, y_draw_end + 1, to);
 
             if (LV_DISPLAY_ROTATION_90 == rotate) {
@@ -194,16 +189,12 @@ void CustomLcdDisplay::lvgl_port_flush_callback(lv_display_t *drv, const lv_area
 CustomLcdDisplay::CustomLcdDisplay(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_handle_t panel,
                            int width, int height, int offset_x, int offset_y, bool mirror_x, bool mirror_y, bool swap_xy)
     : LcdDisplay(panel_io, panel, width, height) {
-    //     width_ = width;
-    // height_ = height;
 
-    // draw white
     std::vector<uint16_t> buffer(width_, 0xFFFF);
     for (int y = 0; y < height_; y++) {
         esp_lcd_panel_draw_bitmap(panel_, 0, y, width_, y + 1, buffer.data());
     }
 
-    // Set the display to on
     ESP_LOGI(TAG, "Turning display on");
     ESP_ERROR_CHECK(esp_lcd_panel_disp_on_off(panel_, true));
 
@@ -267,7 +258,7 @@ CustomLcdDisplay::CustomLcdDisplay(esp_lcd_panel_io_handle_t panel_io, esp_lcd_p
     esp_lcd_panel_io_callbacks_t cbs = {
         .on_color_trans_done = lvgl_port_flush_io_ready_callback,
     };
-    /* Register done callback */
+
     esp_lcd_panel_io_register_event_callbacks(panel_io_, &cbs, display_);
 
     esp_lcd_panel_disp_on_off(panel_, false);
@@ -281,6 +272,4 @@ CustomLcdDisplay::CustomLcdDisplay(esp_lcd_panel_io_handle_t panel_io, esp_lcd_p
         lv_display_set_offset(display_, offset_x, offset_y);
     }
 
-    // Note: SetupUI() should be called by Application::Initialize(), not in constructor
-    // to ensure lvgl objects are created after the display is fully initialized.
 }

@@ -12,9 +12,8 @@
 
 static const char *TAG = "Ml307Board";
 
-// Maximum retry count for modem detection
 static constexpr int MODEM_DETECT_MAX_RETRIES = 30;
-// Maximum retry count for network registration
+
 static constexpr int NETWORK_REG_MAX_RETRIES = 6;
 
 Ml307Board::Ml307Board(gpio_num_t tx_pin, gpio_num_t rx_pin, gpio_num_t dtr_pin) : tx_pin_(tx_pin), rx_pin_(rx_pin), dtr_pin_(dtr_pin) {
@@ -58,17 +57,15 @@ void Ml307Board::OnNetworkEvent(NetworkEvent event, const std::string& data) {
             break;
     }
 
-    // Notify external callback if set
     if (network_event_callback_) {
         network_event_callback_(event, data);
     }
 }
 
 void Ml307Board::NetworkTask() {
-    // Notify modem detection started
+
     OnNetworkEvent(NetworkEvent::ModemDetecting);
 
-    // Try to detect modem with retry limit
     int detect_retries = 0;
     while (detect_retries < MODEM_DETECT_MAX_RETRIES) {
         modem_ = AtModem::Detect(tx_pin_, rx_pin_, dtr_pin_, 921600);
@@ -87,8 +84,6 @@ void Ml307Board::NetworkTask() {
 
     ESP_LOGI(TAG, "Modem detected successfully");
 
-    // Set up network state change callback
-    // Note: Don't call GetCarrierName() here as it sends AT command and will block ReceiveTask
     modem_->OnNetworkStateChanged([this](bool network_ready) {
         if (network_ready) {
             OnNetworkEvent(NetworkEvent::Connected);
@@ -97,10 +92,8 @@ void Ml307Board::NetworkTask() {
         }
     });
 
-    // Notify network registration started
     OnNetworkEvent(NetworkEvent::Connecting);
 
-    // Wait for network ready with retry limit
     int reg_retries = 0;
     while (reg_retries < NETWORK_REG_MAX_RETRIES) {
         auto result = modem_->WaitForNetworkReady();
@@ -122,7 +115,6 @@ void Ml307Board::NetworkTask() {
         return;
     }
 
-    // Print the ML307 modem information
     std::string module_revision = modem_->GetModuleRevision();
     std::string imei = modem_->GetImei();
     std::string iccid = modem_->GetIccid();
@@ -132,7 +124,7 @@ void Ml307Board::NetworkTask() {
 }
 
 void Ml307Board::StartNetwork() {
-    // Create network initialization task and return immediately
+
     xTaskCreate([](void* arg) {
         Ml307Board* board = static_cast<Ml307Board*>(arg);
         board->NetworkTask();
@@ -166,7 +158,7 @@ const char* Ml307Board::GetNetworkStateIcon() {
 }
 
 std::string Ml307Board::GetBoardJson() {
-    // Set the board type for OTA
+
     std::string board_json = std::string("{\"type\":\"" BOARD_TYPE "\",");
     board_json += "\"name\":\"" BOARD_NAME "\",";
     board_json += "\"revision\":\"" + modem_->GetModuleRevision() + "\",";
@@ -179,38 +171,15 @@ std::string Ml307Board::GetBoardJson() {
 }
 
 void Ml307Board::SetPowerSaveLevel(PowerSaveLevel level) {
-    // TODO: Implement power save level for ML307
+
     (void)level;
 }
 
 std::string Ml307Board::GetDeviceStatusJson() {
-    /*
-     * 返回设备状态JSON
-     * 
-     * 返回的JSON结构如下：
-     * {
-     *     "audio_speaker": {
-     *         "volume": 70
-     *     },
-     *     "screen": {
-     *         "brightness": 100,
-     *         "theme": "light"
-     *     },
-     *     "battery": {
-     *         "level": 50,
-     *         "charging": true
-     *     },
-     *     "network": {
-     *         "type": "cellular",
-     *         "carrier": "CHINA MOBILE",
-     *         "csq": 10
-     *     }
-     * }
-     */
+
     auto& board = Board::GetInstance();
     auto root = cJSON_CreateObject();
 
-    // Audio speaker
     auto audio_speaker = cJSON_CreateObject();
     auto audio_codec = board.GetAudioCodec();
     if (audio_codec) {
@@ -218,14 +187,14 @@ std::string Ml307Board::GetDeviceStatusJson() {
     }
     cJSON_AddItemToObject(root, "audio_speaker", audio_speaker);
 
-    // Screen brightness
     auto backlight = board.GetBacklight();
     auto screen = cJSON_CreateObject();
     if (backlight) {
         cJSON_AddNumberToObject(screen, "brightness", backlight->brightness());
     }
     auto display = board.GetDisplay();
-    if (display && display->height() > 64) { // For LCD display only
+    if (display && display->height() > 64) {
+
         auto theme = display->GetTheme();
         if (theme != nullptr) {
             cJSON_AddStringToObject(screen, "theme", theme->name().c_str());
@@ -233,7 +202,6 @@ std::string Ml307Board::GetDeviceStatusJson() {
     }
     cJSON_AddItemToObject(root, "screen", screen);
 
-    // Battery
     int battery_level = 0;
     bool charging = false;
     bool discharging = false;
@@ -244,7 +212,6 @@ std::string Ml307Board::GetDeviceStatusJson() {
         cJSON_AddItemToObject(root, "battery", battery);
     }
 
-    // Network
     auto network = cJSON_CreateObject();
     cJSON_AddStringToObject(network, "type", "cellular");
     cJSON_AddStringToObject(network, "carrier", modem_->GetCarrierName().c_str());

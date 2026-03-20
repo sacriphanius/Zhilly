@@ -36,26 +36,34 @@ private:
     jpeg_dec_handle_t jpeg_dec_;
     jpeg_dec_io_t *jpeg_io_;
     jpeg_dec_header_info_t *jpeg_out_;
-    // 检测状态机
+
     enum DetectionState {
-        IDLE,           // 空闲状态
-        VALIDATING,     // 验证中（连续检测3秒）
-        COOLDOWN        // 冷却期（等待重新检测）
+        IDLE,
+
+        VALIDATING,
+
+        COOLDOWN
+
     };
-    
+
     DetectionState detection_state = IDLE;
     int64_t state_start_time = 0;
-    bool need_start_cooldown = false; // 是否需要开始冷却期
-    int64_t last_detected_time = 0; // 验证期间最后一次检测到物体的时间
-    
+    bool need_start_cooldown = false;
+
+    int64_t last_detected_time = 0;
+
     int detect_target = 0;
     int detect_threshold = 75;
-    int detect_duration_sec = 2; // 检测持续时间2秒，确认人员持续存在
-    int detect_invoke_interval_sec = 8; // 默认15秒冷却期，避免频繁开始会话
-    int detect_debounce_sec = 1; // 验证期间人员离开的去抖动时间1秒
-    int inference_en = 0; // 推理使能开关（0: 关闭, 1: 开启）
+    int detect_duration_sec = 2;
+
+    int detect_invoke_interval_sec = 8;
+
+    int detect_debounce_sec = 1;
+
+    int inference_en = 0;
+
     bool sscma_restarted_ = false;
-    
+
     sscma_client_model_t *model;
     int model_class_cnt = 0;
 public:
@@ -65,11 +73,11 @@ public:
 
     virtual void SetExplainUrl(const std::string& url, const std::string& token);
     virtual bool Capture();
-    // 翻转控制函数
+
     virtual bool SetHMirror(bool enabled) override;
     virtual bool SetVFlip(bool enabled) override;
     virtual std::string Explain(const std::string& question);
 
 };
 
-#endif // ESP32_CAMERA_H
+#endif

@@ -33,38 +33,57 @@
 constexpr char TAG[] = "ESP_SensairShuttle";
 
 static const ili9341_lcd_init_cmd_t vendor_specific_init[] = {
-    // {cmd, { data }, data_size, delay_ms}
-    {0x11, NULL, 0, 120},                                          // Sleep Out
-    {0x36, (uint8_t []){0x00}, 1, 0},                              // Memory Data Access Control
-    {0x3A, (uint8_t []){0x05}, 1, 0},                              // Interface Pixel Format (16-bit)
-    {0xB2, (uint8_t []){0x0C, 0x0C, 0x00, 0x33, 0x33}, 5, 0},      // Porch Setting
-    {0xB7, (uint8_t []){0x05}, 1, 0},                              // Gate Control
-    {0xBB, (uint8_t []){0x21}, 1, 0},                              // VCOM Setting
-    {0xC0, (uint8_t []){0x2C}, 1, 0},                              // LCM Control
-    {0xC2, (uint8_t []){0x01}, 1, 0},                              // VDV and VRH Command Enable
-    {0xC3, (uint8_t []){0x15}, 1, 0},                              // VRH Set
-    {0xC6, (uint8_t []){0x0F}, 1, 0},                              // Frame Rate Control
-    {0xD0, (uint8_t []){0xA7}, 1, 0},                              // Power Control 1
-    {0xD0, (uint8_t []){0xA4, 0xA1}, 2, 0},                        // Power Control 1
-    {0xD6, (uint8_t []){0xA1}, 1, 0},                              // Gate output GND in sleep mode
+
+    {0x11, NULL, 0, 120},
+
+    {0x36, (uint8_t []){0x00}, 1, 0},
+
+    {0x3A, (uint8_t []){0x05}, 1, 0},
+
+    {0xB2, (uint8_t []){0x0C, 0x0C, 0x00, 0x33, 0x33}, 5, 0},
+
+    {0xB7, (uint8_t []){0x05}, 1, 0},
+
+    {0xBB, (uint8_t []){0x21}, 1, 0},
+
+    {0xC0, (uint8_t []){0x2C}, 1, 0},
+
+    {0xC2, (uint8_t []){0x01}, 1, 0},
+
+    {0xC3, (uint8_t []){0x15}, 1, 0},
+
+    {0xC6, (uint8_t []){0x0F}, 1, 0},
+
+    {0xD0, (uint8_t []){0xA7}, 1, 0},
+
+    {0xD0, (uint8_t []){0xA4, 0xA1}, 2, 0},
+
+    {0xD6, (uint8_t []){0xA1}, 1, 0},
+
     {
         0xE0, (uint8_t [])
         {
             0xF0, 0x05, 0x0E, 0x08, 0x0A, 0x17, 0x39, 0x54,
             0x4E, 0x37, 0x12, 0x12, 0x31, 0x37
         }, 14, 0
-    },                                                             // Positive Gamma Control
+    },
+
     {
         0xE1, (uint8_t [])
         {
             0xF0, 0x10, 0x14, 0x0D, 0x0B, 0x05, 0x39, 0x44,
             0x4D, 0x38, 0x14, 0x14, 0x2E, 0x35
         }, 14, 0
-    },                                                             // Negative Gamma Control
-    {0xE4, (uint8_t []){0x23, 0x00, 0x00}, 3, 0},                  // Gate position control
-    {0x21, NULL, 0, 0},                                            // Display Inversion On
-    {0x29, NULL, 0, 0},                                            // Display On
-    {0x2C, NULL, 0, 0},                                            // Memory Write
+    },
+
+    {0xE4, (uint8_t []){0x23, 0x00, 0x00}, 3, 0},
+
+    {0x21, NULL, 0, 0},
+
+    {0x29, NULL, 0, 0},
+
+    {0x2C, NULL, 0, 0},
+
 };
 
 class Cst816d : public I2cDevice {
@@ -113,21 +132,20 @@ public:
         TouchEvent event = TOUCH_NONE;
 
         if (is_touched && !was_touched_) {
-            // Press event (transition from not touched to touched)
+
             press_count_++;
             event = TOUCH_PRESS;
             ESP_LOGI(TAG, "TOUCH PRESS - count: %d, x: %d, y: %d", press_count_, tp_.x, tp_.y);
         } else if (!is_touched && was_touched_) {
-            // Release event (transition from touched to not touched)
+
             event = TOUCH_RELEASE;
             ESP_LOGI(TAG, "TOUCH RELEASE - total presses: %d", press_count_);
         } else if (is_touched && was_touched_) {
-            // Continuous touch (hold)
+
             event = TOUCH_HOLD;
             ESP_LOGD(TAG, "TOUCH HOLD - x: %d, y: %d", tp_.x, tp_.y);
         }
 
-        // Update previous state
         was_touched_ = is_touched;
         return event;
     }
@@ -146,7 +164,6 @@ private:
     uint8_t* read_buffer_ = nullptr;
     TouchPoint_t tp_;
 
-    // Touch state tracking
     bool was_touched_;
     int press_count_;
 };
@@ -199,7 +216,8 @@ private:
                 }
             }
 
-            vTaskDelay(pdMS_TO_TICKS(50)); // Poll every 50ms
+            vTaskDelay(pdMS_TO_TICKS(50));
+
         }
     }
 

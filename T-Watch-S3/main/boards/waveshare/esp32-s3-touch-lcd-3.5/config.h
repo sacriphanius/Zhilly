@@ -31,8 +31,6 @@
 #define DISPLAY_DC_PIN          GPIO_NUM_3
 #define DISPLAY_RST_PIN         GPIO_NUM_NC
 
-
-
 #define DISPLAY_WIDTH           480
 #define DISPLAY_HEIGHT          320
 #define DISPLAY_MIRROR_X        false
@@ -46,7 +44,6 @@
 
 #define DISPLAY_BACKLIGHT_PIN   GPIO_NUM_6
 #define DISPLAY_BACKLIGHT_OUTPUT_INVERT false
-
 
 #define CAM_PIN_PWDN    GPIO_NUM_NC
 #define CAM_PIN_RESET   GPIO_NUM_NC
@@ -65,5 +62,4 @@
 #define CAM_PIN_D6      GPIO_NUM_39
 #define CAM_PIN_D7      GPIO_NUM_21
 
-
-#endif // _BOARD_CONFIG_H_
+#endif

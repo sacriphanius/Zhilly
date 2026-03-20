@@ -2,14 +2,12 @@
 
 #include <lvgl.h>
 
-
 class LvglFont {
 public:
     virtual const lv_font_t* font() const = 0;
     virtual ~LvglFont() = default;
 };
 
-// Built-in font
 class LvglBuiltInFont : public LvglFont {
 public:
     LvglBuiltInFont(const lv_font_t* font) : font_(font) {}
@@ -18,7 +16,6 @@ public:
 private:
     const lv_font_t* font_;
 };
-
 
 class LvglCBinFont : public LvglFont {
 public:

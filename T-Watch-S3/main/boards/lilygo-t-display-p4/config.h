@@ -17,7 +17,6 @@
 #error "unknown macro definition, please select the correct macro definition."
 #endif
 
-// SCREEN
 #if defined CONFIG_SCREEN_TYPE_HI8561
 #define SCREEN_WIDTH HI8561_SCREEN_WIDTH
 #define SCREEN_HEIGHT HI8561_SCREEN_HEIGHT
@@ -73,4 +72,4 @@
 #define SCREEN_OFFSET_X 0
 #define SCREEN_OFFSET_Y 0
 
-#endif // _BOARD_CONFIG_H_
+#endif

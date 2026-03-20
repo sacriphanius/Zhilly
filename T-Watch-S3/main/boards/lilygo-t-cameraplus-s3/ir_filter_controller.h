@@ -3,7 +3,6 @@
 
 #include "mcp_server.h"
 
-
 class IrFilterController {
 private:
     bool enable_ = false;
@@ -40,5 +39,4 @@ public:
     }
 };
 
-
-#endif // __IR_FILTER_CONTROLLER_H__
+#endif

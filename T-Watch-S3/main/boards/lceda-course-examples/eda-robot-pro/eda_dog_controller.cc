@@ -1,6 +1,4 @@
-/*
-    EDA机器狗控制器 - MCP协议版本
-*/
+
 
 #include <esp_log.h>
 #include <freertos/FreeRTOS.h>
@@ -157,7 +155,6 @@ public:
 
     ESP_LOGI(TAG, "开始注册MCP工具...");
 
-    // 基础移动动作
     mcp_server.AddTool(
         "self.dog.walk",
         "行走。steps: 行走步数(1-100); speed: "
@@ -190,7 +187,6 @@ public:
           return true;
         });
 
-    // 姿态动作
     mcp_server.AddTool("self.dog.sit",
                        "坐下。speed: 坐下速度(500-2000，数值越小越快)",
                        PropertyList({Property("speed", kPropertyTypeInteger,
@@ -231,7 +227,6 @@ public:
                          return true;
                        });
 
-    // 单腿抬起动作
     mcp_server.AddTool(
         "self.dog.lift_left_front_leg",
         "抬起左前腿。speed: 动作速度(500-2000，数值越小越快); height: "
@@ -284,7 +279,6 @@ public:
           return true;
         });
 
-    // 系统工具
     mcp_server.AddTool("self.dog.stop", "立即停止", PropertyList(),
                        [this](const PropertyList &properties) -> ReturnValue {
                          if (action_task_handle_ != nullptr) {
@@ -317,14 +311,12 @@ public:
           ESP_LOGI(TAG, "设置舵机微调: %s = %d度", servo_type.c_str(),
                    trim_value);
 
-          // 获取当前所有微调值
           Settings settings("dog_trims", true);
           int left_front_leg = settings.GetInt("left_front_leg", 0);
           int left_rear_leg = settings.GetInt("left_rear_leg", 0);
           int right_front_leg = settings.GetInt("right_front_leg", 0);
           int right_rear_leg = settings.GetInt("right_rear_leg", 0);
 
-          // 更新指定舵机的微调值
           if (servo_type == "left_front_leg") {
             left_front_leg = trim_value;
             settings.SetInt("left_front_leg", left_front_leg);

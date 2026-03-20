@@ -1,7 +1,6 @@
 #ifndef _BOARD_CONFIG_H_
 #define _BOARD_CONFIG_H_
 
-
 #include <driver/gpio.h>
 
 enum PowerSupply {
@@ -44,7 +43,7 @@ enum PowerSupply {
 #define XIO_CHG_CTRL (IO_EXPANDER_PIN_NUM_14)
 #define XIO_CHRG (IO_EXPANDER_PIN_NUM_15)
 
-#define DRV_IO_EXP_OUTPUT_MASK 0x3F18  
+#define DRV_IO_EXP_OUTPUT_MASK 0x3F18
 #define DRV_IO_EXP_INPUT_MASK 0xC0E7
 
 #define LCD_PIN_CS GPIO_NUM_14
@@ -76,5 +75,4 @@ enum PowerSupply {
 #define Module_4G_RX_PIN GPIO_NUM_44
 #define Module_4G_TX_PIN GPIO_NUM_43
 
-#endif // _BOARD_CONFIG_H_
-
+#endif

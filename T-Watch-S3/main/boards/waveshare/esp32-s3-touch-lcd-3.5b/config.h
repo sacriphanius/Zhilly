@@ -34,8 +34,6 @@
 
 #define DISPLAY_RST_PIN         GPIO_NUM_NC
 
-
-
 #define DISPLAY_WIDTH           480
 #define DISPLAY_HEIGHT          320
 #define DISPLAY_TRANS_SIZE      (DISPLAY_WIDTH * 10)
@@ -74,5 +72,4 @@
 #define CAM_PIN_D6      GPIO_NUM_39
 #define CAM_PIN_D7      GPIO_NUM_21
 
-
-#endif // _BOARD_CONFIG_H_
+#endif

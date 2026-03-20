@@ -25,7 +25,7 @@ public:
 		ESP_LOGI(TAG, "开始注册MCP工具...");
 
 	mcp_server.AddTool(
-        "self.AEC.set_mode", 
+        "self.AEC.set_mode",
         "设置AEC对话打断模式。当用户意图切换对话打断模式时或者用户觉得ai对话容易被打断时或者用户觉得无法实现对话打断时都使用此工具。\n"
         "参数：\n"
         "   `mode`: 对话打断模式，可选值只有`kAecOff`(关闭）和`kAecOnDeviceSide`（开启）\n"
@@ -33,7 +33,7 @@ public:
         "   反馈状态信息，不需要确认，立即播报相关数据\n",
         PropertyList({
             Property("mode", kPropertyTypeString)
-        }), 
+        }),
         [](const PropertyList& properties) -> ReturnValue {
             auto mode = properties["mode"].value<std::string>();
             auto& app = Application::GetInstance();
@@ -44,7 +44,7 @@ public:
             }else {
                 auto& board = Board::GetInstance();
                 app.SetAecMode(kAecOnDeviceSide);
-                
+
                 return "{\"success\": true, \"message\": \"AEC对话打断模式已开启\"}";
             }
         }
@@ -55,7 +55,7 @@ public:
         "获取AEC对话打断模式状态。当用户意图获取对话打断模式状态时使用此工具。\n"
         "返回值：\n"
         "   反馈状态信息，不需要确认，立即播报相关数据\n",
-        PropertyList(),  
+        PropertyList(),
         [](const PropertyList&) -> ReturnValue {
             auto& app = Application::GetInstance();
             const bool is_currently_off = (app.GetAecMode() == kAecOff);
@@ -66,14 +66,14 @@ public:
             }
         }
     );
-	
+
     mcp_server.AddTool(
         "self.res.esp_restart",
         "重启设备。当用户意图重启设备时使用此工具。\n",
-        PropertyList(),  
+        PropertyList(),
         [](const PropertyList&) -> ReturnValue {
             vTaskDelay(pdMS_TO_TICKS(1000));
-            // Reboot the device
+
             esp_restart();
             return true;
         }

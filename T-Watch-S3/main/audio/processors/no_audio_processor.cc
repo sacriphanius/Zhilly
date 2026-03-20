@@ -14,7 +14,6 @@ void NoAudioProcessor::Feed(std::vector<int16_t>&& data) {
         return;
     }
 
-    // Convert stereo to mono if needed
     if (codec_->input_channels() == 2) {
         for (size_t i = 0, j = 0; i < data.size() / 2; ++i, j += 2) {
             output_buffer_.push_back(data[j]);
@@ -23,7 +22,6 @@ void NoAudioProcessor::Feed(std::vector<int16_t>&& data) {
         output_buffer_.insert(output_buffer_.end(), data.begin(), data.end());
     }
 
-    // Output complete frames when buffer has enough data
     while (output_buffer_.size() >= (size_t)frame_samples_) {
         if (output_buffer_.size() == (size_t)frame_samples_) {
             output_callback_(std::move(output_buffer_));

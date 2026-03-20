@@ -15,25 +15,25 @@
 #define BUFF_SIZE (EXAMPLE_LCD_WIDTH * EXAMPLE_LCD_HEIGHT * BYTES_PER_PIXEL)
 
 const uint8_t WF_Full_1IN54[159] =
-{											
+{
     0x80,0x48,0x40,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
     0x40,0x48,0x80,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
     0x80,0x48,0x40,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
     0x40,0x48,0x80,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
     0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
-    0xA,0x0,0x0,0x0,0x0,0x0,0x0,				
-    0x8,0x1,0x0,0x8,0x1,0x0,0x2,				
-    0xA,0x0,0x0,0x0,0x0,0x0,0x0,				
-    0x0,0x0,0x0,0x0,0x0,0x0,0x0,				
-    0x0,0x0,0x0,0x0,0x0,0x0,0x0,				
-    0x0,0x0,0x0,0x0,0x0,0x0,0x0,				
-    0x0,0x0,0x0,0x0,0x0,0x0,0x0,				
-    0x0,0x0,0x0,0x0,0x0,0x0,0x0,				
-    0x0,0x0,0x0,0x0,0x0,0x0,0x0,				
-    0x0,0x0,0x0,0x0,0x0,0x0,0x0,				
-    0x0,0x0,0x0,0x0,0x0,0x0,0x0,				
-    0x0,0x0,0x0,0x0,0x0,0x0,0x0,				
-    0x22,0x22,0x22,0x22,0x22,0x22,0x0,0x0,0x0,			
+    0xA,0x0,0x0,0x0,0x0,0x0,0x0,
+    0x8,0x1,0x0,0x8,0x1,0x0,0x2,
+    0xA,0x0,0x0,0x0,0x0,0x0,0x0,
+    0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+    0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+    0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+    0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+    0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+    0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+    0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+    0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+    0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+    0x22,0x22,0x22,0x22,0x22,0x22,0x0,0x0,0x0,
     0x22,0x17,0x41,0x0,0x32,0x20
 };
 
@@ -76,11 +76,11 @@ void CustomLcdDisplay::lvgl_flush_cb(lv_display_t *disp, const lv_area_t *area, 
     lv_disp_flush_ready(disp);
 }
 
-CustomLcdDisplay::CustomLcdDisplay(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_handle_t panel, 
-    int width, int height, int offset_x, int offset_y, 
-    bool mirror_x, bool mirror_y, bool swap_xy, custom_lcd_spi_t _lcd_spi_data) : 
-    LcdDisplay(panel_io, panel, width, height), 
-    lcd_spi_data(_lcd_spi_data), 
+CustomLcdDisplay::CustomLcdDisplay(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_handle_t panel,
+    int width, int height, int offset_x, int offset_y,
+    bool mirror_x, bool mirror_y, bool swap_xy, custom_lcd_spi_t _lcd_spi_data) :
+    LcdDisplay(panel_io, panel, width, height),
+    lcd_spi_data(_lcd_spi_data),
     Width(width), Height(height) {
 
     ESP_LOGI(TAG, "Initialize SPI");
@@ -98,7 +98,7 @@ CustomLcdDisplay::CustomLcdDisplay(esp_lcd_panel_io_handle_t panel_io, esp_lcd_p
 
     buffer = (uint8_t *) heap_caps_malloc(lcd_spi_data.buffer_len, MALLOC_CAP_SPIRAM);
     assert(buffer);
-    display_ = lv_display_create(width, height); /* 以水平和垂直分辨率（像素）进行基本初始化 */
+    display_ = lv_display_create(width, height);
     lv_display_set_flush_cb(display_, lvgl_flush_cb);
     lv_display_set_user_data(display_, this);
 
@@ -112,7 +112,7 @@ CustomLcdDisplay::CustomLcdDisplay(esp_lcd_panel_io_handle_t panel_io, esp_lcd_p
     EPD_Clear();
     EPD_Display();
     EPD_DisplayPartBaseImage();
-    EPD_Init_Partial(); // 局部刷新初始化
+    EPD_Init_Partial();
 
     lvgl_port_unlock();
     if (display_ == nullptr) {
@@ -120,12 +120,10 @@ CustomLcdDisplay::CustomLcdDisplay(esp_lcd_panel_io_handle_t panel_io, esp_lcd_p
         return;
     }
 
-    // Note: SetupUI() should be called by Application::Initialize(), not in constructor
-    // to ensure lvgl objects are created after the display is fully initialized.
 }
 
 CustomLcdDisplay::~CustomLcdDisplay() {
-    
+
 }
 
 void CustomLcdDisplay::spi_gpio_init() {
@@ -164,9 +162,11 @@ void CustomLcdDisplay::spi_port_init() {
 
     spi_device_interface_config_t devcfg = {};
     devcfg.spics_io_num                  = -1;
-    devcfg.clock_speed_hz                = 40 * 1000 * 1000; // Clock out at 10 MHz
-    devcfg.mode                          = 0;                // SPI mode 0
-    devcfg.queue_size                    = 7;                // We want to be able to queue 7 transactions at a time
+    devcfg.clock_speed_hz                = 40 * 1000 * 1000;
+
+    devcfg.mode                          = 0;
+
+    devcfg.queue_size                    = 7;
 
     ret = spi_bus_initialize((spi_host_device_t) spi_host, &buscfg, SPI_DMA_CH_AUTO);
     ESP_ERROR_CHECK(ret);
@@ -177,7 +177,8 @@ void CustomLcdDisplay::spi_port_init() {
 void CustomLcdDisplay::read_busy() {
     int busy = lcd_spi_data.busy;
     while (gpio_get_level((gpio_num_t) busy) == 1) {
-        vTaskDelay(pdMS_TO_TICKS(5)); // LOW: idle, HIGH: busy
+        vTaskDelay(pdMS_TO_TICKS(5));
+
     }
 }
 
@@ -187,8 +188,10 @@ void CustomLcdDisplay::SPI_SendByte(uint8_t data) {
     memset(&t, 0, sizeof(t));
     t.length    = 8;
     t.tx_buffer = &data;
-    ret         = spi_device_polling_transmit(spi, &t); // Transmit!
-    assert(ret == ESP_OK);                              // Should have had no issues.
+    ret         = spi_device_polling_transmit(spi, &t);
+
+    assert(ret == ESP_OK);
+
 }
 
 void CustomLcdDisplay::EPD_SendData(uint8_t data) {
@@ -213,7 +216,8 @@ void CustomLcdDisplay::writeBytes(uint8_t *buffer, int len) {
     memset(&t, 0, sizeof(t));
     t.length    = 8 * len;
     t.tx_buffer = buffer;
-    ret         = spi_device_polling_transmit(spi, &t); // Transmit!
+    ret         = spi_device_polling_transmit(spi, &t);
+
     assert(ret == ESP_OK);
     set_cs_1();
 }
@@ -226,17 +230,20 @@ void CustomLcdDisplay::writeBytes(const uint8_t *buffer, int len) {
     memset(&t, 0, sizeof(t));
     t.length    = 8 * len;
     t.tx_buffer = buffer;
-    ret         = spi_device_polling_transmit(spi, &t); // Transmit!
+    ret         = spi_device_polling_transmit(spi, &t);
+
     assert(ret == ESP_OK);
     set_cs_1();
 }
 
 void CustomLcdDisplay::EPD_SetWindows(uint16_t Xstart, uint16_t Ystart, uint16_t Xend, uint16_t Yend) {
-    EPD_SendCommand(0x44); // SET_RAM_X_ADDRESS_START_END_POSITION
+    EPD_SendCommand(0x44);
+
     EPD_SendData((Xstart >> 3) & 0xFF);
     EPD_SendData((Xend >> 3) & 0xFF);
 
-    EPD_SendCommand(0x45); // SET_RAM_Y_ADDRESS_START_END_POSITION
+    EPD_SendCommand(0x45);
+
     EPD_SendData(Ystart & 0xFF);
     EPD_SendData((Ystart >> 8) & 0xFF);
     EPD_SendData(Yend & 0xFF);
@@ -244,10 +251,12 @@ void CustomLcdDisplay::EPD_SetWindows(uint16_t Xstart, uint16_t Ystart, uint16_t
 }
 
 void CustomLcdDisplay::EPD_SetCursor(uint16_t Xstart, uint16_t Ystart) {
-    EPD_SendCommand(0x4E); // SET_RAM_X_ADDRESS_COUNTER
+    EPD_SendCommand(0x4E);
+
     EPD_SendData(Xstart & 0xFF);
 
-    EPD_SendCommand(0x4F); // SET_RAM_Y_ADDRESS_COUNTER
+    EPD_SendCommand(0x4F);
+
     EPD_SendData(Ystart & 0xFF);
     EPD_SendData((Ystart >> 8) & 0xFF);
 }
@@ -295,26 +304,31 @@ void CustomLcdDisplay::EPD_Init() {
     vTaskDelay(pdMS_TO_TICKS(50));
 
     read_busy();
-    EPD_SendCommand(0x12); // SWRESET
+    EPD_SendCommand(0x12);
+
     read_busy();
 
-    EPD_SendCommand(0x01); // Driver output control
+    EPD_SendCommand(0x01);
+
     EPD_SendData(0xC7);
     EPD_SendData(0x00);
     EPD_SendData(0x01);
 
-    EPD_SendCommand(0x11); // data entry mode
+    EPD_SendCommand(0x11);
+
     EPD_SendData(0x01);
 
     EPD_SetWindows(0, Width - 1, Height - 1, 0);
 
-    EPD_SendCommand(0x3C); // BorderWavefrom
+    EPD_SendCommand(0x3C);
+
     EPD_SendData(0x01);
 
     EPD_SendCommand(0x18);
     EPD_SendData(0x80);
 
-    EPD_SendCommand(0x22); // Load Temperature and waveform setting.
+    EPD_SendCommand(0x22);
+
     EPD_SendData(0XB1);
     EPD_SendCommand(0x20);
 
@@ -371,7 +385,8 @@ void CustomLcdDisplay::EPD_Init_Partial() {
     EPD_SendData(0x00);
     EPD_SendData(0x00);
 
-    EPD_SendCommand(0x3C); // BorderWavefrom
+    EPD_SendCommand(0x3C);
+
     EPD_SendData(0x80);
 
     EPD_SendCommand(0x22);

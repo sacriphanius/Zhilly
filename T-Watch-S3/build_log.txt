@@ -4,7 +4,7 @@ Executing action: all (aliases: build)
 Running cmake in directory /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/build
 Executing "cmake -G Ninja -DPYTHON_DEPS_CHECKED=1 -DPYTHON=/home/sacriphanius/.espressif/python_env/idf5.5_py3.11_env/bin/python -DESP_PLATFORM=1 -DCCACHE_ENABLE=0 /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32"...
 -- IDF_TARGET is not set, guessed 'esp32s3' from sdkconfig '/home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/sdkconfig'
--- Found Git: /usr/bin/git (found version "2.39.5") 
+-- Found Git: /usr/bin/git (found version "2.39.5")
 -- Minimal build - ON
 -- The C compiler identification is GNU 14.2.0
 -- The CXX compiler identification is GNU 14.2.0
@@ -115,13 +115,13 @@ NOTICE: Skipping optional dependency: espressif/esp_ipa
 NOTICE: Skipping optional dependency: espressif/usb
 -- Project sdkconfig file /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/sdkconfig
 Loading defaults file /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/sdkconfig.defaults...
-/home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/sdkconfig.defaults:32 CONFIG_NEWLIB_NANO_FORMAT was replaced with CONFIG_LIBC_NEWLIB_NANO_FORMAT 
+/home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/sdkconfig.defaults:32 CONFIG_NEWLIB_NANO_FORMAT was replaced with CONFIG_LIBC_NEWLIB_NANO_FORMAT
 Loading defaults file /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/sdkconfig.defaults.esp32s3...
 -- Compiler supported targets: xtensa-esp-elf
--- Found Python3: /home/sacriphanius/.espressif/python_env/idf5.5_py3.11_env/bin/python (found version "3.11.2") found components: Interpreter 
+-- Found Python3: /home/sacriphanius/.espressif/python_env/idf5.5_py3.11_env/bin/python (found version "3.11.2") found components: Interpreter
 -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
 -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
--- Found Threads: TRUE  
+-- Found Threads: TRUE
 -- Performing Test C_COMPILER_SUPPORTS_WFORMAT_SIGNEDNESS
 -- Performing Test C_COMPILER_SUPPORTS_WFORMAT_SIGNEDNESS - Success
 -- USING O3
@@ -167,7 +167,7 @@ Loading defaults file /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/sd
 -- IOT_USBH_CDC: 3.0.0
 -- IOT_USBH_RNDIS: 0.3.1
 -- KNOB: 1.0.2
--- Found PkgConfig: /usr/bin/pkg-config (found version "1.8.1") 
+-- Found PkgConfig: /usr/bin/pkg-config (found version "1.8.1")
 -- ESP_EMOTE_EXPRESSION: 0.1.0
 -- Otto Emoji GIF Component: gifs only at /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/managed_components/txp666__otto-emoji-gif-component/gifs
 -- ESP_LCD_SH8601: 1.0.2
@@ -177,7 +177,6 @@ CMake Warning at managed_components/espressif2022__esp_emote_assets/CMakeLists.t
 Call Stack (most recent call first):
   managed_components/espressif2022__esp_emote_assets/CMakeLists.txt:109 (validate_partition_size)
   main/CMakeLists.txt:1115 (build_speaker_assets_bin)
-
 
 -- Generated emote assets: /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/build/expression_assets.bin -> assets partition
 -- Component idf::espressif2022__esp_emote_expression will be linked with -Wl,--whole-archive
@@ -217,8 +216,7 @@ Successfully generated language config file: /home/sacriphanius/Masaüstü/xiaoz
 [13/2163] Generating ../../partition_table/partition-table.bin
 Partition table binary generated. Contents:
 *******************************************************************************
-# ESP-IDF Partition Table
-# Name, Type, SubType, Offset, Size, Flags
+
 nvs,data,nvs,0x9000,16K,
 otadata,data,ota,0xd000,8K,
 phy_init,data,phy,0xf000,4K,
@@ -664,7 +662,7 @@ Completed! Builds: 1/1
 [433/2163] Building C object esp-idf/freertos/CMakeFiles/__idf_freertos.dir/FreeRTOS-Kernel/portable/xtensa/port.c.obj
 [434/2163] Building C object esp-idf/freertos/CMakeFiles/__idf_freertos.dir/esp_additions/freertos_compatibility.c.obj
 [435/2163] Performing configure step for 'bootloader'
--- Found Git: /usr/bin/git (found version "2.39.5") 
+-- Found Git: /usr/bin/git (found version "2.39.5")
 -- Minimal build - OFF
 -- The C compiler identification is GNU 14.2.0
 -- The CXX compiler identification is GNU 14.2.0
@@ -2496,7 +2494,7 @@ In file included from /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/ma
                  from /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/main/display/lvgl_display/jpg/image_to_jpeg.h:12,
                  from /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/main/display/lvgl_display/lvgl_display.cc:14:
 /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/managed_components/espressif__esp_video/include/linux/ioctl.h:54:9: warning: "_IO" redefined
-   54 | #define _IO(type,nr)        _IOC(_IOC_NONE,(type),(nr),0)
+   54 |
       |         ^~~
 In file included from /home/sacriphanius/esp/esp-idf/components/lwip/include/lwip/sockets.h:8,
                  from /home/sacriphanius/esp/esp-idf/components/lwip/port/esp32xx/include/sys/socket.h:15,
@@ -2505,19 +2503,19 @@ In file included from /home/sacriphanius/esp/esp-idf/components/lwip/include/lwi
                  from /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/main/application.h:16,
                  from /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/main/display/lvgl_display/lvgl_display.cc:10:
 /home/sacriphanius/esp/esp-idf/components/lwip/lwip/src/include/lwip/sockets.h:419:9: note: this is the location of the previous definition
-  419 | #define _IO(x,y)        ((long)(IOC_VOID|((x)<<8)|(y)))
+  419 |
       |         ^~~
 /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/managed_components/espressif__esp_video/include/linux/ioctl.h:55:9: warning: "_IOR" redefined
-   55 | #define _IOR(type,nr,size)  _IOC(_IOC_READ,(type),(nr),(_IOC_TYPECHECK(size)))
+   55 |
       |         ^~~~
 /home/sacriphanius/esp/esp-idf/components/lwip/lwip/src/include/lwip/sockets.h:421:9: note: this is the location of the previous definition
-  421 | #define _IOR(x,y,t)     ((long)(IOC_OUT|((sizeof(t)&IOCPARM_MASK)<<16)|((x)<<8)|(y)))
+  421 |
       |         ^~~~
 /home/sacriphanius/Masaüstü/xiaozhieyes/xiaozhi-esp32/managed_components/espressif__esp_video/include/linux/ioctl.h:56:9: warning: "_IOW" redefined
-   56 | #define _IOW(type,nr,size)  _IOC(_IOC_WRITE,(type),(nr),(_IOC_TYPECHECK(size)))
+   56 |
       |         ^~~~
 /home/sacriphanius/esp/esp-idf/components/lwip/lwip/src/include/lwip/sockets.h:423:9: note: this is the location of the previous definition
-  423 | #define _IOW(x,y,t)     ((long)(IOC_IN|((sizeof(t)&IOCPARM_MASK)<<16)|((x)<<8)|(y)))
+  423 |
       |         ^~~~
 [2097/2163] Building CXX object esp-idf/main/CMakeFiles/__idf_main.dir/display/lcd_display.cc.obj
 [2098/2163] Building CXX object esp-idf/main/CMakeFiles/__idf_main.dir/display/lvgl_display/lvgl_image.cc.obj

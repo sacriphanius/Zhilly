@@ -29,7 +29,7 @@ private:
 public:
     ImageContent(const std::string& mime_type, const std::string& data) {
         mime_type_ = mime_type;
-        // base64 encode data
+
         encoded_data_ = Base64Encode(data);
     }
 
@@ -46,7 +46,6 @@ public:
     }
 };
 
-// 添加类型别名
 using ReturnValue = std::variant<bool, int, std::string, cJSON*, ImageContent*>;
 
 enum PropertyType {
@@ -61,15 +60,15 @@ private:
     PropertyType type_;
     std::variant<bool, int, std::string> value_;
     bool has_default_value_;
-    std::optional<int> min_value_;  // 新增：整数最小值
-    std::optional<int> max_value_;  // 新增：整数最大值
+    std::optional<int> min_value_;
+
+    std::optional<int> max_value_;
 
 public:
-    // Required field constructor
+
     Property(const std::string& name, PropertyType type)
         : name_(name), type_(type), has_default_value_(false) {}
 
-    // Optional field constructor with default value
     template<typename T>
     Property(const std::string& name, PropertyType type, const T& default_value)
         : name_(name), type_(type), has_default_value_(true) {
@@ -108,7 +107,7 @@ public:
 
     template<typename T>
     inline void set_value(const T& value) {
-        // 添加对设置的整数值进行范围检查
+
         if constexpr (std::is_same_v<T, int>) {
             if (min_value_.has_value() && value < min_value_.value()) {
                 throw std::invalid_argument("Value is below minimum allowed: " + std::to_string(min_value_.value()));
@@ -122,7 +121,7 @@ public:
 
     std::string to_json() const {
         cJSON *json = cJSON_CreateObject();
-        
+
         if (type_ == kPropertyTypeBoolean) {
             cJSON_AddStringToObject(json, "type", "boolean");
             if (has_default_value_) {
@@ -145,12 +144,12 @@ public:
                 cJSON_AddStringToObject(json, "default", value<std::string>().c_str());
             }
         }
-        
+
         char *json_str = cJSON_PrintUnformatted(json);
         std::string result(json_str);
         cJSON_free(json_str);
         cJSON_Delete(json);
-        
+
         return result;
     }
 };
@@ -190,17 +189,17 @@ public:
 
     std::string to_json() const {
         cJSON *json = cJSON_CreateObject();
-        
+
         for (const auto& property : properties_) {
             cJSON *prop_json = cJSON_Parse(property.to_json().c_str());
             cJSON_AddItemToObject(json, property.name().c_str(), prop_json);
         }
-        
+
         char *json_str = cJSON_PrintUnformatted(json);
         std::string result(json_str);
         cJSON_free(json_str);
         cJSON_Delete(json);
-        
+
         return result;
     }
 };
@@ -214,13 +213,13 @@ private:
     bool user_only_ = false;
 
 public:
-    McpTool(const std::string& name, 
-            const std::string& description, 
-            const PropertyList& properties, 
+    McpTool(const std::string& name,
+            const std::string& description,
+            const PropertyList& properties,
             std::function<ReturnValue(const PropertyList&)> callback)
-        : name_(name), 
-        description_(description), 
-        properties_(properties), 
+        : name_(name),
+        description_(description),
+        properties_(properties),
         callback_(callback) {}
 
     void set_user_only(bool user_only) { user_only_ = user_only; }
@@ -231,17 +230,17 @@ public:
 
     std::string to_json() const {
         std::vector<std::string> required = properties_.GetRequired();
-        
+
         cJSON *json = cJSON_CreateObject();
         cJSON_AddStringToObject(json, "name", name_.c_str());
         cJSON_AddStringToObject(json, "description", description_.c_str());
-        
+
         cJSON *input_schema = cJSON_CreateObject();
         cJSON_AddStringToObject(input_schema, "type", "object");
-        
+
         cJSON *properties = cJSON_Parse(properties_.to_json().c_str());
         cJSON_AddItemToObject(input_schema, "properties", properties);
-        
+
         if (!required.empty()) {
             cJSON *required_array = cJSON_CreateArray();
             for (const auto& property : required) {
@@ -249,10 +248,9 @@ public:
             }
             cJSON_AddItemToObject(input_schema, "required", required_array);
         }
-        
+
         cJSON_AddItemToObject(json, "inputSchema", input_schema);
 
-        // Add audience annotation if the tool is user only (invisible to AI)
         if (user_only_) {
             cJSON *annotations = cJSON_CreateObject();
             cJSON *audience = cJSON_CreateArray();
@@ -260,18 +258,18 @@ public:
             cJSON_AddItemToObject(annotations, "audience", audience);
             cJSON_AddItemToObject(json, "annotations", annotations);
         }
-        
+
         char *json_str = cJSON_PrintUnformatted(json);
         std::string result(json_str);
         cJSON_free(json_str);
         cJSON_Delete(json);
-        
+
         return result;
     }
 
     std::string Call(const PropertyList& properties) {
         ReturnValue return_value = callback_(properties);
-        // 返回结果
+
         cJSON* result = cJSON_CreateObject();
         cJSON* content = cJSON_CreateArray();
 
@@ -341,4 +339,4 @@ private:
     std::vector<McpTool*> tools_;
 };
 
-#endif // MCP_SERVER_H
+#endif

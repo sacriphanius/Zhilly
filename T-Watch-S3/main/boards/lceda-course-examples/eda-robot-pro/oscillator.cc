@@ -1,11 +1,5 @@
-//--------------------------------------------------------------
-//-- Oscillator.pde
-//-- Generate sinusoidal oscillations in the servos
-//--------------------------------------------------------------
-//-- (c) Juan Gonzalez-Gomez (Obijuan), Dec 2011
-//-- (c) txp666 for esp32, 202503
-//-- GPL license
-//--------------------------------------------------------------
+
+
 #include "oscillator.h"
 
 #include <driver/ledc.h>
@@ -92,8 +86,6 @@ void Oscillator::Attach(int pin, bool rev) {
 
     ledc_speed_mode_ = LEDC_LOW_SPEED_MODE;
 
-    // pos_ = 90;
-    // Write(pos_);
     previous_servo_command_millis_ = millis();
 
     is_attached_ = true;

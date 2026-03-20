@@ -54,7 +54,7 @@ bool AfeWakeWord::Initialize(AudioCodec* codec, srmodel_list_t* models_list) {
         if (strstr(models_->model_name[i], ESP_WN_PREFIX) != NULL) {
             wakenet_model_ = models_->model_name[i];
             auto words = esp_srmodel_get_wake_words(models_, wakenet_model_);
-            // split by ";" to get all wake words
+
             std::stringstream ss(words);
             std::string word;
             while (std::getline(ss, word, ';')) {
@@ -76,7 +76,7 @@ bool AfeWakeWord::Initialize(AudioCodec* codec, srmodel_list_t* models_list) {
     afe_config->afe_perferred_core = 1;
     afe_config->afe_perferred_priority = 1;
     afe_config->memory_alloc_mode = AFE_MEMORY_ALLOC_MORE_PSRAM;
-    
+
     afe_iface_ = esp_afe_handle_from_config(afe_config);
     afe_data_ = afe_iface_->create_from_config(afe_config);
 
@@ -113,7 +113,7 @@ void AfeWakeWord::Feed(const std::vector<int16_t>& data) {
     }
 
     std::lock_guard<std::mutex> lock(input_buffer_mutex_);
-    // Check running state inside lock to avoid TOCTOU race with Stop()
+
     if (!(xEventGroupGetBits(event_group_) & DETECTION_RUNNING_EVENT)) {
         return;
     }
@@ -146,7 +146,6 @@ void AfeWakeWord::AudioDetectionTask() {
             continue;;
         }
 
-        // Store the wake word data for voice recognition, like who is speaking
         StoreWakeWordData(res->data, res->data_size / sizeof(int16_t));
 
         if (res->wakeup_state == WAKENET_DETECTED) {
@@ -161,9 +160,9 @@ void AfeWakeWord::AudioDetectionTask() {
 }
 
 void AfeWakeWord::StoreWakeWordData(const int16_t* data, size_t samples) {
-    // store audio data to wake_word_pcm_
+
     wake_word_pcm_.emplace_back(std::vector<int16_t>(data, data + samples));
-    // keep about 2 seconds of data, detect duration is 30ms (sample_rate == 16000, chunksize == 512)
+
     while (wake_word_pcm_.size() > 2000 / 30) {
         wake_word_pcm_.pop_front();
     }
@@ -185,7 +184,7 @@ void AfeWakeWord::EncodeWakeWordData() {
         auto this_ = (AfeWakeWord*)arg;
         {
             auto start_time = esp_timer_get_time();
-            // Create encoder
+
             esp_opus_enc_config_t opus_enc_cfg = AS_OPUS_ENC_CONFIG();
             void* encoder_handle = nullptr;
             auto ret = esp_opus_enc_open(&opus_enc_cfg, sizeof(esp_opus_enc_config_t), &encoder_handle);
@@ -196,19 +195,17 @@ void AfeWakeWord::EncodeWakeWordData() {
                 this_->wake_word_cv_.notify_all();
                 return;
             }
-            
-            // Get frame size
+
             int frame_size = 0;
             int outbuf_size = 0;
             esp_opus_enc_get_frame_size(encoder_handle, &frame_size, &outbuf_size);
             frame_size = frame_size / sizeof(int16_t);
-            
-            // Encode all PCM data
+
             int packets = 0;
             std::vector<int16_t> in_buffer;
             esp_audio_enc_in_frame_t in = {};
             esp_audio_enc_out_frame_t out = {};
-            
+
             for (auto& pcm: this_->wake_word_pcm_) {
                 if (in_buffer.empty()) {
                     in_buffer = std::move(pcm);
@@ -216,7 +213,7 @@ void AfeWakeWord::EncodeWakeWordData() {
                     in_buffer.reserve(in_buffer.size() + pcm.size());
                     in_buffer.insert(in_buffer.end(), pcm.begin(), pcm.end());
                 }
-                
+
                 while (in_buffer.size() >= frame_size) {
                     std::vector<uint8_t> opus_buf(outbuf_size);
                     in.buffer = (uint8_t *)(in_buffer.data());
@@ -224,7 +221,7 @@ void AfeWakeWord::EncodeWakeWordData() {
                     out.buffer = opus_buf.data();
                     out.len = outbuf_size;
                     out.encoded_bytes = 0;
-                    
+
                     ret = esp_opus_enc_process(encoder_handle, &in, &out);
                     if (ret == ESP_AUDIO_ERR_OK) {
                         std::lock_guard<std::mutex> lock(this_->wake_word_mutex_);
@@ -234,12 +231,12 @@ void AfeWakeWord::EncodeWakeWordData() {
                     } else {
                         ESP_LOGE(TAG, "Failed to encode audio, error code: %d", ret);
                     }
-                    
+
                     in_buffer.erase(in_buffer.begin(), in_buffer.begin() + frame_size);
                 }
             }
             this_->wake_word_pcm_.clear();
-            // Close encoder
+
             esp_opus_enc_close(encoder_handle);
             auto end_time = esp_timer_get_time();
             ESP_LOGI(TAG, "Encode wake word opus %d packets in %ld ms", packets, (long)((end_time - start_time) / 1000));

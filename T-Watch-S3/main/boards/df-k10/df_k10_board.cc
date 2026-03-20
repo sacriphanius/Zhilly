@@ -37,7 +37,7 @@ private:
     static Df_K10Board* instance_;
 
     void InitializeI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
                 .i2c_port = (i2c_port_t)1,
                 .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
@@ -109,7 +109,6 @@ private:
     void InitializeButtons() {
         instance_ = this;
 
-        // Button A
         button_config_t btn_a_config = {
             .long_press_time = 1000,
             .short_press_time = 0
@@ -140,7 +139,6 @@ private:
             self->GetDisplay()->ShowNotification(Lang::Strings::VOLUME + std::to_string(volume));
         }, this);
 
-        // Button B
         button_config_t btn_b_config = {
             .long_press_time = 1000,
             .short_press_time = 0
@@ -216,7 +214,6 @@ private:
         esp_lcd_panel_io_handle_t panel_io = nullptr;
         esp_lcd_panel_handle_t panel = nullptr;
 
-        // 液晶屏控制IO初始化
         ESP_LOGD(TAG, "Install panel IO");
         esp_lcd_panel_io_spi_config_t io_config = {};
         io_config.cs_gpio_num = GPIO_NUM_14;
@@ -228,7 +225,6 @@ private:
         io_config.lcd_param_bits = 8;
         ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi(SPI3_HOST, &io_config, &panel_io));
 
-        // 初始化液晶屏驱动芯片
         ESP_LOGD(TAG, "Install LCD driver");
         esp_lcd_panel_dev_config_t panel_config = {};
         panel_config.reset_gpio_num = GPIO_NUM_NC;
@@ -247,7 +243,6 @@ private:
                                 DISPLAY_WIDTH, DISPLAY_HEIGHT, DISPLAY_OFFSET_X, DISPLAY_OFFSET_Y, DISPLAY_MIRROR_X, DISPLAY_MIRROR_Y, DISPLAY_SWAP_XY);
     }
 
-    // 物联网初始化，添加对 AI 可见设备
     void InitializeIot() {
         led_strip_ = new CircularStrip(BUILTIN_LED_GPIO, 3);
         new LedStripControl(led_strip_);

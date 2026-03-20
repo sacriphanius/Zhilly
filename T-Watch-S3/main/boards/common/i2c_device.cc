@@ -4,7 +4,6 @@
 
 #define TAG "I2cDevice"
 
-
 I2cDevice::I2cDevice(i2c_master_bus_handle_t i2c_bus, uint8_t addr) {
     ESP_LOGI(TAG, "Adding device at address 0x%02X to bus %p", addr, i2c_bus);
     i2c_device_config_t i2c_device_cfg = {
@@ -19,7 +18,7 @@ I2cDevice::I2cDevice(i2c_master_bus_handle_t i2c_bus, uint8_t addr) {
     esp_err_t err = i2c_master_bus_add_device(i2c_bus, &i2c_device_cfg, &i2c_device_);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Failed to add device at 0x%02X: %s", addr, esp_err_to_name(err));
-        // We don't call ESP_ERROR_CHECK here to allow scanning
+
     }
     ESP_LOGI(TAG, "Device added at 0x%02X, handle: %p", addr, i2c_device_);
 }
@@ -36,7 +35,7 @@ uint8_t I2cDevice::ReadReg(uint8_t reg) {
     uint8_t buffer[1] = {0};
     esp_err_t err = i2c_master_transmit_receive(i2c_device_, &reg, 1, buffer, 1, 100);
     if (err != ESP_OK) {
-        // Silent error for scanning
+
         return 0;
     }
     return buffer[0];

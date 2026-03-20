@@ -1,28 +1,7 @@
-/*
-Last Updated: 30 Mar. 2018
-By Anton Grimpelhuber (anton.grimpelhuber@gmail.com)
-Added discrete Samsung / NECv2 power off code_eu140Code
 
-TV-B-Gone for Arduino version 0.001
-Ported to Arduino by Ken Shirriff, Dec 3, 2009
-http://arcfn.com
 
-The original code is:
-TV-B-Gone Firmware version 1.2
- for use with ATtiny85v and v1.2 hardware
- (c) Mitch Altman + Limor Fried 2009
-
-*/
-
-// Makes the codes more readable. the OCRA is actually
-// programmed in terms of 'periods' not 'freqs' - that
-// is, the inverse!
-// #define freq_to_timerval(x) (F_CPU / 8 / x - 1)
 #define freq_to_timerval(x) (x / 1000)
-// Codes captured from Generation 3 TV-B-Gone by Limor Fried & Mitch Altman
-// table of POWER codes
 
-// The structure of compressed code entries
 struct IrCode {
     uint8_t timer_val;
     uint8_t numpairs;
@@ -52,8 +31,10 @@ const uint8_t code_na000Codes[] = {
 };
 const struct IrCode code_na000Code = {
     freq_to_timerval(38400),
-    26, // # of pairs
-    2,  // # of bits per index
+    26,
+
+    2,
+
     code_na000Times,
     code_na000Codes
 };
@@ -85,8 +66,10 @@ const uint8_t code_na001Codes[] = {
 };
 const struct IrCode code_na001Code = {
     freq_to_timerval(57143),
-    52, // # of pairs
-    2,  // # of bits per index
+    52,
+
+    2,
+
     code_na001Times,
     code_na001Codes
 };
@@ -109,8 +92,10 @@ const uint8_t code_na002Codes[] = {
 };
 const struct IrCode code_na002Code = {
     freq_to_timerval(37037),
-    100, // # of pairs
-    3,   // # of bits per index
+    100,
+
+    3,
+
     code_na002Times,
     code_na002Codes
 };
@@ -144,8 +129,10 @@ const uint8_t code_na003Codes[] = {
 };
 const struct IrCode code_na003Code = {
     freq_to_timerval(38610),
-    64, // # of pairs
-    2,  // # of bits per index
+    64,
+
+    2,
+
     code_na003Times,
     code_na003Codes
 };
@@ -184,8 +171,10 @@ const uint8_t code_na004Codes[] = {
 };
 const struct IrCode code_na004Code = {
     freq_to_timerval(38610),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na004Times,
     code_na004Codes
 };
@@ -214,8 +203,10 @@ const uint8_t code_na005Codes[] = {
 };
 const struct IrCode code_na005Code = {
     freq_to_timerval(35714),
-    24, // # of pairs
-    3,  // # of bits per index
+    24,
+
+    3,
+
     code_na005Times,
     code_na005Codes
 };
@@ -237,8 +228,10 @@ const uint8_t code_na006Codes[] = {
 };
 const struct IrCode code_na006Code = {
     freq_to_timerval(38462),
-    68, // # of pairs
-    3,  // # of bits per index
+    68,
+
+    3,
+
     code_na006Times,
     code_na006Codes
 };
@@ -271,8 +264,10 @@ const uint8_t code_na007Codes[] = {
 };
 const struct IrCode code_na007Code = {
     freq_to_timerval(39216),
-    34, // # of pairs
-    3,  // # of bits per index
+    34,
+
+    3,
+
     code_na007Times,
     code_na007Codes
 };
@@ -294,8 +289,10 @@ const uint8_t code_na008Codes[] = {
 };
 const struct IrCode code_na008Code = {
     freq_to_timerval(38462),
-    68, // # of pairs
-    3,  // # of bits per index
+    68,
+
+    3,
+
     code_na008Times,
     code_na008Codes
 };
@@ -332,8 +329,10 @@ const uint8_t code_na009Codes[] = {
 };
 const struct IrCode code_na009Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na009Times,
     code_na009Codes
 };
@@ -364,8 +363,10 @@ const uint8_t code_na010Codes[] = {
 };
 const struct IrCode code_na010Code = {
     freq_to_timerval(38462),
-    52, // # of pairs
-    2,  // # of bits per index
+    52,
+
+    2,
+
     code_na010Times,
     code_na010Codes
 };
@@ -404,8 +405,10 @@ const uint8_t code_na011Codes[] = {
 };
 const struct IrCode code_na011Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na011Times,
     code_na011Codes
 };
@@ -427,8 +430,10 @@ const uint8_t code_na012Codes[] = {
 };
 const struct IrCode code_na012Code = {
     freq_to_timerval(38462),
-    52, // # of pairs
-    3,  // # of bits per index
+    52,
+
+    3,
+
     code_na012Times,
     code_na012Codes
 };
@@ -468,23 +473,14 @@ const uint8_t code_na013Codes[] = {
 };
 const struct IrCode code_na013Code = {
     freq_to_timerval(38462),
-    48, // # of pairs
-    3,  // # of bits per index
+    48,
+
+    3,
+
     code_na013Times,
     code_na013Codes
 };
 
-/* Duplicate timing table, same as na004 !
- const uint16_t code_na014Times[] = {
-    55, 57,
-    55, 170,
-    55, 3949,
-    55, 9623,
-    56, 0,
-    898, 453,
-    900, 226,
- };
- */
 const uint8_t code_na014Codes[] = {
     0xA0,
     0x00,
@@ -504,23 +500,14 @@ const uint8_t code_na014Codes[] = {
 };
 const struct IrCode code_na014Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na004Times,
     code_na014Codes
 };
 
-/* Duplicate timing table, same as na004 !
- const uint16_t code_na015Times[] = {
-    55, 57,
-    55, 170,
-    55, 3949,
-    55, 9623,
-    56, 0,
-    898, 453,
-    900, 226,
- };
- */
 const uint8_t code_na015Codes[] = {
     0xA0,
     0x80,
@@ -540,8 +527,10 @@ const uint8_t code_na015Codes[] = {
 };
 const struct IrCode code_na015Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na004Times,
     code_na015Codes
 };
@@ -566,8 +555,10 @@ const uint8_t code_na016Codes[] = {
 };
 const struct IrCode code_na016Code = {
     freq_to_timerval(34483),
-    34, // # of pairs
-    2,  // # of bits per index
+    34,
+
+    2,
+
     code_na016Times,
     code_na016Codes
 };
@@ -604,8 +595,10 @@ const uint8_t code_na017Codes[] = {
 };
 const struct IrCode code_na017Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na017Times,
     code_na017Codes
 };
@@ -628,8 +621,10 @@ const uint8_t code_na018Codes[] = {
 };
 const struct IrCode code_na018Code = {
     freq_to_timerval(38462),
-    136, // # of pairs
-    3,   // # of bits per index
+    136,
+
+    3,
+
     code_na018Times,
     code_na018Codes
 };
@@ -652,8 +647,10 @@ const uint8_t code_na019Codes[] = {
 };
 const struct IrCode code_na019Code = {
     freq_to_timerval(38462),
-    100, // # of pairs
-    3,   // # of bits per index
+    100,
+
+    3,
+
     code_na019Times,
     code_na019Codes
 };
@@ -692,8 +689,10 @@ const uint8_t code_na020Codes[] = {
 };
 const struct IrCode code_na020Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na020Times,
     code_na020Codes
 };
@@ -728,8 +727,10 @@ const uint8_t code_na021Codes[] = {
 };
 const struct IrCode code_na021Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na021Times,
     code_na021Codes
 };
@@ -766,8 +767,10 @@ const uint8_t code_na022Codes[] = {
 };
 const struct IrCode code_na022Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na022Times,
     code_na022Codes
 };
@@ -796,8 +799,10 @@ const uint8_t code_na023Codes[] = {
 };
 const struct IrCode code_na023Code = {
     freq_to_timerval(40000),
-    44, // # of pairs
-    2,  // # of bits per index
+    44,
+
+    2,
+
     code_na023Times,
     code_na023Codes
 };
@@ -827,8 +832,10 @@ const uint8_t code_na024Codes[] = {
 };
 const struct IrCode code_na024Code = {
     freq_to_timerval(38462),
-    26, // # of pairs
-    3,  // # of bits per index
+    26,
+
+    3,
+
     code_na024Times,
     code_na024Codes
 };
@@ -850,8 +857,10 @@ const uint8_t code_na025Codes[] = {
 };
 const struct IrCode code_na025Code = {
     freq_to_timerval(38462),
-    52, // # of pairs
-    3,  // # of bits per index
+    52,
+
+    3,
+
     code_na025Times,
     code_na025Codes
 };
@@ -884,20 +893,14 @@ const uint8_t code_na026Codes[] = {
 };
 const struct IrCode code_na026Code = {
     freq_to_timerval(39216),
-    34, // # of pairs
-    3,  // # of bits per index
+    34,
+
+    3,
+
     code_na026Times,
     code_na026Codes
 };
 
-/* Duplicate timing table, same as na001 !
- const uint16_t code_na027Times[] = {
-    50, 100,
-    50, 200,
-    50, 800,
-    400, 400,
- };
- */
 const uint8_t code_na027Codes[] = {
     0xC5,
     0x41,
@@ -915,8 +918,10 @@ const uint8_t code_na027Codes[] = {
 };
 const struct IrCode code_na027Code = {
     freq_to_timerval(57143),
-    52, // # of pairs
-    2,  // # of bits per index
+    52,
+
+    2,
+
     code_na001Times,
     code_na027Codes
 };
@@ -943,8 +948,10 @@ const uint8_t code_na028Codes[] = {
 };
 const struct IrCode code_na028Code = {
     freq_to_timerval(38610),
-    36, // # of pairs
-    2,  // # of bits per index
+    36,
+
+    2,
+
     code_na028Times,
     code_na028Codes
 };
@@ -973,22 +980,14 @@ const uint8_t code_na029Codes[] = {
 };
 const struct IrCode code_na029Code = {
     freq_to_timerval(35842),
-    22, // # of pairs
-    3,  // # of bits per index
+    22,
+
+    3,
+
     code_na029Times,
     code_na029Codes
 };
 
-/* Duplicate timing table, same as na009 !
- const uint16_t code_na030Times[] = {
-    53, 56,
-    53, 171,
-    53, 3950,
-    53, 9599,
-    898, 451,
-    900, 226,
- };
- */
 const uint8_t code_na030Codes[] = {
     0x80,
     0x00,
@@ -1008,8 +1007,10 @@ const uint8_t code_na030Codes[] = {
 };
 const struct IrCode code_na030Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na009Times,
     code_na030Codes
 };
@@ -1038,22 +1039,14 @@ const uint8_t code_na031Codes[] = {
 };
 const struct IrCode code_na031Code = {
     freq_to_timerval(35842),
-    24, // # of pairs
-    3,  // # of bits per index
+    24,
+
+    3,
+
     code_na031Times,
     code_na031Codes
 };
 
-/* Duplicate timing table, same as na009 !
- const uint16_t code_na032Times[] = {
-    53, 56,
-    53, 171,
-    53, 3950,
-    53, 9599,
-    898, 451,
-    900, 226,
- };
- */
 const uint8_t code_na032Codes[] = {
     0x80,
     0x00,
@@ -1073,8 +1066,10 @@ const uint8_t code_na032Codes[] = {
 };
 const struct IrCode code_na032Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na009Times,
     code_na032Codes
 };
@@ -1097,23 +1092,14 @@ const uint8_t code_na033Codes[] = {
 };
 const struct IrCode code_na033Code = {
     freq_to_timerval(38462),
-    100, // # of pairs
-    3,   // # of bits per index
+    100,
+
+    3,
+
     code_na033Times,
     code_na033Codes
 };
 
-/* Duplicate timing table, same as na004 !
- const uint16_t code_na034Times[] = {
-    55, 57,
-    55, 170,
-    55, 3949,
-    55, 9623,
-    56, 0,
-    898, 453,
-    900, 226,
- };
- */
 const uint8_t code_na034Codes[] = {
     0xA0,
     0x00,
@@ -1133,8 +1119,10 @@ const uint8_t code_na034Codes[] = {
 };
 const struct IrCode code_na034Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na004Times,
     code_na034Codes
 };
@@ -1158,8 +1146,10 @@ const uint8_t code_na035Codes[] = {
 };
 const struct IrCode code_na035Code = {
     freq_to_timerval(41667),
-    22, // # of pairs
-    2,  // # of bits per index
+    22,
+
+    2,
+
     code_na035Times,
     code_na035Codes
 };
@@ -1180,8 +1170,10 @@ const uint8_t code_na036Codes[] = {
 };
 const struct IrCode code_na036Code = {
     freq_to_timerval(37037),
-    11, // # of pairs
-    2,  // # of bits per index
+    11,
+
+    2,
+
     code_na036Times,
     code_na036Codes
 };
@@ -1200,22 +1192,14 @@ const uint8_t code_na037Codes[] = {
 };
 const struct IrCode code_na037Code = {
     freq_to_timerval(41667),
-    11, // # of pairs
-    2,  // # of bits per index
+    11,
+
+    2,
+
     code_na037Times,
     code_na037Codes
 };
 
-/* Duplicate timing table, same as na017 !
- const uint16_t code_na038Times[] = {
-    56, 57,
-    56, 175,
-    56, 4150,
-    56, 9499,
-    898, 227,
-    898, 449,
- };
- */
 const uint8_t code_na038Codes[] = {
     0xA4,
     0x10,
@@ -1235,8 +1219,10 @@ const uint8_t code_na038Codes[] = {
 };
 const struct IrCode code_na038Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na017Times,
     code_na038Codes
 };
@@ -1251,8 +1237,10 @@ const uint8_t code_na039Codes[] = {
 };
 const struct IrCode code_na039Code = {
     freq_to_timerval(40000),
-    4, // # of pairs
-    2, // # of bits per index
+    4,
+
+    2,
+
     code_na039Times,
     code_na039Codes
 };
@@ -1270,8 +1258,10 @@ const uint8_t code_na040Codes[] = {
 };
 const struct IrCode code_na040Code = {
     freq_to_timerval(40000),
-    8, // # of pairs
-    2, // # of bits per index
+    8,
+
+    2,
+
     code_na040Times,
     code_na040Codes
 };
@@ -1296,8 +1286,10 @@ const uint8_t code_na041Codes[] = {
 };
 const struct IrCode code_na041Code = {
     freq_to_timerval(76923),
-    26, // # of pairs
-    2,  // # of bits per index
+    26,
+
+    2,
+
     code_na041Times,
     code_na041Codes
 };
@@ -1334,8 +1326,10 @@ const uint8_t code_na042Codes[] = {
 };
 const struct IrCode code_na042Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na042Times,
     code_na042Codes
 };
@@ -1359,8 +1353,10 @@ const uint8_t code_na043Codes[] = {
 };
 const struct IrCode code_na043Code = {
     freq_to_timerval(40000),
-    24, // # of pairs
-    2,  // # of bits per index
+    24,
+
+    2,
+
     code_na043Times,
     code_na043Codes
 };
@@ -1397,8 +1393,10 @@ const uint8_t code_na044Codes[] = {
 };
 const struct IrCode code_na044Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na044Times,
     code_na044Codes
 };
@@ -1435,8 +1433,10 @@ const uint8_t code_na045Codes[] = {
 };
 const struct IrCode code_na045Code = {
     freq_to_timerval(38462),
-    40, // # of pairs
-    3,  // # of bits per index
+    40,
+
+    3,
+
     code_na045Times,
     code_na045Codes
 };
@@ -1469,22 +1469,14 @@ const uint8_t code_na046Codes[] = {
 };
 const struct IrCode code_na046Code = {
     freq_to_timerval(29412),
-    23, // # of pairs
-    3,  // # of bits per index
+    23,
+
+    3,
+
     code_na046Times,
     code_na046Codes
 };
 
-/* Duplicate timing table, same as na017 !
- const uint16_t code_na047Times[] = {
-    56, 57,
-    56, 175,
-    56, 4150,
-    56, 9499,
-    898, 227,
-    898, 449,
- };
- */
 const uint8_t code_na047Codes[] = {
     0xA0,
     0x00,
@@ -1504,22 +1496,14 @@ const uint8_t code_na047Codes[] = {
 };
 const struct IrCode code_na047Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na017Times,
     code_na047Codes
 };
 
-/* Duplicate timing table, same as na044 !
- const uint16_t code_na048Times[] = {
-    51, 51,
-    51, 160,
-    51, 4096,
-    51, 9513,
-    431, 436,
-    883, 219,
- };
- */
 const uint8_t code_na048Codes[] = {
     0x80,
     0x00,
@@ -1539,8 +1523,10 @@ const uint8_t code_na048Codes[] = {
 };
 const struct IrCode code_na048Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na044Times,
     code_na048Codes
 };
@@ -1557,8 +1543,10 @@ const uint8_t code_na049Codes[] = {
 };
 const struct IrCode code_na049Code = {
     freq_to_timerval(45455),
-    11, // # of pairs
-    2,  // # of bits per index
+    11,
+
+    2,
+
     code_na049Times,
     code_na049Codes
 };
@@ -1588,22 +1576,14 @@ const uint8_t code_na050Codes[] = {
 };
 const struct IrCode code_na050Code = {
     freq_to_timerval(55556),
-    48, // # of pairs
-    2,  // # of bits per index
+    48,
+
+    2,
+
     code_na050Times,
     code_na050Codes
 };
 
-/* Duplicate timing table, same as na017 !
- const uint16_t code_na051Times[] = {
-    56, 57,
-    56, 175,
-    56, 4150,
-    56, 9499,
-    898, 227,
-    898, 449,
- };
- */
 const uint8_t code_na051Codes[] = {
     0xA0,
     0x10,
@@ -1623,22 +1603,14 @@ const uint8_t code_na051Codes[] = {
 };
 const struct IrCode code_na051Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na017Times,
     code_na051Codes
 };
 
-/* Duplicate timing table, same as na017 !
- const uint16_t code_na052Times[] = {
-    56, 57,
-    56, 175,
-    56, 4150,
-    56, 9499,
-    898, 227,
-    898, 449,
- };
- */
 const uint8_t code_na052Codes[] = {
     0xA4,
     0x90,
@@ -1658,8 +1630,10 @@ const uint8_t code_na052Codes[] = {
 };
 const struct IrCode code_na052Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na017Times,
     code_na052Codes
 };
@@ -1685,20 +1659,14 @@ const uint8_t code_na053Codes[] = {
 };
 const struct IrCode code_na053Code = {
     freq_to_timerval(55556),
-    30, // # of pairs
-    2,  // # of bits per index
+    30,
+
+    2,
+
     code_na053Times,
     code_na053Codes
 };
 
-/* Duplicate timing table, same as na053 !
- const uint16_t code_na054Times[] = {
-    51, 232,
-    51, 512,
-    51, 792,
-    51, 2883,
- };
- */
 const uint8_t code_na054Codes[] = {
     0x22,
     0x20,
@@ -1710,8 +1678,10 @@ const uint8_t code_na054Codes[] = {
 };
 const struct IrCode code_na054Code = {
     freq_to_timerval(55556),
-    28, // # of pairs
-    2,  // # of bits per index
+    28,
+
+    2,
+
     code_na053Times,
     code_na054Codes
 };
@@ -1735,9 +1705,12 @@ const uint8_t code_na055Codes[] = {
     0x44,
 };
 const struct IrCode code_na055Code = {
-    0,  // Non-pulsed code
-    27, // # of pairs
-    2,  // # of bits per index
+    0,
+
+    27,
+
+    2,
+
     code_na055Times,
     code_na055Codes
 };
@@ -1757,8 +1730,10 @@ const uint8_t code_na056Codes[] = {
 };
 const struct IrCode code_na056Code = {
     freq_to_timerval(37175),
-    8, // # of pairs
-    2, // # of bits per index
+    8,
+
+    2,
+
     code_na056Times,
     code_na056Codes
 };
@@ -1780,8 +1755,10 @@ const uint8_t code_na057Codes[] = {
 };
 const struct IrCode code_na057Code = {
     freq_to_timerval(40000),
-    14, // # of pairs
-    2,  // # of bits per index
+    14,
+
+    2,
+
     code_na057Times,
     code_na057Codes
 };
@@ -1808,22 +1785,14 @@ const uint8_t code_na058Codes[] = {
 };
 const struct IrCode code_na058Code = {
     freq_to_timerval(33333),
-    18, // # of pairs
-    3,  // # of bits per index
+    18,
+
+    3,
+
     code_na058Times,
     code_na058Codes
 };
 
-/* Duplicate timing table, same as na017 !
- const uint16_t code_na059Times[] = {
-    56, 57,
-    56, 175,
-    56, 4150,
-    56, 9499,
-    898, 227,
-    898, 449,
- };
- */
 const uint8_t code_na059Codes[] = {
     0xA4,
     0x12,
@@ -1843,22 +1812,14 @@ const uint8_t code_na059Codes[] = {
 };
 const struct IrCode code_na059Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na017Times,
     code_na059Codes
 };
 
-/* Duplicate timing table, same as na017 !
- const uint16_t code_na060Times[] = {
-    56, 57,
-    56, 175,
-    56, 4150,
-    56, 9499,
-    898, 227,
-    898, 449,
- };
- */
 const uint8_t code_na060Codes[] = {
     0xA0,
     0x00,
@@ -1878,22 +1839,14 @@ const uint8_t code_na060Codes[] = {
 };
 const struct IrCode code_na060Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na017Times,
     code_na060Codes
 };
 
-/* Duplicate timing table, same as na017 !
- const uint16_t code_na061Times[] = {
-    56, 57,
-    56, 175,
-    56, 4150,
-    56, 9499,
-    898, 227,
-    898, 449,
- };
- */
 const uint8_t code_na061Codes[] = {
     0xA0,
     0x00,
@@ -1913,22 +1866,14 @@ const uint8_t code_na061Codes[] = {
 };
 const struct IrCode code_na061Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na017Times,
     code_na061Codes
 };
 
-/* Duplicate timing table, same as na017 !
- const uint16_t code_na062Times[] = {
-    56, 57,
-    56, 175,
-    56, 4150,
-    56, 9499,
-    898, 227,
-    898, 449,
- };
- */
 const uint8_t code_na062Codes[] = {
     0xA0,
     0x02,
@@ -1948,22 +1893,14 @@ const uint8_t code_na062Codes[] = {
 };
 const struct IrCode code_na062Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na017Times,
     code_na062Codes
 };
 
-/* Duplicate timing table, same as na017 !
- const uint16_t code_na063Times[] = {
-    56, 57,
-    56, 175,
-    56, 4150,
-    56, 9499,
-    898, 227,
-    898, 449,
- };
- */
 const uint8_t code_na063Codes[] = {
     0xA4,
     0x92,
@@ -1983,20 +1920,14 @@ const uint8_t code_na063Codes[] = {
 };
 const struct IrCode code_na063Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na017Times,
     code_na063Codes
 };
 
-/* Duplicate timing table, same as na001 !
- const uint16_t code_na064Times[] = {
-    50, 100,
-    50, 200,
-    50, 800,
-    400, 400,
- };
- */
 const uint8_t code_na064Codes[] = {
     0xC0,
     0x01,
@@ -2014,8 +1945,10 @@ const uint8_t code_na064Codes[] = {
 };
 const struct IrCode code_na064Code = {
     freq_to_timerval(57143),
-    52, // # of pairs
-    2,  // # of bits per index
+    52,
+
+    2,
+
     code_na001Times,
     code_na064Codes
 };
@@ -2037,8 +1970,10 @@ const uint8_t code_na065Codes[] = {
 };
 const struct IrCode code_na065Code = {
     freq_to_timerval(59172),
-    78, // # of pairs
-    3,  // # of bits per index
+    78,
+
+    3,
+
     code_na065Times,
     code_na065Codes
 };
@@ -2065,22 +2000,14 @@ const uint8_t code_na066Codes[] = {
 };
 const struct IrCode code_na066Code = {
     freq_to_timerval(38462),
-    33, // # of pairs
-    2,  // # of bits per index
+    33,
+
+    2,
+
     code_na066Times,
     code_na066Codes
 };
 
-/* Duplicate timing table, same as na044 !
- const uint16_t code_na067Times[] = {
-    51, 51,
-    51, 160,
-    51, 4096,
-    51, 9513,
-    431, 436,
-    883, 219,
- };
- */
 const uint8_t code_na067Codes[] = {
     0x80,
     0x02,
@@ -2100,8 +2027,10 @@ const uint8_t code_na067Codes[] = {
 };
 const struct IrCode code_na067Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na044Times,
     code_na067Codes
 };
@@ -2125,22 +2054,14 @@ const uint8_t code_na068Codes[] = {
 };
 const struct IrCode code_na068Code = {
     freq_to_timerval(40000),
-    24, // # of pairs
-    2,  // # of bits per index
+    24,
+
+    2,
+
     code_na068Times,
     code_na068Codes
 };
 
-/* Duplicate timing table, same as na017 !
- const uint16_t code_na069Times[] = {
-    56, 57,
-    56, 175,
-    56, 4150,
-    56, 9499,
-    898, 227,
-    898, 449,
- };
- */
 const uint8_t code_na069Codes[] = {
     0xA0,
     0x00,
@@ -2160,8 +2081,10 @@ const uint8_t code_na069Codes[] = {
 };
 const struct IrCode code_na069Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na017Times,
     code_na069Codes
 };
@@ -2188,8 +2111,10 @@ const uint8_t code_na070Codes[] = {
 };
 const struct IrCode code_na070Code = {
     freq_to_timerval(38462),
-    33, // # of pairs
-    2,  // # of bits per index
+    33,
+
+    2,
+
     code_na070Times,
     code_na070Codes
 };
@@ -2205,22 +2130,14 @@ const uint8_t code_na071Codes[] = {
 };
 const struct IrCode code_na071Code = {
     freq_to_timerval(55556),
-    8, // # of pairs
-    2, // # of bits per index
+    8,
+
+    2,
+
     code_na071Times,
     code_na071Codes
 };
 
-/* Duplicate timing table, same as na042 !
- const uint16_t code_na072Times[] = {
-    54, 65,
-    54, 170,
-    54, 4099,
-    54, 8668,
-    899, 226,
-    899, 421,
- };
- */
 const uint8_t code_na072Codes[] = {
     0xA0,
     0x90,
@@ -2240,22 +2157,14 @@ const uint8_t code_na072Codes[] = {
 };
 const struct IrCode code_na072Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na042Times,
     code_na072Codes
 };
 
-/* Duplicate timing table, same as na017 !
- const uint16_t code_na073Times[] = {
-    56, 57,
-    56, 175,
-    56, 4150,
-    56, 9499,
-    898, 227,
-    898, 449,
- };
- */
 const uint8_t code_na073Codes[] = {
     0xA0,
     0x82,
@@ -2275,22 +2184,14 @@ const uint8_t code_na073Codes[] = {
 };
 const struct IrCode code_na073Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na017Times,
     code_na073Codes
 };
 
-/* Duplicate timing table, same as na017 !
- const uint16_t code_na074Times[] = {
-    56, 57,
-    56, 175,
-    56, 4150,
-    56, 9499,
-    898, 227,
-    898, 449,
- };
- */
 const uint8_t code_na074Codes[] = {
     0xA4,
     0x00,
@@ -2310,8 +2211,10 @@ const uint8_t code_na074Codes[] = {
 };
 const struct IrCode code_na074Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na017Times,
     code_na074Codes
 };
@@ -2333,22 +2236,14 @@ const uint8_t code_na075Codes[] = {
 };
 const struct IrCode code_na075Code = {
     freq_to_timerval(41667),
-    52, // # of pairs
-    3,  // # of bits per index
+    52,
+
+    3,
+
     code_na075Times,
     code_na075Codes
 };
 
-/* Duplicate timing table, same as na017 !
- const uint16_t code_na076Times[] = {
-    56, 57,
-    56, 175,
-    56, 4150,
-    56, 9499,
-    898, 227,
-    898, 449,
- };
- */
 const uint8_t code_na076Codes[] = {
     0xA0,
     0x92,
@@ -2368,21 +2263,14 @@ const uint8_t code_na076Codes[] = {
 };
 const struct IrCode code_na076Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na017Times,
     code_na076Codes
 };
 
-/* Duplicate timing table, same as na031 !
- const uint16_t code_na077Times[] = {
-    88, 89,
-    88, 90,
-    88, 179,
-    88, 8977,
-    177, 90,
- };
- */
 const uint8_t code_na077Codes[] = {
     0x10,
     0xA2,
@@ -2396,8 +2284,10 @@ const uint8_t code_na077Codes[] = {
 };
 const struct IrCode code_na077Code = {
     freq_to_timerval(35714),
-    22, // # of pairs
-    3,  // # of bits per index
+    22,
+
+    3,
+
     code_na031Times,
     code_na077Codes
 };
@@ -2422,22 +2312,14 @@ const uint8_t code_na078Codes[] = {
 };
 const struct IrCode code_na078Code = {
     freq_to_timerval(38462),
-    34, // # of pairs
-    2,  // # of bits per index
+    34,
+
+    2,
+
     code_na078Times,
     code_na078Codes
 };
 
-/* Duplicate timing table, same as na017 !
- const uint16_t code_na079Times[] = {
-    56, 57,
-    56, 175,
-    56, 4150,
-    56, 9499,
-    898, 227,
-    898, 449,
- };
- */
 const uint8_t code_na079Codes[] = {
     0xA0,
     0x82,
@@ -2457,20 +2339,14 @@ const uint8_t code_na079Codes[] = {
 };
 const struct IrCode code_na079Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na017Times,
     code_na079Codes
 };
 
-/* Duplicate timing table, same as na055 !
- const uint16_t code_na080Times[] = {
-    3, 10,
-    3, 20,
-    3, 30,
-    3, 12778,
- };
- */
 const uint8_t code_na080Codes[] = {
     0x81,
     0x50,
@@ -2481,9 +2357,12 @@ const uint8_t code_na080Codes[] = {
     0x08,
 };
 const struct IrCode code_na080Code = {
-    0,  // Non-pulsed code
-    27, // # of pairs
-    2,  // # of bits per index
+    0,
+
+    27,
+
+    2,
+
     code_na055Times,
     code_na080Codes
 };
@@ -2511,8 +2390,10 @@ const uint8_t code_na081Codes[] = {
 };
 const struct IrCode code_na081Code = {
     freq_to_timerval(40000),
-    40, // # of pairs
-    2,  // # of bits per index
+    40,
+
+    2,
+
     code_na081Times,
     code_na081Codes
 };
@@ -2543,21 +2424,14 @@ const uint8_t code_na082Codes[] = {
 };
 const struct IrCode code_na082Code = {
     freq_to_timerval(35714),
-    24, // # of pairs
-    3,  // # of bits per index
+    24,
+
+    3,
+
     code_na082Times,
     code_na082Codes
 };
 
-/* Duplicate timing table, same as na031 !
- const uint16_t code_na083Times[] = {
-    88, 89,
-    88, 90,
-    88, 179,
-    88, 8977,
-    177, 90,
- };
- */
 const uint8_t code_na083Codes[] = {
     0x10,
     0x92,
@@ -2571,8 +2445,10 @@ const uint8_t code_na083Codes[] = {
 };
 const struct IrCode code_na083Code = {
     freq_to_timerval(35714),
-    24, // # of pairs
-    3,  // # of bits per index
+    24,
+
+    3,
+
     code_na031Times,
     code_na083Codes
 };
@@ -2596,8 +2472,10 @@ const uint8_t code_na084Codes[] = {
 };
 const struct IrCode code_na084Code = {
     freq_to_timerval(37037),
-    100, // # of pairs
-    3,   // # of bits per index
+    100,
+
+    3,
+
     code_na084Times,
     code_na084Codes
 };
@@ -2634,8 +2512,10 @@ const uint8_t code_na085Codes[] = {
 };
 const struct IrCode code_na085Code = {
     freq_to_timerval(38462),
-    44, // # of pairs
-    3,  // # of bits per index
+    44,
+
+    3,
+
     code_na085Times,
     code_na085Codes
 };
@@ -2658,8 +2538,10 @@ const uint8_t code_na086Codes[] = {
 };
 const struct IrCode code_na086Code = {
     freq_to_timerval(37175),
-    100, // # of pairs
-    3,   // # of bits per index
+    100,
+
+    3,
+
     code_na086Times,
     code_na086Codes
 };
@@ -2696,22 +2578,14 @@ const uint8_t code_na087Codes[] = {
 };
 const struct IrCode code_na087Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na087Times,
     code_na087Codes
 };
 
-/* Duplicate timing table, same as na009 !
- const uint16_t code_na088Times[] = {
-    53, 56,
-    53, 171,
-    53, 3950,
-    53, 9599,
-    898, 451,
-    900, 226,
- };
- */
 const uint8_t code_na088Codes[] = {
     0x80,
     0x00,
@@ -2731,23 +2605,14 @@ const uint8_t code_na088Codes[] = {
 };
 const struct IrCode code_na088Code = {
     freq_to_timerval(38610),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na009Times,
     code_na088Codes
 };
 
-/* Duplicate timing table, same as na004 !
- const uint16_t code_na089Times[] = {
-    55, 57,
-    55, 170,
-    55, 3949,
-    55, 9623,
-    56, 0,
-    898, 453,
-    900, 226,
- };
- */
 const uint8_t code_na089Codes[] = {
     0xA0,
     0x02,
@@ -2767,8 +2632,10 @@ const uint8_t code_na089Codes[] = {
 };
 const struct IrCode code_na089Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na004Times,
     code_na089Codes
 };
@@ -2798,8 +2665,10 @@ const uint8_t code_na090Codes[] = {
 };
 const struct IrCode code_na090Code = {
     freq_to_timerval(35714),
-    20, // # of pairs
-    3,  // # of bits per index
+    20,
+
+    3,
+
     code_na090Times,
     code_na090Codes
 };
@@ -2830,8 +2699,10 @@ const uint8_t code_na091Codes[] = {
 };
 const struct IrCode code_na091Code = {
     freq_to_timerval(58824),
-    52, // # of pairs
-    2,  // # of bits per index
+    52,
+
+    2,
+
     code_na091Times,
     code_na091Codes
 };
@@ -2866,8 +2737,10 @@ const uint8_t code_na092Codes[] = {
 };
 const struct IrCode code_na092Code = {
     freq_to_timerval(38462),
-    68, // # of pairs
-    2,  // # of bits per index
+    68,
+
+    2,
+
     code_na092Times,
     code_na092Codes
 };
@@ -2889,21 +2762,14 @@ const uint8_t code_na093Codes[] = {
 };
 const struct IrCode code_na093Code = {
     freq_to_timerval(38462),
-    68, // # of pairs
-    3,  // # of bits per index
+    68,
+
+    3,
+
     code_na093Times,
     code_na093Codes
 };
 
-/* Duplicate timing table, same as na005 !
- const uint16_t code_na094Times[] = {
-    88, 90,
-    88, 91,
-    88, 181,
-    88, 8976,
-    177, 91,
- };
- */
 const uint8_t code_na094Codes[] = {
     0x10,
     0x94,
@@ -2917,8 +2783,10 @@ const uint8_t code_na094Codes[] = {
 };
 const struct IrCode code_na094Code = {
     freq_to_timerval(35714),
-    22, // # of pairs
-    3,  // # of bits per index
+    22,
+
+    3,
+
     code_na005Times,
     code_na094Codes
 };
@@ -2953,22 +2821,14 @@ const uint8_t code_na095Codes[] = {
 };
 const struct IrCode code_na095Code = {
     freq_to_timerval(38462),
-    40, // # of pairs
-    3,  // # of bits per index
+    40,
+
+    3,
+
     code_na095Times,
     code_na095Codes
 };
 
-/* Duplicate timing table, same as na009 !
- const uint16_t code_na096Times[] = {
-    53, 56,
-    53, 171,
-    53, 3950,
-    53, 9599,
-    898, 451,
-    900, 226,
- };
- */
 const uint8_t code_na096Codes[] = {
     0x80,
     0x80,
@@ -2988,22 +2848,14 @@ const uint8_t code_na096Codes[] = {
 };
 const struct IrCode code_na096Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na009Times,
     code_na096Codes
 };
 
-/* Duplicate timing table, same as na009 !
- const uint16_t code_na097Times[] = {
-    53, 56,
-    53, 171,
-    53, 3950,
-    53, 9599,
-    898, 451,
-    900, 226,
- };
- */
 const uint8_t code_na097Codes[] = {
     0x84,
     0x80,
@@ -3023,23 +2875,14 @@ const uint8_t code_na097Codes[] = {
 };
 const struct IrCode code_na097Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na009Times,
     code_na097Codes
 };
 
-/* Duplicate timing table, same as na004 !
- const uint16_t code_na098Times[] = {
-    55, 57,
-    55, 170,
-    55, 3949,
-    55, 9623,
-    56, 0,
-    898, 453,
-    900, 226,
- };
- */
 const uint8_t code_na098Codes[] = {
     0xA0,
     0x00,
@@ -3059,22 +2902,14 @@ const uint8_t code_na098Codes[] = {
 };
 const struct IrCode code_na098Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na004Times,
     code_na098Codes
 };
 
-/* Duplicate timing table, same as na009 !
- const uint16_t code_na099Times[] = {
-    53, 56,
-    53, 171,
-    53, 3950,
-    53, 9599,
-    898, 451,
-    900, 226,
- };
- */
 const uint8_t code_na099Codes[] = {
     0x80,
     0x00,
@@ -3094,8 +2929,10 @@ const uint8_t code_na099Codes[] = {
 };
 const struct IrCode code_na099Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na009Times,
     code_na099Codes
 };
@@ -3122,23 +2959,14 @@ const uint8_t code_na100Codes[] = {
 };
 const struct IrCode code_na100Code = {
     freq_to_timerval(35842),
-    34, // # of pairs
-    2,  // # of bits per index
+    34,
+
+    2,
+
     code_na100Times,
     code_na100Codes
 };
 
-/* Duplicate timing table, same as na004 !
- const uint16_t code_na101Times[] = {
-    55, 57,
-    55, 170,
-    55, 3949,
-    55, 9623,
-    56, 0,
-    898, 453,
-    900, 226,
- };
- */
 const uint8_t code_na101Codes[] = {
     0xA0,
     0x00,
@@ -3158,8 +2986,10 @@ const uint8_t code_na101Codes[] = {
 };
 const struct IrCode code_na101Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na004Times,
     code_na101Codes
 };
@@ -3181,22 +3011,14 @@ const uint8_t code_na102Codes[] = {
 };
 const struct IrCode code_na102Code = {
     freq_to_timerval(40000),
-    52, // # of pairs
-    3,  // # of bits per index
+    52,
+
+    3,
+
     code_na102Times,
     code_na102Codes
 };
 
-/* Duplicate timing table, same as na045 !
- const uint16_t code_na103Times[] = {
-    58, 53,
-    58, 167,
-    58, 4494,
-    58, 9679,
-    455, 449,
-    456, 449,
- };
- */
 const uint8_t code_na103Codes[] = {
     0x80,
     0x02,
@@ -3216,22 +3038,14 @@ const uint8_t code_na103Codes[] = {
 };
 const struct IrCode code_na103Code = {
     freq_to_timerval(38462),
-    40, // # of pairs
-    3,  // # of bits per index
+    40,
+
+    3,
+
     code_na045Times,
     code_na103Codes
 };
 
-/* Duplicate timing table, same as na017 !
- const uint16_t code_na104Times[] = {
-    56, 57,
-    56, 175,
-    56, 4150,
-    56, 9499,
-    898, 227,
-    898, 449,
- };
- */
 const uint8_t code_na104Codes[] = {
     0xA4,
     0x00,
@@ -3251,22 +3065,14 @@ const uint8_t code_na104Codes[] = {
 };
 const struct IrCode code_na104Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na017Times,
     code_na104Codes
 };
 
-/* Duplicate timing table, same as na017 !
- const uint16_t code_na105Times[] = {
-    56, 57,
-    56, 175,
-    56, 4150,
-    56, 9499,
-    898, 227,
-    898, 449,
- };
- */
 const uint8_t code_na105Codes[] = {
     0xA4,
     0x80,
@@ -3286,22 +3092,14 @@ const uint8_t code_na105Codes[] = {
 };
 const struct IrCode code_na105Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na017Times,
     code_na105Codes
 };
 
-/* Duplicate timing table, same as na044 !
- const uint16_t code_na106Times[] = {
-    51, 51,
-    51, 160,
-    51, 4096,
-    51, 9513,
-    431, 436,
-    883, 219,
- };
- */
 const uint8_t code_na106Codes[] = {
     0x80,
     0x02,
@@ -3321,22 +3119,14 @@ const uint8_t code_na106Codes[] = {
 };
 const struct IrCode code_na106Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na044Times,
     code_na106Codes
 };
 
-/* Duplicate timing table, same as na045 !
- const uint16_t code_na107Times[] = {
-    58, 53,
-    58, 167,
-    58, 4494,
-    58, 9679,
-    455, 449,
-    456, 449,
- };
- */
 const uint8_t code_na107Codes[] = {
     0x80,
     0x00,
@@ -3356,22 +3146,14 @@ const uint8_t code_na107Codes[] = {
 };
 const struct IrCode code_na107Code = {
     freq_to_timerval(38462),
-    40, // # of pairs
-    3,  // # of bits per index
+    40,
+
+    3,
+
     code_na045Times,
     code_na107Codes
 };
 
-/* Duplicate timing table, same as na045 !
- const uint16_t code_na108Times[] = {
-    58, 53,
-    58, 167,
-    58, 4494,
-    58, 9679,
-    455, 449,
-    456, 449,
- };
- */
 const uint8_t code_na108Codes[] = {
     0x80,
     0x90,
@@ -3391,8 +3173,10 @@ const uint8_t code_na108Codes[] = {
 };
 const struct IrCode code_na108Code = {
     freq_to_timerval(38462),
-    40, // # of pairs
-    3,  // # of bits per index
+    40,
+
+    3,
+
     code_na045Times,
     code_na108Codes
 };
@@ -3429,22 +3213,14 @@ const uint8_t code_na109Codes[] = {
 };
 const struct IrCode code_na109Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na109Times,
     code_na109Codes
 };
 
-/* Duplicate timing table, same as na017 !
- const uint16_t code_na110Times[] = {
-    56, 57,
-    56, 175,
-    56, 4150,
-    56, 9499,
-    898, 227,
-    898, 449,
- };
- */
 const uint8_t code_na110Codes[] = {
     0xA4,
     0x80,
@@ -3464,22 +3240,14 @@ const uint8_t code_na110Codes[] = {
 };
 const struct IrCode code_na110Code = {
     freq_to_timerval(40161),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na017Times,
     code_na110Codes
 };
 
-/* Duplicate timing table, same as na044 !
- const uint16_t code_na111Times[] = {
-    51, 51,
-    51, 160,
-    51, 4096,
-    51, 9513,
-    431, 436,
-    883, 219,
- };
- */
 const uint8_t code_na111Codes[] = {
     0x84,
     0x92,
@@ -3499,23 +3267,14 @@ const uint8_t code_na111Codes[] = {
 };
 const struct IrCode code_na111Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na044Times,
     code_na111Codes
 };
 
-/* Duplicate timing table, same as na004 !
- const uint16_t code_na112Times[] = {
-    55, 57,
-    55, 170,
-    55, 3949,
-    55, 9623,
-    56, 0,
-    898, 453,
-    900, 226,
- };
- */
 const uint8_t code_na112Codes[] = {
     0xA4,
     0x00,
@@ -3535,8 +3294,10 @@ const uint8_t code_na112Codes[] = {
 };
 const struct IrCode code_na112Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na004Times,
     code_na112Codes
 };
@@ -3558,8 +3319,10 @@ const uint8_t code_na113Codes[] = {
 };
 const struct IrCode code_na113Code = {
     freq_to_timerval(40000),
-    68, // # of pairs
-    3,  // # of bits per index
+    68,
+
+    3,
+
     code_na113Times,
     code_na113Codes
 };
@@ -3596,8 +3359,10 @@ const uint8_t code_na114Codes[] = {
 };
 const struct IrCode code_na114Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na114Times,
     code_na114Codes
 };
@@ -3620,22 +3385,14 @@ const uint8_t code_na115Codes[] = {
 };
 const struct IrCode code_na115Code = {
     freq_to_timerval(40000),
-    52, // # of pairs
-    3,  // # of bits per index
+    52,
+
+    3,
+
     code_na115Times,
     code_na115Codes
 };
 
-/* Duplicate timing table, same as na017 !
- const uint16_t code_na116Times[] = {
-    56, 57,
-    56, 175,
-    56, 4150,
-    56, 9499,
-    898, 227,
-    898, 449,
- };
- */
 const uint8_t code_na116Codes[] = {
     0xA0,
     0x00,
@@ -3655,8 +3412,10 @@ const uint8_t code_na116Codes[] = {
 };
 const struct IrCode code_na116Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na017Times,
     code_na116Codes
 };
@@ -3693,22 +3452,14 @@ const uint8_t code_na117Codes[] = {
 };
 const struct IrCode code_na117Code = {
     freq_to_timerval(41667),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na117Times,
     code_na117Codes
 };
 
-/* Duplicate timing table, same as na044 !
- const uint16_t code_na118Times[] = {
-    51, 51,
-    51, 160,
-    51, 4096,
-    51, 9513,
-    431, 436,
-    883, 219,
- };
- */
 const uint8_t code_na118Codes[] = {
     0x84,
     0x90,
@@ -3728,8 +3479,10 @@ const uint8_t code_na118Codes[] = {
 };
 const struct IrCode code_na118Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na044Times,
     code_na118Codes
 };
@@ -3766,22 +3519,14 @@ const uint8_t code_na119Codes[] = {
 };
 const struct IrCode code_na119Code = {
     freq_to_timerval(55556),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na119Times,
     code_na119Codes
 };
 
-/* Duplicate timing table, same as na017 !
- const uint16_t code_na120Times[] = {
-    56, 57,
-    56, 175,
-    56, 4150,
-    56, 9499,
-    898, 227,
-    898, 449,
- };
- */
 const uint8_t code_na120Codes[] = {
     0xA0,
     0x12,
@@ -3801,22 +3546,14 @@ const uint8_t code_na120Codes[] = {
 };
 const struct IrCode code_na120Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na017Times,
     code_na120Codes
 };
 
-/* Duplicate timing table, same as na017 !
- const uint16_t code_na121Times[] = {
-    56, 57,
-    56, 175,
-    56, 4150,
-    56, 9499,
-    898, 227,
-    898, 449,
- };
- */
 const uint8_t code_na121Codes[] = {
     0xA0,
     0x00,
@@ -3836,8 +3573,10 @@ const uint8_t code_na121Codes[] = {
 };
 const struct IrCode code_na121Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na017Times,
     code_na121Codes
 };
@@ -3875,22 +3614,14 @@ const uint8_t code_na122Codes[] = {
 };
 const struct IrCode code_na122Code = {
     freq_to_timerval(52632),
-    48, // # of pairs
-    3,  // # of bits per index
+    48,
+
+    3,
+
     code_na122Times,
     code_na122Codes
 };
 
-/* Duplicate timing table, same as na017 !
- const uint16_t code_na123Times[] = {
-    56, 57,
-    56, 175,
-    56, 4150,
-    56, 9499,
-    898, 227,
-    898, 449,
- };
- */
 const uint8_t code_na123Codes[] = {
     0xA0,
     0x02,
@@ -3910,8 +3641,10 @@ const uint8_t code_na123Codes[] = {
 };
 const struct IrCode code_na123Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na017Times,
     code_na123Codes
 };
@@ -3948,22 +3681,14 @@ const uint8_t code_na124Codes[] = {
 };
 const struct IrCode code_na124Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na124Times,
     code_na124Codes
 };
 
-/* Duplicate timing table, same as na119 !
- const uint16_t code_na125Times[] = {
-    55, 63,
-    55, 171,
-    55, 4094,
-    55, 9508,
-    881, 219,
-    881, 438,
- };
- */
 const uint8_t code_na125Codes[] = {
     0xA0,
     0x02,
@@ -3983,22 +3708,14 @@ const uint8_t code_na125Codes[] = {
 };
 const struct IrCode code_na125Code = {
     freq_to_timerval(55556),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na119Times,
     code_na125Codes
 };
 
-/* Duplicate timing table, same as na017 !
- const uint16_t code_na126Times[] = {
-    56, 57,
-    56, 175,
-    56, 4150,
-    56, 9499,
-    898, 227,
-    898, 449,
- };
- */
 const uint8_t code_na126Codes[] = {
     0xA4,
     0x10,
@@ -4018,8 +3735,10 @@ const uint8_t code_na126Codes[] = {
 };
 const struct IrCode code_na126Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na017Times,
     code_na126Codes
 };
@@ -4039,43 +3758,28 @@ const uint8_t code_na127Codes[] = {
 };
 const struct IrCode code_na127Code = {
     freq_to_timerval(25641),
-    8, // # of pairs
-    2, // # of bits per index
+    8,
+
+    2,
+
     code_na127Times,
     code_na127Codes
 };
 
-/* Duplicate timing table, same as na102 !
- const uint16_t code_na128Times[] = {
-    86, 87,
-    86, 258,
-    86, 3338,
-    346, 348,
-    348, 347,
- };
- */
 const uint8_t code_na128Codes[] = {
     0x60, 0x02, 0x08, 0x00, 0x02, 0x49, 0x04, 0x12, 0x49, 0x0A,
     0x00, 0x08, 0x20, 0x00, 0x09, 0x24, 0x10, 0x49, 0x24, 0x00,
 };
 const struct IrCode code_na128Code = {
     freq_to_timerval(40000),
-    52, // # of pairs
-    3,  // # of bits per index
+    52,
+
+    3,
+
     code_na102Times,
     code_na128Codes
 };
 
-/* Duplicate timing table, same as na017 !
- const uint16_t code_na129Times[] = {
-    56, 57,
-    56, 175,
-    56, 4150,
-    56, 9499,
-    898, 227,
-    898, 449,
- };
- */
 const uint8_t code_na129Codes[] = {
     0xA4,
     0x92,
@@ -4095,8 +3799,10 @@ const uint8_t code_na129Codes[] = {
 };
 const struct IrCode code_na129Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na017Times,
     code_na129Codes
 };
@@ -4118,22 +3824,14 @@ const uint8_t code_na130Codes[] = {
 };
 const struct IrCode code_na130Code = {
     freq_to_timerval(37037),
-    52, // # of pairs
-    3,  // # of bits per index
+    52,
+
+    3,
+
     code_na130Times,
     code_na130Codes
 };
 
-/* Duplicate timing table, same as na042 !
- const uint16_t code_na131Times[] = {
-    54, 65,
-    54, 170,
-    54, 4099,
-    54, 8668,
-    899, 226,
-    899, 421,
- };
- */
 const uint8_t code_na131Codes[] = {
     0xA0,
     0x10,
@@ -4153,8 +3851,10 @@ const uint8_t code_na131Codes[] = {
 };
 const struct IrCode code_na131Code = {
     freq_to_timerval(40000),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na042Times,
     code_na131Codes
 };
@@ -4180,8 +3880,10 @@ const uint8_t code_na132Codes[] = {
 };
 const struct IrCode code_na132Code = {
     freq_to_timerval(83333),
-    32, // # of pairs
-    2,  // # of bits per index
+    32,
+
+    2,
+
     code_na132Times,
     code_na132Codes
 };
@@ -4210,29 +3912,24 @@ const uint8_t code_na133Codes[] = {
 };
 const struct IrCode code_na133Code = {
     freq_to_timerval(41667),
-    24, // # of pairs
-    3,  // # of bits per index
+    24,
+
+    3,
+
     code_na133Times,
     code_na133Codes
 };
 
-/* Duplicate timing table, same as na113 !
- const uint16_t code_na134Times[] = {
-    56, 54,
-    56, 166,
-    56, 3945,
-    896, 442,
-    896, 443,
- };
- */
 const uint8_t code_na134Codes[] = {
     0x60, 0x90, 0x00, 0x24, 0x10, 0x00, 0x04, 0x92, 0x00, 0x00, 0x00, 0x49, 0x2A,
     0x02, 0x40, 0x00, 0x90, 0x40, 0x00, 0x12, 0x48, 0x00, 0x00, 0x01, 0x24, 0x80,
 };
 const struct IrCode code_na134Code = {
     freq_to_timerval(40000),
-    68, // # of pairs
-    3,  // # of bits per index
+    68,
+
+    3,
+
     code_na113Times,
     code_na134Codes
 };
@@ -4254,8 +3951,10 @@ const uint8_t code_na135Codes[] = {
 };
 const struct IrCode code_na135Code = {
     freq_to_timerval(38462),
-    88, // # of pairs
-    3,  // # of bits per index
+    88,
+
+    3,
+
     code_na135Times,
     code_na135Codes
 };
@@ -4279,8 +3978,10 @@ const uint8_t code_na136Codes[] = {
 };
 const struct IrCode code_na136Code = {
     freq_to_timerval(38610),
-    88, // # of pairs
-    3,  // # of bits per index
+    88,
+
+    3,
+
     code_na136Times,
     code_na136Codes
 };
@@ -4320,8 +4021,10 @@ const uint8_t code_eu000Codes[] = {
 };
 const struct IrCode code_eu000Code = {
     freq_to_timerval(35714),
-    40, // # of pairs
-    3,  // # of bits per index
+    40,
+
+    3,
+
     code_eu000Times,
     code_eu000Codes
 };
@@ -4357,8 +4060,10 @@ const uint8_t code_eu001Codes[] = {
 };
 const struct IrCode code_eu001Code = {
     freq_to_timerval(30303),
-    31, // # of pairs
-    3,  // # of bits per index
+    31,
+
+    3,
+
     code_eu001Times,
     code_eu001Codes
 };
@@ -4383,42 +4088,13 @@ const uint8_t code_eu002Codes[] = {
 };
 const struct IrCode code_eu002Code = {
     freq_to_timerval(33333),
-    26, // # of pairs
-    2,  // # of bits per index
+    26,
+
+    2,
+
     code_eu002Times,
     code_eu002Codes
 };
-
-/* Duplicate timing table, same as na000 !
- const uint16_t code_eu003Times[] = {
-    58, 60,
-    58, 2687,
-    118, 60,
-    237, 60,
-    238, 60,
- };
- */
-/*
-const uint8_t code_eu003Codes[] = {
-    0x68,
-    0x20,
-    0x80,
-    0x40,
-    0x03,
-    0x10,
-    0x41,
-    0x00,
-    0x80,
-    0x00,
- };
- const struct IrCode code_eu003Code = {
-    freq_to_timerval(38462),
-    26,		// # of pairs
-    3,		// # of bits per index
-    code_na000Times,
-    code_eu003Codes
- };// Duplicate IR Code - same as na000
- */
 
 const uint16_t code_eu004Times[] = {
     44,
@@ -4439,11 +4115,13 @@ const uint8_t code_eu004Codes[] = {
 };
 const struct IrCode code_eu004Code = {
     freq_to_timerval(37037),
-    100, // # of pairs
-    3,   // # of bits per index
+    100,
+
+    3,
+
     code_eu004Times,
     code_eu004Codes
-}; // Duplicate IR Code? Similar to NA002
+};
 
 const uint16_t code_eu005Times[] = {
     24,
@@ -4463,12 +4141,14 @@ const uint8_t code_eu005Codes[] = {
 };
 const struct IrCode code_eu005Code = {
     freq_to_timerval(38610),
-    64, // # of pairs
-    3,  // # of bits per index
+    64,
+
+    3,
+
     code_eu005Times,
     code_eu005Codes
 };
-// This is actually power TOGGLE for Samsung TVs. Therefore followed later by new eu141, discrete OFF
+
 const uint16_t code_eu006Times[] = {
     53,
     63,
@@ -4487,8 +4167,10 @@ const uint8_t code_eu006Codes[] = {
 };
 const struct IrCode code_eu006Code = {
     freq_to_timerval(38462),
-    68, // # of pairs
-    3,  // # of bits per index
+    68,
+
+    3,
+
     code_eu006Times,
     code_eu006Codes
 };
@@ -4519,23 +4201,14 @@ const uint8_t code_eu007Codes[] = {
 };
 const struct IrCode code_eu007Code = {
     freq_to_timerval(38462),
-    52, // # of pairs
-    2,  // # of bits per index
+    52,
+
+    2,
+
     code_eu007Times,
     code_eu007Codes
-}; // Duplicate IR Code? - Similar to NA010
+};
 
-/* Duplicate timing table, same as na004 !
- const uint16_t code_eu008Times[] = {
-    55, 57,
-    55, 170,
-    55, 3949,
-    55, 9623,
-    56, 0,
-    898, 453,
-    900, 226,
- };
- */
 const uint8_t code_eu008Codes[] = {
     0xA0,
     0x00,
@@ -4555,90 +4228,14 @@ const uint8_t code_eu008Codes[] = {
 };
 const struct IrCode code_eu008Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na004Times,
     code_eu008Codes
 };
 
-/* Duplicate timing table, same as na005 !
- const uint16_t code_eu009Times[] = {
-    88, 90,
-    88, 91,
-    88, 181,
-    88, 8976,
-    177, 91,
- };
- */
-/*
-const uint8_t code_eu009Codes[] = {
-    0x10,
-    0x92,
-    0x49,
-    0x46,
-    0x33,
-    0x09,
-    0x24,
-    0x94,
-    0x60,
- };
- const struct IrCode code_eu009Code = {
-    freq_to_timerval(35714),
-    24,		// # of pairs
-    3,		// # of bits per index
-    code_na005Times,
-    code_eu009Codes
- };// Duplicate IR Code - same as na005
- */
-
-/* Duplicate timing table, same as na004 !
- const uint16_t code_eu010Times[] = {
-    55, 57,
-    55, 170,
-    55, 3949,
-    55, 9623,
-    56, 0,
-    898, 453,
-    900, 226,
- };
- */
-/*
-const uint8_t code_eu010Codes[] = {
-    0xA0,
-    0x00,
-    0x01,
-    0x04,
-    0x92,
-    0x48,
-    0x20,
-    0x80,
-    0x40,
-    0x04,
-    0x12,
-    0x09,
-    0x2B,
-    0x3D,
-    0x00,
- };
- const struct IrCode code_eu010Code = {
-    freq_to_timerval(38462),
-    38,		// # of pairs
-    3,		// # of bits per index
-    code_na004Times,
-    code_eu010Codes
- };// Duplicate IR Code - same as NA004
- */
-
-/* Duplicate timing table, same as na009 !
- const uint16_t code_eu011Times[] = {
-    53, 56,
-    53, 171,
-    53, 3950,
-    53, 9599,
-    898, 451,
-    900, 226,
- };
- */
 const uint8_t code_eu011Codes[] = {
     0x84,
     0x00,
@@ -4658,8 +4255,10 @@ const uint8_t code_eu011Codes[] = {
 };
 const struct IrCode code_eu011Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na009Times,
     code_eu011Codes
 };
@@ -4682,8 +4281,10 @@ const uint8_t code_eu012Codes[] = {
 };
 const struct IrCode code_eu012Code = {
     freq_to_timerval(33445),
-    26, // # of pairs
-    2,  // # of bits per index
+    26,
+
+    2,
+
     code_eu012Times,
     code_eu012Codes
 };
@@ -4703,47 +4304,13 @@ const uint8_t code_eu013Codes[] = {
 };
 const struct IrCode code_eu013Code = {
     freq_to_timerval(38462),
-    88, // # of pairs
-    2,  // # of bits per index
+    88,
+
+    2,
+
     code_eu013Times,
     code_eu013Codes
 };
-
-/* Duplicate timing table, same as na021 !
- const uint16_t code_eu014Times[] = {
-    48, 52,
-    48, 160,
-    48, 400,
-    48, 2335,
-    799, 400,
- };
- */
-/*
-const uint8_t code_eu014Codes[] = {
-    0x80,
-    0x10,
-    0x40,
-    0x08,
-    0x82,
-    0x08,
-    0x01,
-    0xC0,
-    0x08,
-    0x20,
-    0x04,
-    0x41,
-    0x04,
-    0x00,
-    0x00,
- };
- const struct IrCode code_eu014Code = {
-    freq_to_timerval(38462),
-    38,		// # of pairs
-    3,		// # of bits per index
-    code_na021Times,
-    code_eu014Codes
- };// Duplicate IR Code - same as NA021
- */
 
 const uint16_t code_eu015Times[] = {
     53,
@@ -4764,11 +4331,13 @@ const uint8_t code_eu015Codes[] = {
 };
 const struct IrCode code_eu015Code = {
     freq_to_timerval(38462),
-    136, // # of pairs
-    3,   // # of bits per index
+    136,
+
+    3,
+
     code_eu015Times,
     code_eu015Codes
-}; // Duplicate IR Code? - Similar to NA018
+};
 
 const uint16_t code_eu016Times[] = {
     28,
@@ -4793,8 +4362,10 @@ const uint8_t code_eu016Codes[] = {
 };
 const struct IrCode code_eu016Code = {
     freq_to_timerval(33333),
-    34, // # of pairs
-    2,  // # of bits per index
+    34,
+
+    2,
+
     code_eu016Times,
     code_eu016Codes
 };
@@ -4818,23 +4389,14 @@ const uint8_t code_eu017Codes[] = {
 };
 const struct IrCode code_eu017Code = {
     freq_to_timerval(33333),
-    24, // # of pairs
-    2,  // # of bits per index
+    24,
+
+    2,
+
     code_eu017Times,
     code_eu017Codes
 };
 
-/* Duplicate timing table, same as na004 !
- const uint16_t code_eu018Times[] = {
-    55, 57,
-    55, 170,
-    55, 3949,
-    55, 9623,
-    56, 0,
-    898, 453,
-    900, 226,
- };
- */
 const uint8_t code_eu018Codes[] = {
     0xA0,
     0x02,
@@ -4854,8 +4416,10 @@ const uint8_t code_eu018Codes[] = {
 };
 const struct IrCode code_eu018Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na004Times,
     code_eu018Codes
 };
@@ -4890,8 +4454,10 @@ const uint8_t code_eu019Codes[] = {
 };
 const struct IrCode code_eu019Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_eu019Times,
     code_eu019Codes
 };
@@ -4918,22 +4484,14 @@ const uint8_t code_eu020Codes[] = {
 };
 const struct IrCode code_eu020Code = {
     freq_to_timerval(35714),
-    34, // # of pairs
-    2,  // # of bits per index
+    34,
+
+    2,
+
     code_eu020Times,
     code_eu020Codes
 };
 
-/* Duplicate timing table, same as na009 !
- const uint16_t code_eu021Times[] = {
-    53, 56,
-    53, 171,
-    53, 3950,
-    53, 9599,
-    898, 451,
-    900, 226,
- };
- */
 const uint8_t code_eu021Codes[] = {
     0x84,
     0x80,
@@ -4953,23 +4511,14 @@ const uint8_t code_eu021Codes[] = {
 };
 const struct IrCode code_eu021Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na009Times,
     code_eu021Codes
 };
 
-/* Duplicate timing table, same as na004 !
- const uint16_t code_eu022Times[] = {
-    55, 57,
-    55, 170,
-    55, 3949,
-    55, 9623,
-    56, 0,
-    898, 453,
-    900, 226,
- };
- */
 const uint8_t code_eu022Codes[] = {
     0xA4,
     0x80,
@@ -4989,60 +4538,14 @@ const uint8_t code_eu022Codes[] = {
 };
 const struct IrCode code_eu022Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na004Times,
     code_eu022Codes
 };
 
-/* Duplicate timing table, same as na022 !
- const uint16_t code_eu023Times[] = {
-    53, 60,
-    53, 175,
-    53, 4463,
-    53, 9453,
-    892, 450,
-    895, 225,
- };
- */
-/*
-const uint8_t code_eu023Codes[] = {
-    0x80,
-    0x02,
-    0x40,
-    0x00,
-    0x02,
-    0x40,
-    0x00,
-    0x00,
-    0x01,
-    0x24,
-    0x92,
-    0x48,
-    0x0A,
-    0xBA,
-    0x00,
- };
- const struct IrCode code_eu023Code = {
-    freq_to_timerval(38462),
-    38,		// # of pairs
-    3,		// # of bits per index
-    code_na022Times,
-    code_eu023Codes
- };// Duplicate IR Code - Same as NA022
- */
-
-/* Duplicate timing table, same as na004 !
- const uint16_t code_eu024Times[] = {
-    55, 57,
-    55, 170,
-    55, 3949,
-    55, 9623,
-    56, 0,
-    898, 453,
-    900, 226,
- };
- */
 const uint8_t code_eu024Codes[] = {
     0xA0,
     0x02,
@@ -5062,8 +4565,10 @@ const uint8_t code_eu024Codes[] = {
 };
 const struct IrCode code_eu024Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na004Times,
     code_eu024Codes
 };
@@ -5097,8 +4602,10 @@ const uint8_t code_eu025Codes[] = {
 };
 const struct IrCode code_eu025Code = {
     freq_to_timerval(31250),
-    21, // # of pairs
-    3,  // # of bits per index
+    21,
+
+    3,
+
     code_eu025Times,
     code_eu025Codes
 };
@@ -5120,23 +4627,14 @@ const uint8_t code_eu026Codes[] = {
 };
 const struct IrCode code_eu026Code = {
     freq_to_timerval(38462),
-    24, // # of pairs
-    2,  // # of bits per index
+    24,
+
+    2,
+
     code_eu026Times,
     code_eu026Codes
 };
 
-/* Duplicate timing table, same as na004 !
- const uint16_t code_eu027Times[] = {
-    55, 57,
-    55, 170,
-    55, 3949,
-    55, 9623,
-    56, 0,
-    898, 453,
-    900, 226,
- };
- */
 const uint8_t code_eu027Codes[] = {
     0xA0,
     0x82,
@@ -5156,8 +4654,10 @@ const uint8_t code_eu027Codes[] = {
 };
 const struct IrCode code_eu027Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na004Times,
     code_eu027Codes
 };
@@ -5193,8 +4693,10 @@ const uint8_t code_eu028Codes[] = {
 };
 const struct IrCode code_eu028Code = {
     freq_to_timerval(30303),
-    31, // # of pairs
-    3,  // # of bits per index
+    31,
+
+    3,
+
     code_eu028Times,
     code_eu028Codes
 };
@@ -5238,23 +4740,14 @@ const uint8_t code_eu029Codes[] = {
 };
 const struct IrCode code_eu029Code = {
     freq_to_timerval(34483),
-    46, // # of pairs
-    3,  // # of bits per index
+    46,
+
+    3,
+
     code_eu029Times,
     code_eu029Codes
 };
 
-/* Duplicate timing table, same as na004 !
- const uint16_t code_eu030Times[] = {
-    55, 57,
-    55, 170,
-    55, 3949,
-    55, 9623,
-    56, 0,
-    898, 453,
-    900, 226,
- };
- */
 const uint8_t code_eu030Codes[] = {
     0xA0,
     0x10,
@@ -5274,11 +4767,13 @@ const uint8_t code_eu030Codes[] = {
 };
 const struct IrCode code_eu030Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na004Times,
     code_eu030Codes
-}; // Duplicate IR Code? - Smilar to NA020
+};
 
 const uint16_t code_eu031Times[] = {
     53,
@@ -5307,8 +4802,10 @@ const uint8_t code_eu031Codes[] = {
 };
 const struct IrCode code_eu031Code = {
     freq_to_timerval(38462),
-    52, // # of pairs
-    2,  // # of bits per index
+    52,
+
+    2,
+
     code_eu031Times,
     code_eu031Codes
 };
@@ -5333,8 +4830,10 @@ const uint8_t code_eu032Codes[] = {
 };
 const struct IrCode code_eu032Code = {
     freq_to_timerval(33333),
-    26, // # of pairs
-    2,  // # of bits per index
+    26,
+
+    2,
+
     code_eu032Times,
     code_eu032Codes
 };
@@ -5356,23 +4855,14 @@ const uint8_t code_eu033Codes[] = {
 };
 const struct IrCode code_eu033Code = {
     freq_to_timerval(38462),
-    14, // # of pairs
-    2,  // # of bits per index
+    14,
+
+    2,
+
     code_eu033Times,
     code_eu033Codes
 };
 
-/* Duplicate timing table, same as na004 !
- const uint16_t code_eu034Times[] = {
-    55, 57,
-    55, 170,
-    55, 3949,
-    55, 9623,
-    56, 0,
-    898, 453,
-    900, 226,
- };
- */
 const uint8_t code_eu034Codes[] = {
     0xA0,
     0x02,
@@ -5392,53 +4882,14 @@ const uint8_t code_eu034Codes[] = {
 };
 const struct IrCode code_eu034Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na004Times,
     code_eu034Codes
 };
 
-/* Duplicate timing table, same as na005 !
- const uint16_t code_eu035Times[] = {
-    88, 90,
-    88, 91,
-    88, 181,
-    88, 8976,
-    177, 91,
- };
- */
-/*
-const uint8_t code_eu035Codes[] = {
-    0x10,
-    0x92,
-    0x49,
-    0x46,
-    0x33,
-    0x09,
-    0x24,
-    0x94,
-    0x60,
- };
- const struct IrCode code_eu035Code = {
-    freq_to_timerval(35714),
-    24,		// # of pairs
-    3,		// # of bits per index
-    code_na005Times,
-    code_eu035Codes
- };// Duplicate IR Code - same as eu009!
- */
-
-/* Duplicate timing table, same as na004 !
- const uint16_t code_eu036Times[] = {
-    55, 57,
-    55, 170,
-    55, 3949,
-    55, 9623,
-    56, 0,
-    898, 453,
-    900, 226,
- };
- */
 const uint8_t code_eu036Codes[] = {
     0xA4,
     0x00,
@@ -5458,8 +4909,10 @@ const uint8_t code_eu036Codes[] = {
 };
 const struct IrCode code_eu036Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na004Times,
     code_eu036Codes
 };
@@ -5481,8 +4934,10 @@ const uint8_t code_eu037Codes[] = {
 };
 const struct IrCode code_eu037Code = {
     freq_to_timerval(38462),
-    24, // # of pairs
-    2,  // # of bits per index
+    24,
+
+    2,
+
     code_eu037Times,
     code_eu037Codes
 };
@@ -5500,9 +4955,12 @@ const uint8_t code_eu038Codes[] = {
     0x54,
 };
 const struct IrCode code_eu038Code = {
-    0,  // Non-pulsed code
-    11, // # of pairs
-    2,  // # of bits per index
+    0,
+
+    11,
+
+    2,
+
     code_eu038Times,
     code_eu038Codes
 };
@@ -5526,8 +4984,10 @@ const uint8_t code_eu039Codes[] = {
 };
 const struct IrCode code_eu039Code = {
     freq_to_timerval(40161),
-    24, // # of pairs
-    2,  // # of bits per index
+    24,
+
+    2,
+
     code_eu039Times,
     code_eu039Codes
 };
@@ -5549,8 +5009,10 @@ const uint8_t code_eu040Codes[] = {
 };
 const struct IrCode code_eu040Code = {
     freq_to_timerval(35714),
-    52, // # of pairs
-    3,  // # of bits per index
+    52,
+
+    3,
+
     code_eu040Times,
     code_eu040Codes
 };
@@ -5581,22 +5043,14 @@ const uint8_t code_eu041Codes[] = {
 };
 const struct IrCode code_eu041Code = {
     freq_to_timerval(33333),
-    28, // # of pairs
-    3,  // # of bits per index
+    28,
+
+    3,
+
     code_eu041Times,
     code_eu041Codes
 };
 
-/* Duplicate timing table, same as na009 !
- const uint16_t code_eu042Times[] = {
-    53, 56,
-    53, 171,
-    53, 3950,
-    53, 9599,
-    898, 451,
-    900, 226,
- };
- */
 const uint8_t code_eu042Codes[] = {
     0x80,
     0x00,
@@ -5616,8 +5070,10 @@ const uint8_t code_eu042Codes[] = {
 };
 const struct IrCode code_eu042Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na009Times,
     code_eu042Codes
 };
@@ -5632,23 +5088,14 @@ const uint8_t code_eu043Codes[] = {
 };
 const struct IrCode code_eu043Code = {
     freq_to_timerval(41667),
-    2, // # of pairs
-    2, // # of bits per index
+    2,
+
+    2,
+
     code_eu043Times,
     code_eu043Codes
 };
 
-/* Duplicate timing table, same as na004 !
- const uint16_t code_eu044Times[] = {
-    55, 57,
-    55, 170,
-    55, 3949,
-    55, 9623,
-    56, 0,
-    898, 453,
-    900, 226,
- };
- */
 const uint8_t code_eu044Codes[] = {
     0xA0,
     0x02,
@@ -5668,8 +5115,10 @@ const uint8_t code_eu044Codes[] = {
 };
 const struct IrCode code_eu044Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na004Times,
     code_eu044Codes
 };
@@ -5690,8 +5139,10 @@ const uint8_t code_eu045Codes[] = {
 };
 const struct IrCode code_eu045Code = {
     freq_to_timerval(41667),
-    10, // # of pairs
-    2,  // # of bits per index
+    10,
+
+    2,
+
     code_eu045Times,
     code_eu045Codes
 };
@@ -5713,8 +5164,10 @@ const uint8_t code_eu046Codes[] = {
 };
 const struct IrCode code_eu046Code = {
     freq_to_timerval(34602),
-    16, // # of pairs
-    2,  // # of bits per index
+    16,
+
+    2,
+
     code_eu046Times,
     code_eu046Codes
 };
@@ -5734,23 +5187,16 @@ const uint8_t code_eu047Codes[] = {
     0x00,
 };
 const struct IrCode code_eu047Code = {
-    0,  // Non-pulsed code
-    17, // # of pairs
-    2,  // # of bits per index
+    0,
+
+    17,
+
+    2,
+
     code_eu047Times,
     code_eu047Codes
 };
 
-/* Duplicate timing table, same as na009 !
- const uint16_t code_eu048Times[] = {
-    53, 56,
-    53, 171,
-    53, 3950,
-    53, 9599,
-    898, 451,
-    900, 226,
- };
- */
 const uint8_t code_eu048Codes[] = {
     0x80,
     0x00,
@@ -5770,8 +5216,10 @@ const uint8_t code_eu048Codes[] = {
 };
 const struct IrCode code_eu048Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na009Times,
     code_eu048Codes
 };
@@ -5808,8 +5256,10 @@ const uint8_t code_eu049Codes[] = {
 };
 const struct IrCode code_eu049Code = {
     freq_to_timerval(38462),
-    40, // # of pairs
-    3,  // # of bits per index
+    40,
+
+    3,
+
     code_eu049Times,
     code_eu049Codes
 };
@@ -5847,8 +5297,10 @@ const uint8_t code_eu050Codes[] = {
 };
 const struct IrCode code_eu050Code = {
     freq_to_timerval(33333),
-    48, // # of pairs
-    3,  // # of bits per index
+    48,
+
+    3,
+
     code_eu050Times,
     code_eu050Codes
 };
@@ -5870,11 +5322,13 @@ const uint8_t code_eu051Codes[] = {
 };
 const struct IrCode code_eu051Code = {
     freq_to_timerval(38462),
-    52, // # of pairs
-    3,  // # of bits per index
+    52,
+
+    3,
+
     code_eu051Times,
     code_eu051Codes
-}; // Duplicate IR Code? - Similar to NA115
+};
 
 const uint16_t code_eu052Times[] = {
     16,
@@ -5896,20 +5350,14 @@ const uint8_t code_eu052Codes[] = {
 };
 const struct IrCode code_eu052Code = {
     freq_to_timerval(31250),
-    24, // # of pairs
-    2,  // # of bits per index
+    24,
+
+    2,
+
     code_eu052Times,
     code_eu052Codes
-}; // Duplicate IR Code? -  Similar to EU017
+};
 
-/* Duplicate timing table, same as eu046 !
- const uint16_t code_eu053Times[] = {
-    15, 493,
-    16, 493,
-    16, 698,
-    16, 1414,
- };
- */
 const uint8_t code_eu053Codes[] = {
     0x26,
     0xAB,
@@ -5918,8 +5366,10 @@ const uint8_t code_eu053Codes[] = {
 };
 const struct IrCode code_eu053Code = {
     freq_to_timerval(34483),
-    16, // # of pairs
-    2,  // # of bits per index
+    16,
+
+    2,
+
     code_eu046Times,
     code_eu053Codes
 };
@@ -5947,22 +5397,14 @@ const uint8_t code_eu054Codes[] = {
 };
 const struct IrCode code_eu054Code = {
     freq_to_timerval(31250),
-    14, // # of pairs
-    3,  // # of bits per index
+    14,
+
+    3,
+
     code_eu054Times,
     code_eu054Codes
 };
 
-/* Duplicate timing table, same as na009 !
- const uint16_t code_eu055Times[] = {
-    53, 56,
-    53, 171,
-    53, 3950,
-    53, 9599,
-    898, 451,
-    900, 226,
- };
- */
 const uint8_t code_eu055Codes[] = {
     0x80,
     0x00,
@@ -5982,8 +5424,10 @@ const uint8_t code_eu055Codes[] = {
 };
 const struct IrCode code_eu055Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na009Times,
     code_eu055Codes
 };
@@ -6000,59 +5444,14 @@ const uint8_t code_eu056Codes[] = {
 };
 const struct IrCode code_eu056Code = {
     freq_to_timerval(38462),
-    4, // # of pairs
-    2, // # of bits per index
+    4,
+
+    2,
+
     code_eu056Times,
     code_eu056Codes
 };
 
-/* Duplicate timing table, same as na004 !
- const uint16_t code_eu057Times[] = {
-    55, 57,
-    55, 170,
-    55, 3949,
-    55, 9623,
-    56, 0,
-    898, 453,
-    900, 226,
- };
- */
-/*
-const uint8_t code_eu057Codes[] = {
-    0xA0,
-    0x00,
-    0x41,
-    0x04,
-    0x92,
-    0x08,
-    0x20,
-    0x02,
-    0x00,
-    0x04,
-    0x90,
-    0x49,
-    0x2B,
-    0x3D,
-    0x00,
- };
- const struct IrCode code_eu057Code = {
-    freq_to_timerval(38462),
-    38,		// # of pairs
-    3,		// # of bits per index
-    code_na004Times,
-    code_eu057Codes
- }; // Duplicate IR code - same as EU008
- */
-/* Duplicate timing table, same as na009 !
- const uint16_t code_eu058Times[] = {
-    53, 56,
-    53, 171,
-    53, 3950,
-    53, 9599,
-    898, 451,
-    900, 226,
- };
- */
 const uint8_t code_eu058Codes[] = {
     0x80,
     0x00,
@@ -6072,8 +5471,10 @@ const uint8_t code_eu058Codes[] = {
 };
 const struct IrCode code_eu058Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na009Times,
     code_eu058Codes
 };
@@ -6090,11 +5491,13 @@ const uint8_t code_eu059Codes[] = {
 };
 const struct IrCode code_eu059Code = {
     freq_to_timerval(41667),
-    4, // # of pairs
-    2, // # of bits per index
+    4,
+
+    2,
+
     code_eu059Times,
     code_eu059Codes
-}; // Duplicate IR Code? - Similar to EU056
+};
 
 const uint16_t code_eu060Times[] = {
     50,
@@ -6119,21 +5522,14 @@ const uint8_t code_eu060Codes[] = {
 };
 const struct IrCode code_eu060Code = {
     freq_to_timerval(38462),
-    34, // # of pairs
-    2,  // # of bits per index
+    34,
+
+    2,
+
     code_eu060Times,
     code_eu060Codes
 };
 
-/* Duplicate timing table, same as na005 !
- const uint16_t code_eu061Times[] = {
-    88, 90,
-    88, 91,
-    88, 181,
-    88, 8976,
-    177, 91,
- };
- */
 const uint8_t code_eu061Codes[] = {
     0x10,
     0x92,
@@ -6147,20 +5543,14 @@ const uint8_t code_eu061Codes[] = {
 };
 const struct IrCode code_eu061Code = {
     freq_to_timerval(35714),
-    24, // # of pairs
-    3,  // # of bits per index
+    24,
+
+    3,
+
     code_na005Times,
     code_eu061Codes
 };
 
-/* Duplicate timing table, same as eu060 !
- const uint16_t code_eu062Times[] = {
-    50, 158,
-    53, 51,
-    53, 156,
-    53, 2180,
- };
- */
 const uint8_t code_eu062Codes[] = {
     0x25,
     0x99,
@@ -6174,22 +5564,14 @@ const uint8_t code_eu062Codes[] = {
 };
 const struct IrCode code_eu062Code = {
     freq_to_timerval(38462),
-    34, // # of pairs
-    2,  // # of bits per index
+    34,
+
+    2,
+
     code_eu060Times,
     code_eu062Codes
 };
 
-/* Duplicate timing table, same as na009 !
- const uint16_t code_eu063Times[] = {
-    53, 56,
-    53, 171,
-    53, 3950,
-    53, 9599,
-    898, 451,
-    900, 226,
- };
- */
 const uint8_t code_eu063Codes[] = {
     0x80,
     0x00,
@@ -6209,8 +5591,10 @@ const uint8_t code_eu063Codes[] = {
 };
 const struct IrCode code_eu063Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na009Times,
     code_eu063Codes
 };
@@ -6247,8 +5631,10 @@ const uint8_t code_eu064Codes[] = {
 };
 const struct IrCode code_eu064Code = {
     freq_to_timerval(30395),
-    29, // # of pairs
-    3,  // # of bits per index
+    29,
+
+    3,
+
     code_eu064Times,
     code_eu064Codes
 };
@@ -6284,22 +5670,14 @@ const uint8_t code_eu065Codes[] = {
 };
 const struct IrCode code_eu065Code = {
     freq_to_timerval(30303),
-    31, // # of pairs
-    3,  // # of bits per index
+    31,
+
+    3,
+
     code_eu065Times,
     code_eu065Codes
 };
 
-/* Duplicate timing table, same as eu049 !
- const uint16_t code_eu066Times[] = {
-    55, 55,
-    55, 167,
-    55, 4577,
-    55, 9506,
-    448, 445,
-    450, 444,
- };
- */
 const uint8_t code_eu066Codes[] = {
     0x84,
     0x82,
@@ -6319,8 +5697,10 @@ const uint8_t code_eu066Codes[] = {
 };
 const struct IrCode code_eu066Code = {
     freq_to_timerval(38462),
-    40, // # of pairs
-    3,  // # of bits per index
+    40,
+
+    3,
+
     code_eu049Times,
     code_eu066Codes
 };
@@ -6339,8 +5719,10 @@ const uint8_t code_eu067Codes[] = {
 };
 const struct IrCode code_eu067Code = {
     freq_to_timerval(38462),
-    12, // # of pairs
-    2,  // # of bits per index
+    12,
+
+    2,
+
     code_eu067Times,
     code_eu067Codes
 };
@@ -6376,8 +5758,10 @@ const uint8_t code_eu068Codes[] = {
 };
 const struct IrCode code_eu068Code = {
     freq_to_timerval(38610),
-    31, // # of pairs
-    3,  // # of bits per index
+    31,
+
+    3,
+
     code_eu068Times,
     code_eu068Codes
 };
@@ -6398,20 +5782,16 @@ const uint8_t code_eu069Codes[] = {
     0x04,
 };
 const struct IrCode code_eu069Code = {
-    0,  // Non-pulsed code
-    23, // # of pairs
-    2,  // # of bits per index
+    0,
+
+    23,
+
+    2,
+
     code_eu069Times,
     code_eu069Codes
 };
 
-/* Duplicate timing table, same as eu069 !
- const uint16_t code_eu070Times[] = {
-    4, 499,
-    4, 750,
-    4, 4999,
- };
- */
 const uint8_t code_eu070Codes[] = {
     0x14,
     0x54,
@@ -6421,9 +5801,12 @@ const uint8_t code_eu070Codes[] = {
     0x04,
 };
 const struct IrCode code_eu070Code = {
-    0,  // Non-pulsed code
-    23, // # of pairs
-    2,  // # of bits per index
+    0,
+
+    23,
+
+    2,
+
     code_eu069Times,
     code_eu070Codes
 };
@@ -6445,8 +5828,10 @@ const uint8_t code_eu071Codes[] = {
 };
 const struct IrCode code_eu071Code = {
     freq_to_timerval(38462),
-    24, // # of pairs
-    2,  // # of bits per index
+    24,
+
+    2,
+
     code_eu071Times,
     code_eu071Codes
 };
@@ -6467,21 +5852,16 @@ const uint8_t code_eu072Codes[] = {
     0x44,
 };
 const struct IrCode code_eu072Code = {
-    0,  // Non-pulsed code
-    23, // # of pairs
-    2,  // # of bits per index
+    0,
+
+    23,
+
+    2,
+
     code_eu072Times,
     code_eu072Codes
 };
 
-/* Duplicate timing table, same as eu046 !
- const uint16_t code_eu073Times[] = {
-    15, 493,
-    16, 493,
-    16, 698,
-    16, 1414,
- };
- */
 const uint8_t code_eu073Codes[] = {
     0x19,
     0x57,
@@ -6490,21 +5870,14 @@ const uint8_t code_eu073Codes[] = {
 };
 const struct IrCode code_eu073Code = {
     freq_to_timerval(34483),
-    16, // # of pairs
-    2,  // # of bits per index
+    16,
+
+    2,
+
     code_eu046Times,
     code_eu073Codes
 };
 
-/* Duplicate timing table, same as na031 !
- const uint16_t code_eu074Times[] = {
-    88, 89,
-    88, 90,
-    88, 179,
-    88, 8977,
-    177, 90,
- };
- */
 const uint8_t code_eu074Codes[] = {
     0x04,
     0x92,
@@ -6519,8 +5892,10 @@ const uint8_t code_eu074Codes[] = {
 };
 const struct IrCode code_eu074Code = {
     freq_to_timerval(35714),
-    26, // # of pairs
-    3,  // # of bits per index
+    26,
+
+    3,
+
     code_na031Times,
     code_eu074Codes
 };
@@ -6541,9 +5916,12 @@ const uint8_t code_eu075Codes[] = {
     0x44,
 };
 const struct IrCode code_eu075Code = {
-    0,  // Non-pulsed code
-    23, // # of pairs
-    2,  // # of bits per index
+    0,
+
+    23,
+
+    2,
+
     code_eu075Times,
     code_eu075Codes
 };
@@ -6567,23 +5945,14 @@ const uint8_t code_eu076Codes[] = {
 };
 const struct IrCode code_eu076Code = {
     freq_to_timerval(38462),
-    24, // # of pairs
-    2,  // # of bits per index
+    24,
+
+    2,
+
     code_eu076Times,
     code_eu076Codes
 };
 
-/* Duplicate timing table, same as eu028 !
- const uint16_t code_eu077Times[] = {
-    47, 267,
-    50, 55,
-    50, 110,
-    50, 265,
-    50, 2055,
-    50, 12117,
-    100, 57,
- };
- */
 const uint8_t code_eu077Codes[] = {
     0x04,
     0x92,
@@ -6600,8 +5969,10 @@ const uint8_t code_eu077Codes[] = {
 };
 const struct IrCode code_eu077Code = {
     freq_to_timerval(30303),
-    31, // # of pairs
-    3,  // # of bits per index
+    31,
+
+    3,
+
     code_eu028Times,
     code_eu077Codes
 };
@@ -6621,9 +5992,12 @@ const uint8_t code_eu078Codes[] = {
     0x00,
 };
 const struct IrCode code_eu078Code = {
-    0,  // Non-pulsed code
-    12, // # of pairs
-    2,  // # of bits per index
+    0,
+
+    12,
+
+    2,
+
     code_eu078Times,
     code_eu078Codes
 };
@@ -6645,8 +6019,10 @@ const uint8_t code_eu079Codes[] = {
 };
 const struct IrCode code_eu079Code = {
     freq_to_timerval(38462),
-    68, // # of pairs
-    3,  // # of bits per index
+    68,
+
+    3,
+
     code_eu079Times,
     code_eu079Codes
 };
@@ -6668,8 +6044,10 @@ const uint8_t code_eu080Codes[] = {
 };
 const struct IrCode code_eu080Code = {
     freq_to_timerval(38462),
-    68, // # of pairs
-    3,  // # of bits per index
+    68,
+
+    3,
+
     code_eu080Times,
     code_eu080Codes
 };
@@ -6690,8 +6068,10 @@ const uint8_t code_eu081Codes[] = {
 };
 const struct IrCode code_eu081Code = {
     freq_to_timerval(38462),
-    80, // # of pairs
-    2,  // # of bits per index
+    80,
+
+    2,
+
     code_eu081Times,
     code_eu081Codes
 };
@@ -6713,8 +6093,10 @@ const uint8_t code_eu082Codes[] = {
 };
 const struct IrCode code_eu082Code = {
     freq_to_timerval(40000),
-    68, // # of pairs
-    3,  // # of bits per index
+    68,
+
+    3,
+
     code_eu082Times,
     code_eu082Codes
 };
@@ -6743,8 +6125,10 @@ const uint8_t code_eu083Codes[] = {
 };
 const struct IrCode code_eu083Code = {
     freq_to_timerval(33333),
-    24, // # of pairs
-    3,  // # of bits per index
+    24,
+
+    3,
+
     code_eu083Times,
     code_eu083Codes
 };
@@ -6768,8 +6152,10 @@ const uint8_t code_eu084Codes[] = {
 };
 const struct IrCode code_eu084Code = {
     freq_to_timerval(38462),
-    24, // # of pairs
-    2,  // # of bits per index
+    24,
+
+    2,
+
     code_eu084Times,
     code_eu084Codes
 };
@@ -6804,8 +6190,10 @@ const uint8_t code_eu085Codes[] = {
 };
 const struct IrCode code_eu085Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_eu085Times,
     code_eu085Codes
 };
@@ -6834,8 +6222,10 @@ const uint8_t code_eu086Codes[] = {
 };
 const struct IrCode code_eu086Code = {
     freq_to_timerval(33333),
-    24, // # of pairs
-    3,  // # of bits per index
+    24,
+
+    3,
+
     code_eu086Times,
     code_eu086Codes
 };
@@ -6857,8 +6247,10 @@ const uint8_t code_eu087Codes[] = {
 };
 const struct IrCode code_eu087Code = {
     freq_to_timerval(38462),
-    24, // # of pairs
-    2,  // # of bits per index
+    24,
+
+    2,
+
     code_eu087Times,
     code_eu087Codes
 };
@@ -6880,21 +6272,14 @@ const uint8_t code_eu088Codes[] = {
 };
 const struct IrCode code_eu088Code = {
     freq_to_timerval(38462),
-    24, // # of pairs
-    2,  // # of bits per index
+    24,
+
+    2,
+
     code_eu088Times,
     code_eu088Codes
 };
 
-/* Duplicate timing table, same as na021 !
- const uint16_t code_eu089Times[] = {
-    48, 52,
-    48, 160,
-    48, 400,
-    48, 2335,
-    799, 400,
- };
- */
 const uint8_t code_eu089Codes[] = {
     0x84,
     0x10,
@@ -6914,8 +6299,10 @@ const uint8_t code_eu089Codes[] = {
 };
 const struct IrCode code_eu089Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na021Times,
     code_eu089Codes
 };
@@ -6945,9 +6332,12 @@ const uint8_t code_eu090Codes[] = {
     0x16,
 };
 const struct IrCode code_eu090Code = {
-    0,  // Non-pulsed code
-    29, // # of pairs
-    3,  // # of bits per index
+    0,
+
+    29,
+
+    3,
+
     code_eu090Times,
     code_eu090Codes
 };
@@ -6973,8 +6363,10 @@ const uint8_t code_eu091Codes[] = {
 };
 const struct IrCode code_eu091Code = {
     freq_to_timerval(38462),
-    30, // # of pairs
-    2,  // # of bits per index
+    30,
+
+    2,
+
     code_eu091Times,
     code_eu091Codes
 };
@@ -6998,8 +6390,10 @@ const uint8_t code_eu092Codes[] = {
 };
 const struct IrCode code_eu092Code = {
     freq_to_timerval(40000),
-    22, // # of pairs
-    2,  // # of bits per index
+    22,
+
+    2,
+
     code_eu092Times,
     code_eu092Codes
 };
@@ -7018,8 +6412,10 @@ const uint8_t code_eu093Codes[] = {
 };
 const struct IrCode code_eu093Code = {
     freq_to_timerval(35714),
-    11, // # of pairs
-    2,  // # of bits per index
+    11,
+
+    2,
+
     code_eu093Times,
     code_eu093Codes
 };
@@ -7049,21 +6445,16 @@ const uint8_t code_eu094Codes[] = {
     0x06,
 };
 const struct IrCode code_eu094Code = {
-    0,  // Non-pulsed code
-    29, // # of pairs
-    3,  // # of bits per index
+    0,
+
+    29,
+
+    3,
+
     code_eu094Times,
     code_eu094Codes
 };
 
-/* Duplicate timing table, same as eu046 !
- const uint16_t code_eu095Times[] = {
-    15, 493,
-    16, 493,
-    16, 698,
-    16, 1414,
- };
- */
 const uint8_t code_eu095Codes[] = {
     0x2A,
     0xAB,
@@ -7072,8 +6463,10 @@ const uint8_t code_eu095Codes[] = {
 };
 const struct IrCode code_eu095Code = {
     freq_to_timerval(34483),
-    16, // # of pairs
-    2,  // # of bits per index
+    16,
+
+    2,
+
     code_eu046Times,
     code_eu095Codes
 };
@@ -7109,20 +6502,14 @@ const uint8_t code_eu096Codes[] = {
 };
 const struct IrCode code_eu096Code = {
     freq_to_timerval(38462),
-    30, // # of pairs
-    3,  // # of bits per index
+    30,
+
+    3,
+
     code_eu096Times,
     code_eu096Codes
 };
 
-/* Duplicate timing table, same as eu046 !
- const uint16_t code_eu097Times[] = {
-    15, 493,
-    16, 493,
-    16, 698,
-    16, 1414,
- };
- */
 const uint8_t code_eu097Codes[] = {
     0x19,
     0xAB,
@@ -7131,8 +6518,10 @@ const uint8_t code_eu097Codes[] = {
 };
 const struct IrCode code_eu097Code = {
     freq_to_timerval(34483),
-    16, // # of pairs
-    2,  // # of bits per index
+    16,
+
+    2,
+
     code_eu046Times,
     code_eu097Codes
 };
@@ -7156,9 +6545,12 @@ const uint8_t code_eu098Codes[] = {
     0x08,
 };
 const struct IrCode code_eu098Code = {
-    0,  // Non-pulsed code
-    27, // # of pairs
-    2,  // # of bits per index
+    0,
+
+    27,
+
+    2,
+
     code_eu098Times,
     code_eu098Codes
 };
@@ -7200,20 +6592,14 @@ const uint8_t code_eu099Codes[] = {
 };
 const struct IrCode code_eu099Code = {
     freq_to_timerval(35714),
-    46, // # of pairs
-    3,  // # of bits per index
+    46,
+
+    3,
+
     code_eu099Times,
     code_eu099Codes
 };
 
-/* Duplicate timing table, same as eu098 !
- const uint16_t code_eu100Times[] = {
-    3, 8,
-    3, 18,
-    3, 28,
-    3, 12731,
- };
- */
 const uint8_t code_eu100Codes[] = {
     0x80,
     0x04,
@@ -7224,9 +6610,12 @@ const uint8_t code_eu100Codes[] = {
     0x08,
 };
 const struct IrCode code_eu100Code = {
-    0,  // Non-pulsed code
-    27, // # of pairs
-    2,  // # of bits per index
+    0,
+
+    27,
+
+    2,
+
     code_eu098Times,
     code_eu100Codes
 };
@@ -7249,19 +6638,14 @@ const uint8_t code_eu101Codes[] = {
 };
 const struct IrCode code_eu101Code = {
     freq_to_timerval(38462),
-    24, // # of pairs
-    2,  // # of bits per index
+    24,
+
+    2,
+
     code_eu101Times,
     code_eu101Codes
 };
 
-/* Duplicate timing table, same as eu087 !
- const uint16_t code_eu102Times[] = {
-    14, 491,
-    14, 743,
-    14, 5126,
- };
- */
 const uint8_t code_eu102Codes[] = {
     0x45,
     0x54,
@@ -7272,8 +6656,10 @@ const uint8_t code_eu102Codes[] = {
 };
 const struct IrCode code_eu102Code = {
     freq_to_timerval(38462),
-    24, // # of pairs
-    2,  // # of bits per index
+    24,
+
+    2,
+
     code_eu087Times,
     code_eu102Codes
 };
@@ -7297,8 +6683,10 @@ const uint8_t code_eu103Codes[] = {
 };
 const struct IrCode code_eu103Code = {
     freq_to_timerval(34483),
-    24, // # of pairs
-    2,  // # of bits per index
+    24,
+
+    2,
+
     code_eu103Times,
     code_eu103Codes
 };
@@ -7320,22 +6708,14 @@ const uint8_t code_eu104Codes[] = {
 };
 const struct IrCode code_eu104Code = {
     freq_to_timerval(38462),
-    24, // # of pairs
-    2,  // # of bits per index
+    24,
+
+    2,
+
     code_eu104Times,
     code_eu104Codes
 };
 
-/* Duplicate timing table, same as na009 !
- const uint16_t code_eu105Times[] = {
-    53, 56,
-    53, 171,
-    53, 3950,
-    53, 9599,
-    898, 451,
-    900, 226,
- };
- */
 const uint8_t code_eu105Codes[] = {
     0x84,
     0x10,
@@ -7355,8 +6735,10 @@ const uint8_t code_eu105Codes[] = {
 };
 const struct IrCode code_eu105Code = {
     freq_to_timerval(38610),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na009Times,
     code_eu105Codes
 };
@@ -7384,8 +6766,10 @@ const uint8_t code_eu106Codes[] = {
 };
 const struct IrCode code_eu106Code = {
     freq_to_timerval(38462),
-    59, // # of pairs
-    3,  // # of bits per index
+    59,
+
+    3,
+
     code_eu106Times,
     code_eu106Codes
 };
@@ -7414,8 +6798,10 @@ const uint8_t code_eu107Codes[] = {
 };
 const struct IrCode code_eu107Code = {
     freq_to_timerval(33333),
-    24, // # of pairs
-    3,  // # of bits per index
+    24,
+
+    3,
+
     code_eu107Times,
     code_eu107Codes
 };
@@ -7437,8 +6823,10 @@ const uint8_t code_eu108Codes[] = {
 };
 const struct IrCode code_eu108Code = {
     freq_to_timerval(38462),
-    24, // # of pairs
-    2,  // # of bits per index
+    24,
+
+    2,
+
     code_eu108Times,
     code_eu108Codes
 };
@@ -7462,8 +6850,10 @@ const uint8_t code_eu109Codes[] = {
 };
 const struct IrCode code_eu109Code = {
     freq_to_timerval(38462),
-    22, // # of pairs
-    2,  // # of bits per index
+    22,
+
+    2,
+
     code_eu109Times,
     code_eu109Codes
 };
@@ -7486,8 +6876,10 @@ const uint8_t code_eu110Codes[] = {
 };
 const struct IrCode code_eu110Code = {
     freq_to_timerval(38462),
-    68, // # of pairs
-    3,  // # of bits per index
+    68,
+
+    3,
+
     code_eu110Times,
     code_eu110Codes
 };
@@ -7519,8 +6911,10 @@ const uint8_t code_eu111Codes[] = {
 };
 const struct IrCode code_eu111Code = {
     freq_to_timerval(31250),
-    21, // # of pairs
-    3,  // # of bits per index
+    21,
+
+    3,
+
     code_eu111Times,
     code_eu111Codes
 };
@@ -7557,22 +6951,14 @@ const uint8_t code_eu112Codes[] = {
 };
 const struct IrCode code_eu112Code = {
     freq_to_timerval(38462),
-    40, // # of pairs
-    3,  // # of bits per index
+    40,
+
+    3,
+
     code_eu112Times,
     code_eu112Codes
 };
 
-/* Duplicate timing table, same as eu054 !
- const uint16_t code_eu113Times[] = {
-    49, 53,
-    49, 104,
-    49, 262,
-    49, 264,
-    49, 8030,
-    100, 103,
- };
- */
 const uint8_t code_eu113Codes[] = {
     0x46,
     0x80,
@@ -7583,23 +6969,14 @@ const uint8_t code_eu113Codes[] = {
 };
 const struct IrCode code_eu113Code = {
     freq_to_timerval(31250),
-    14, // # of pairs
-    3,  // # of bits per index
+    14,
+
+    3,
+
     code_eu054Times,
     code_eu113Codes
 };
 
-/* Duplicate timing table, same as eu028 !
- const uint16_t code_eu114Times[] = {
-    47, 267,
-    50, 55,
-    50, 110,
-    50, 265,
-    50, 2055,
-    50, 12117,
-    100, 57,
- };
- */
 const uint8_t code_eu114Codes[] = {
     0x04,
     0x92,
@@ -7616,8 +6993,10 @@ const uint8_t code_eu114Codes[] = {
 };
 const struct IrCode code_eu114Code = {
     freq_to_timerval(30303),
-    31, // # of pairs
-    3,  // # of bits per index
+    31,
+
+    3,
+
     code_eu028Times,
     code_eu114Codes
 };
@@ -7640,8 +7019,10 @@ const uint8_t code_eu115Codes[] = {
 };
 const struct IrCode code_eu115Code = {
     freq_to_timerval(58824),
-    77, // # of pairs
-    3,  // # of bits per index
+    77,
+
+    3,
+
     code_eu115Times,
     code_eu115Codes
 };
@@ -7666,9 +7047,12 @@ const uint8_t code_eu116Codes[] = {
     0x80,
 };
 const struct IrCode code_eu116Code = {
-    0,  // Non-pulsed code
-    29, // # of pairs
-    2,  // # of bits per index
+    0,
+
+    29,
+
+    2,
+
     code_eu116Times,
     code_eu116Codes
 };
@@ -7694,8 +7078,10 @@ const uint8_t code_eu117Codes[] = {
 };
 const struct IrCode code_eu117Code = {
     freq_to_timerval(31250),
-    14, // # of pairs
-    3,  // # of bits per index
+    14,
+
+    3,
+
     code_eu117Times,
     code_eu117Codes
 };
@@ -7719,8 +7105,10 @@ const uint8_t code_eu118Codes[] = {
 };
 const struct IrCode code_eu118Code = {
     freq_to_timerval(34483),
-    24, // # of pairs
-    2,  // # of bits per index
+    24,
+
+    2,
+
     code_eu118Times,
     code_eu118Codes
 };
@@ -7743,8 +7131,10 @@ const uint8_t code_eu119Codes[] = {
 };
 const struct IrCode code_eu119Code = {
     freq_to_timerval(38462),
-    24, // # of pairs
-    2,  // # of bits per index
+    24,
+
+    2,
+
     code_eu119Times,
     code_eu119Codes
 };
@@ -7767,50 +7157,38 @@ const uint8_t code_eu120Codes[] = {
 };
 const struct IrCode code_eu120Code = {
     freq_to_timerval(38462),
-    82, // # of pairs
-    3,  // # of bits per index
+    82,
+
+    3,
+
     code_eu120Times,
     code_eu120Codes
 };
 
-/* Duplicate timing table, same as eu051 !
- const uint16_t code_eu121Times[] = {
-    84, 88,
-    84, 261,
-    84, 3360,
-    347, 347,
-    347, 348,
- };
- */
 const uint8_t code_eu121Codes[] = {
     0x64, 0x00, 0x09, 0x24, 0x00, 0x09, 0x24, 0x00, 0x09, 0x2A,
     0x10, 0x00, 0x24, 0x90, 0x00, 0x24, 0x90, 0x00, 0x24, 0x90,
 };
 const struct IrCode code_eu121Code = {
     freq_to_timerval(38462),
-    52, // # of pairs
-    3,  // # of bits per index
+    52,
+
+    3,
+
     code_eu051Times,
     code_eu121Codes
 };
 
-/* Duplicate timing table, same as eu120 !
- const uint16_t code_eu122Times[] = {
-    19, 78,
-    21, 27,
-    21, 77,
-    21, 3785,
-    22, 0,
- };
- */
 const uint8_t code_eu122Codes[] = {
     0x04, 0xA4, 0x92, 0x49, 0x22, 0x49, 0x48, 0x92, 0x49, 0x24, 0x92, 0x49, 0x24, 0x94, 0x89, 0x68,
     0x94, 0x92, 0x49, 0x24, 0x49, 0x29, 0x12, 0x49, 0x24, 0x92, 0x49, 0x24, 0x92, 0x91, 0x30,
 };
 const struct IrCode code_eu122Code = {
     freq_to_timerval(38462),
-    82, // # of pairs
-    3,  // # of bits per index
+    82,
+
+    3,
+
     code_eu120Times,
     code_eu122Codes
 };
@@ -7834,8 +7212,10 @@ const uint8_t code_eu123Codes[] = {
 };
 const struct IrCode code_eu123Code = {
     freq_to_timerval(40000),
-    24, // # of pairs
-    2,  // # of bits per index
+    24,
+
+    2,
+
     code_eu123Times,
     code_eu123Codes
 };
@@ -7870,8 +7250,10 @@ const uint8_t code_eu124Codes[] = {
 };
 const struct IrCode code_eu124Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_eu124Times,
     code_eu124Codes
 };
@@ -7895,23 +7277,14 @@ const uint8_t code_eu125Codes[] = {
 };
 const struct IrCode code_eu125Code = {
     freq_to_timerval(38462),
-    68, // # of pairs
-    3,  // # of bits per index
+    68,
+
+    3,
+
     code_eu125Times,
     code_eu125Codes
 };
 
-/* Duplicate timing table, same as na004 !
- const uint16_t code_eu126Times[] = {
-    55, 57,
-    55, 170,
-    55, 3949,
-    55, 9623,
-    56, 0,
-    898, 453,
-    900, 226,
- };
- */
 const uint8_t code_eu126Codes[] = {
     0xA0,
     0x00,
@@ -7931,19 +7304,14 @@ const uint8_t code_eu126Codes[] = {
 };
 const struct IrCode code_eu126Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na004Times,
     code_eu126Codes
 };
 
-/* Duplicate timing table, same as eu087 !
- const uint16_t code_eu127Times[] = {
-    14, 491,
-    14, 743,
-    14, 5126,
- };
- */
 const uint8_t code_eu127Codes[] = {
     0x44,
     0x40,
@@ -7954,8 +7322,10 @@ const uint8_t code_eu127Codes[] = {
 };
 const struct IrCode code_eu127Code = {
     freq_to_timerval(38462),
-    24, // # of pairs
-    2,  // # of bits per index
+    24,
+
+    2,
+
     code_eu087Times,
     code_eu127Codes
 };
@@ -7978,8 +7348,10 @@ const uint8_t code_eu128Codes[] = {
 };
 const struct IrCode code_eu128Code = {
     freq_to_timerval(41667),
-    8, // # of pairs
-    3, // # of bits per index
+    8,
+
+    3,
+
     code_eu128Times,
     code_eu128Codes
 };
@@ -8022,24 +7394,14 @@ const uint8_t code_eu129Codes[] = {
 };
 const struct IrCode code_eu129Code = {
     freq_to_timerval(38462),
-    45, // # of pairs
-    3,  // # of bits per index
+    45,
+
+    3,
+
     code_eu129Times,
     code_eu129Codes
 };
 
-/* Duplicate timing table, same as eu129 !
- const uint16_t code_eu130Times[] = {
-    50, 50,
-    50, 99,
-    50, 251,
-    50, 252,
-    50, 1449,
-    50, 11014,
-    102, 49,
-    102, 98,
- };
- */
 const uint8_t code_eu130Codes[] = {
     0x47,
     0x00,
@@ -8061,8 +7423,10 @@ const uint8_t code_eu130Codes[] = {
 };
 const struct IrCode code_eu130Code = {
     freq_to_timerval(38462),
-    45, // # of pairs
-    3,  // # of bits per index
+    45,
+
+    3,
+
     code_eu129Times,
     code_eu130Codes
 };
@@ -8084,19 +7448,14 @@ const uint8_t code_eu131Codes[] = {
 };
 const struct IrCode code_eu131Code = {
     freq_to_timerval(38462),
-    24, // # of pairs
-    2,  // # of bits per index
+    24,
+
+    2,
+
     code_eu131Times,
     code_eu131Codes
 };
 
-/* Duplicate timing table, same as eu069 !
- const uint16_t code_eu132Times[] = {
-    4, 499,
-    4, 750,
-    4, 4999,
- };
- */
 const uint8_t code_eu132Codes[] = {
     0x05,
     0x50,
@@ -8106,20 +7465,16 @@ const uint8_t code_eu132Codes[] = {
     0x04,
 };
 const struct IrCode code_eu132Code = {
-    0,  // Non-pulsed code
-    23, // # of pairs
-    2,  // # of bits per index
+    0,
+
+    23,
+
+    2,
+
     code_eu069Times,
     code_eu132Codes
 };
 
-/* Duplicate timing table, same as eu071 !
- const uint16_t code_eu133Times[] = {
-    14, 491,
-    14, 743,
-    14, 4422,
- };
- */
 const uint8_t code_eu133Codes[] = {
     0x55,
     0x54,
@@ -8130,8 +7485,10 @@ const uint8_t code_eu133Codes[] = {
 };
 const struct IrCode code_eu133Code = {
     freq_to_timerval(38462),
-    24, // # of pairs
-    2,  // # of bits per index
+    24,
+
+    2,
+
     code_eu071Times,
     code_eu133Codes
 };
@@ -8155,8 +7512,10 @@ const uint8_t code_eu134Codes[] = {
 };
 const struct IrCode code_eu134Code = {
     freq_to_timerval(40000),
-    24, // # of pairs
-    2,  // # of bits per index
+    24,
+
+    2,
+
     code_eu134Times,
     code_eu134Codes
 };
@@ -8177,24 +7536,16 @@ const uint8_t code_eu135Codes[] = {
     0x44,
 };
 const struct IrCode code_eu135Code = {
-    0,  // Non-pulsed code
-    23, // # of pairs
-    2,  // # of bits per index
+    0,
+
+    23,
+
+    2,
+
     code_eu135Times,
     code_eu135Codes
 };
 
-/* Duplicate timing table, same as na004 !
- const uint16_t code_eu136Times[] = {
-    55, 57,
-    55, 170,
-    55, 3949,
-    55, 9623,
-    56, 0,
-    898, 453,
-    900, 226,
- };
- */
 const uint8_t code_eu136Codes[] = {
     0xA0,
     0x00,
@@ -8214,8 +7565,10 @@ const uint8_t code_eu136Codes[] = {
 };
 const struct IrCode code_eu136Code = {
     freq_to_timerval(38462),
-    38, // # of pairs
-    3,  // # of bits per index
+    38,
+
+    3,
+
     code_na004Times,
     code_eu136Codes
 };
@@ -8246,8 +7599,10 @@ const uint8_t code_eu137Codes[] = {
 };
 const struct IrCode code_eu137Code = {
     freq_to_timerval(35714),
-    22, // # of pairs
-    3,  // # of bits per index
+    22,
+
+    3,
+
     code_eu137Times,
     code_eu137Codes
 };
@@ -8265,9 +7620,12 @@ const uint8_t code_eu138Codes[] = {
     0x54,
 };
 const struct IrCode code_eu138Code = {
-    0,  // Non-pulsed code
-    11, // # of pairs
-    2,  // # of bits per index
+    0,
+
+    11,
+
+    2,
+
     code_eu138Times,
     code_eu138Codes
 };
@@ -8300,9 +7658,12 @@ const uint8_t code_eu139Codes[] = {
 };
 
 const struct IrCode code_eu139Code = {
-    0,  // Non-pulsed code
-    30, // # of pairs
-    3,  // # of bits per index
+    0,
+
+    30,
+
+    3,
+
     code_eu139Times,
     code_eu139Codes
 };
@@ -8340,18 +7701,14 @@ const uint8_t code_eu140Codes[] = {
 
 const struct IrCode code_eu140Code = {
     freq_to_timerval(38462),
-    68, // # of pairs
-    2,  // # of bits per index
+    68,
+
+    2,
+
     code_eu140Times,
     code_eu140Codes
 };
 
-////////////////////////////////////////////////////////////////
-
-// const array (called "NApowerCodes") of const pointers to IrCode structs
-//-otherwise stated: "declare NApowerCodes as array of const pointers to const IrCode structs"
-//-to confirm this, go to http://cdecl.org/ and paste "const int* const NApowerCodes[]", and you'll
-//  see it means "declare NApowerCodes as array of const pointer to const int"
 const IrCode *const NApowerCodes[] = {
     &code_na000Code, &code_na001Code, &code_na002Code, &code_na003Code, &code_na004Code, &code_na005Code,
     &code_na006Code, &code_na007Code, &code_na008Code, &code_na009Code, &code_na010Code, &code_na011Code,
@@ -8382,18 +7739,23 @@ const IrCode *const EUpowerCodes[] = {
     &code_eu000Code,
     &code_eu001Code,
     &code_eu002Code,
-    &code_na000Code, // same as &code_eu003Code
+    &code_na000Code,
+
     &code_eu004Code,
     &code_eu005Code,
-    &code_eu006Code, // toggle power, &code_eu140Code turns it off again
+    &code_eu006Code,
+
     &code_eu007Code,
     &code_eu008Code,
-    &code_na005Code, // same as &code_eu009Code
-    &code_na004Code, // same as &code_eu010Code
+    &code_na005Code,
+
+    &code_na004Code,
+
     &code_eu011Code,
     &code_eu012Code,
     &code_eu013Code,
-    &code_na021Code, // same as &code_eu014Code
+    &code_na021Code,
+
     &code_eu015Code,
     &code_eu016Code,
     &code_eu017Code,
@@ -8402,11 +7764,13 @@ const IrCode *const EUpowerCodes[] = {
     &code_eu020Code,
     &code_eu021Code,
     &code_eu022Code,
-    &code_na022Code, // same as &code_eu023Code
+    &code_na022Code,
+
     &code_eu024Code,
     &code_eu025Code,
     &code_eu026Code,
-    &code_eu140Code, // counters &code_eu006Code (toggle), so out of order
+    &code_eu140Code,
+
     &code_eu027Code,
     &code_eu028Code,
     &code_eu029Code,
@@ -8415,7 +7779,7 @@ const IrCode *const EUpowerCodes[] = {
     &code_eu032Code,
     &code_eu033Code,
     &code_eu034Code,
-    //&code_eu035Code, same as eu009
+
     &code_eu036Code,
     &code_eu037Code,
     &code_eu038Code,
@@ -8437,7 +7801,7 @@ const IrCode *const EUpowerCodes[] = {
     &code_eu054Code,
     &code_eu055Code,
     &code_eu056Code,
-    //&code_eu057Code, same as eu008
+
     &code_eu058Code,
     &code_eu059Code,
     &code_eu060Code,

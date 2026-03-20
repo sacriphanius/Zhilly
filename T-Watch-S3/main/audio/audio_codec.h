@@ -18,7 +18,7 @@ class AudioCodec {
 public:
     AudioCodec();
     virtual ~AudioCodec();
-    
+
     virtual void SetOutputVolume(int volume);
     virtual void SetInputGain(float gain);
     virtual void EnableInput(bool enable);
@@ -58,4 +58,4 @@ protected:
     virtual int Write(const int16_t* data, int samples) = 0;
 };
 
-#endif // _AUDIO_CODEC_H
+#endif

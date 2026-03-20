@@ -220,4 +220,4 @@ void EmoteDisplay::RefreshAll()
     }
 }
 
-} // namespace emote
+}

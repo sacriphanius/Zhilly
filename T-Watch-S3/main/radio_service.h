@@ -30,13 +30,11 @@ private:
     TaskHandle_t jammer_task_handle_ = nullptr;
     esp_timer_handle_t jammer_timer_ = nullptr;
 
-    // SX1262 Low-level methods
     void WriteCommand(uint8_t opcode, const uint8_t* data, size_t len);
     void ReadCommand(uint8_t opcode, uint8_t* data, size_t len);
     void WaitBusy();
     void Reset();
-    
-    // SX1262 Radio methods
+
     void SetStandby(bool xosc = false);
     void SetTxParams(int8_t power);
     void SetRfFrequency(uint32_t frequency);

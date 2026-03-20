@@ -58,9 +58,12 @@ public:
         uint8_t chip_id = ReadReg(0x14);
         ESP_LOGI(TAG, "Get sy6970 chip ID: 0x%02X", (chip_id & 0B00111000));
 
-        WriteReg(0x00, 0B00001000); // Disable ILIM pin
-        WriteReg(0x02, 0B11011101); // Enable ADC measurement function
-        WriteReg(0x07, 0B10001101); // Disable watchdog timer feeding function
+        WriteReg(0x00, 0B00001000);
+
+        WriteReg(0x02, 0B11011101);
+
+        WriteReg(0x07, 0B10001101);
+
     }
 };
 
@@ -92,7 +95,7 @@ private:
     }
 
     void InitI2c(){
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_config = {
             .i2c_port = I2C_NUM_0,
             .sda_io_num = TOUCH_I2C_SDA_PIN,
@@ -137,13 +140,13 @@ private:
         while (1) {
             touchpad->UpdateTouchPoint();
             if (touchpad->GetTouchPoint().num > 0){
-                // On press
+
                 if (!was_touched) {
                     was_touched = true;
                     Application::GetInstance().ToggleChatState();
                 }
             }
-            // On release
+
             else if (was_touched) {
                 was_touched = false;
             }
@@ -177,7 +180,7 @@ private:
     void InitializeSt7789Display() {
         esp_lcd_panel_io_handle_t panel_io = nullptr;
         esp_lcd_panel_handle_t panel = nullptr;
-        // 液晶屏控制IO初始化
+
         ESP_LOGD(TAG, "Install panel IO");
         esp_lcd_panel_io_spi_config_t io_config = {};
         io_config.cs_gpio_num = LCD_CS;
@@ -189,7 +192,6 @@ private:
         io_config.lcd_param_bits = 8;
         ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi(SPI3_HOST, &io_config, &panel_io));
 
-        // 初始化液晶屏驱动芯片ST7789
         ESP_LOGD(TAG, "Install LCD driver");
         esp_lcd_panel_dev_config_t panel_config = {};
         panel_config.reset_gpio_num = LCD_RST;
@@ -210,7 +212,7 @@ private:
         boot_button_.OnClick([this]() {
             power_save_timer_->WakeUp();
             auto& app = Application::GetInstance();
-            // During startup (before connected), pressing BOOT button enters Wi-Fi config mode without reboot
+
             if (app.GetDeviceState() == kDeviceStateStarting) {
                 EnterWifiConfigMode();
                 return;
@@ -332,7 +334,7 @@ public:
         }
         WifiBoard::SetPowerSaveLevel(level);
     }
-    
+
     virtual Backlight* GetBacklight() override {
         static PwmBacklight backlight(DISPLAY_BACKLIGHT_PIN, DISPLAY_BACKLIGHT_OUTPUT_INVERT);
         return &backlight;

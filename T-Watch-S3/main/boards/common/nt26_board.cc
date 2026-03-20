@@ -14,11 +14,9 @@ Nt26Board::Nt26Board(gpio_num_t tx_pin, gpio_num_t rx_pin, gpio_num_t dtr_pin, g
     gpio_install_isr_service(ESP_INTR_FLAG_IRAM);
     esp_event_loop_create_default();
     esp_netif_init();
-    
-    // Create PM lock handle
+
     esp_pm_lock_create(ESP_PM_CPU_FREQ_MAX, 0, "nt26_cpu", &pm_lock_cpu_max_);
-    
-    // Create network ready timeout timer
+
     esp_timer_create_args_t timer_args = {
         .callback = OnNetworkReadyTimeout,
         .arg = this,
@@ -33,7 +31,7 @@ Nt26Board::~Nt26Board() {
     if (current_power_level_ != PowerSaveLevel::LOW_POWER) {
         SetPowerSaveLevel(PowerSaveLevel::LOW_POWER);
     }
-    
+
     if (network_ready_timer_) {
         esp_timer_stop(network_ready_timer_);
         esp_timer_delete(network_ready_timer_);
@@ -42,7 +40,7 @@ Nt26Board::~Nt26Board() {
     if (modem_) {
         modem_->Stop();
     }
-    
+
     if (pm_lock_cpu_max_) {
         esp_pm_lock_delete(pm_lock_cpu_max_);
     }
@@ -75,10 +73,10 @@ void Nt26Board::StartNetwork() {
         .mrdy_pin = dtr_pin_,
         .srdy_pin = ri_pin_
     };
-    
+
     modem_ = std::make_unique<UartEthModem>(config);
     modem_->SetDebug(false);
-    
+
     modem_->SetNetworkEventCallback([this](UartEthModem::UartEthModemEvent event) {
         switch (event) {
             case UartEthModem::UartEthModemEvent::Connected:
@@ -160,25 +158,25 @@ const char* Nt26Board::GetNetworkStateIcon() {
 
 void Nt26Board::SetPowerSaveLevel(PowerSaveLevel level) {
     if (level == current_power_level_) return;
-    
+
     if (current_power_level_ == PowerSaveLevel::BALANCED ||
         current_power_level_ == PowerSaveLevel::PERFORMANCE) {
         if (pm_lock_cpu_max_) {
             esp_pm_lock_release(pm_lock_cpu_max_);
         }
     }
-    
+
     if (level == PowerSaveLevel::BALANCED || level == PowerSaveLevel::PERFORMANCE) {
         if (pm_lock_cpu_max_) {
             esp_pm_lock_acquire(pm_lock_cpu_max_);
         }
     }
-    
+
     current_power_level_ = level;
 }
 
 std::string Nt26Board::GetBoardJson() {
-    // Set the board type for OTA
+
     std::string board_json = std::string("{\"type\":\"" BOARD_TYPE "\",");
     board_json += "\"name\":\"" BOARD_NAME "\",";
     if (modem_) {
@@ -210,7 +208,6 @@ std::string Nt26Board::GetDeviceStatusJson() {
     auto& board = Board::GetInstance();
     auto root = cJSON_CreateObject();
 
-    // Audio speaker
     auto audio_speaker = cJSON_CreateObject();
     auto audio_codec = board.GetAudioCodec();
     if (audio_codec) {
@@ -218,7 +215,6 @@ std::string Nt26Board::GetDeviceStatusJson() {
     }
     cJSON_AddItemToObject(root, "audio_speaker", audio_speaker);
 
-    // Screen
     auto backlight = board.GetBacklight();
     auto screen = cJSON_CreateObject();
     if (backlight) {
@@ -233,7 +229,6 @@ std::string Nt26Board::GetDeviceStatusJson() {
     }
     cJSON_AddItemToObject(root, "screen", screen);
 
-    // Battery
     int battery_level = 0;
     bool charging = false, discharging = false;
     if (board.GetBatteryLevel(battery_level, charging, discharging)) {
@@ -243,7 +238,6 @@ std::string Nt26Board::GetDeviceStatusJson() {
         cJSON_AddItemToObject(root, "battery", battery);
     }
 
-    // Network
     auto network = cJSON_CreateObject();
     cJSON_AddStringToObject(network, "type", "cellular");
     if (modem_) {

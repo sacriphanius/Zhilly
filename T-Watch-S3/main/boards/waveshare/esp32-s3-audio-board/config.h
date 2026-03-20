@@ -20,8 +20,8 @@
 #define AUDIO_CODEC_ES8311_ADDR     ES8311_CODEC_DEFAULT_ADDR
 #define AUDIO_CODEC_ES7210_ADDR     ES7210_CODEC_DEFAULT_ADDR
 
-#define I2C_SCL_IO                  GPIO_NUM_10       
-#define I2C_SDA_IO                  GPIO_NUM_11        
+#define I2C_SCL_IO                  GPIO_NUM_10
+#define I2C_SDA_IO                  GPIO_NUM_11
 
 #define I2C_ADDRESS                 ESP_IO_EXPANDER_I2C_TCA9555_ADDRESS_000
 
@@ -38,7 +38,6 @@
 
 #define DISPLAY_SPI_SCLK_HZ         (20 * 1000 * 1000)
 
-/* Camera pins */
 #define CAMERA_PIN_PWDN     GPIO_NUM_NC
 #define CAMERA_PIN_RESET    GPIO_NUM_NC
 #define CAMERA_PIN_XCLK     GPIO_NUM_43
@@ -58,9 +57,6 @@
 #define CAMERA_PIN_PCLK     GPIO_NUM_44
 
 #define XCLK_FREQ_HZ 20000000
-
-
-
 
 #ifdef CONFIG_AUDIO_BOARD_LCD_JD9853
 #define LCD_TYPE_JD9853_SERIAL
@@ -90,6 +86,4 @@
 #define DISPLAY_OFFSET_Y  0
 #endif
 
-
-
-#endif // _BOARD_CONFIG_H_
+#endif

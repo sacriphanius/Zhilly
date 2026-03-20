@@ -38,18 +38,18 @@ private:
     Pca9557* pca9557_;
 
 public:
-    CustomAudioCodec(i2c_master_bus_handle_t i2c_bus, Pca9557* pca9557) 
-        : BoxAudioCodec(i2c_bus, 
-                       AUDIO_INPUT_SAMPLE_RATE, 
+    CustomAudioCodec(i2c_master_bus_handle_t i2c_bus, Pca9557* pca9557)
+        : BoxAudioCodec(i2c_bus,
+                       AUDIO_INPUT_SAMPLE_RATE,
                        AUDIO_OUTPUT_SAMPLE_RATE,
-                       AUDIO_I2S_GPIO_MCLK, 
-                       AUDIO_I2S_GPIO_BCLK, 
-                       AUDIO_I2S_GPIO_WS, 
-                       AUDIO_I2S_GPIO_DOUT, 
+                       AUDIO_I2S_GPIO_MCLK,
+                       AUDIO_I2S_GPIO_BCLK,
+                       AUDIO_I2S_GPIO_WS,
+                       AUDIO_I2S_GPIO_DOUT,
                        AUDIO_I2S_GPIO_DIN,
-                       GPIO_NUM_NC, 
-                       AUDIO_CODEC_ES8311_ADDR, 
-                       AUDIO_CODEC_ES7210_ADDR, 
+                       GPIO_NUM_NC,
+                       AUDIO_CODEC_ES8311_ADDR,
+                       AUDIO_CODEC_ES7210_ADDR,
                        AUDIO_INPUT_REFERENCE),
           pca9557_(pca9557) {
     }
@@ -74,7 +74,7 @@ private:
     Esp32Camera* camera_;
 
     void InitializeI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = (i2c_port_t)1,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
@@ -89,7 +89,6 @@ private:
         };
         ESP_ERROR_CHECK(i2c_new_master_bus(&i2c_bus_cfg, &i2c_bus_));
 
-        // Initialize PCA9557
         pca9557_ = new Pca9557(i2c_bus_, 0x19);
     }
 
@@ -107,7 +106,7 @@ private:
     void InitializeButtons() {
         boot_button_.OnClick([this]() {
             auto& app = Application::GetInstance();
-            // During startup (before connected), pressing BOOT button enters Wi-Fi config mode without reboot
+
             if (app.GetDeviceState() == kDeviceStateStarting) {
                 EnterWifiConfigMode();
                 return;
@@ -128,7 +127,7 @@ private:
     void InitializeSt7789Display() {
         esp_lcd_panel_io_handle_t panel_io = nullptr;
         esp_lcd_panel_handle_t panel = nullptr;
-        // 液晶屏控制IO初始化
+
         ESP_LOGD(TAG, "Install panel IO");
         esp_lcd_panel_io_spi_config_t io_config = {};
         io_config.cs_gpio_num = GPIO_NUM_NC;
@@ -140,14 +139,13 @@ private:
         io_config.lcd_param_bits = 8;
         ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi(SPI3_HOST, &io_config, &panel_io));
 
-        // 初始化液晶屏驱动芯片ST7789
         ESP_LOGD(TAG, "Install LCD driver");
         esp_lcd_panel_dev_config_t panel_config = {};
         panel_config.reset_gpio_num = GPIO_NUM_NC;
         panel_config.rgb_ele_order = LCD_RGB_ELEMENT_ORDER_RGB;
         panel_config.bits_per_pixel = 16;
         ESP_ERROR_CHECK(esp_lcd_new_panel_st7789(panel_io, &panel_config, &panel));
-        
+
         esp_lcd_panel_reset(panel);
         pca9557_->SetOutputState(0, 0);
 
@@ -171,8 +169,9 @@ private:
         esp_lcd_touch_config_t tp_cfg = {
             .x_max = DISPLAY_HEIGHT,
             .y_max = DISPLAY_WIDTH,
-            .rst_gpio_num = GPIO_NUM_NC, // Shared with LCD reset
-            .int_gpio_num = GPIO_NUM_NC, 
+            .rst_gpio_num = GPIO_NUM_NC,
+
+            .int_gpio_num = GPIO_NUM_NC,
             .levels = {
                 .reset = 0,
                 .interrupt = 0,
@@ -191,9 +190,8 @@ private:
         esp_lcd_touch_new_i2c_ft5x06(tp_io_handle, &tp_cfg, &tp);
         assert(tp);
 
-        /* Add touch input (for selected screen) */
         const lvgl_port_touch_cfg_t touch_cfg = {
-            .disp = lv_display_get_default(), 
+            .disp = lv_display_get_default(),
             .handle = tp,
         };
 
@@ -205,7 +203,7 @@ private:
     }
 
     void InitializeCamera() {
-        // Open camera power
+
         pca9557_->SetOutputState(2, 0);
 
         camera_config_t config = {};
@@ -265,7 +263,7 @@ public:
 
     virtual AudioCodec* GetAudioCodec() override {
         static CustomAudioCodec audio_codec(
-            i2c_bus_, 
+            i2c_bus_,
             pca9557_);
         return &audio_codec;
     }
@@ -273,7 +271,7 @@ public:
     virtual Display* GetDisplay() override {
         return display_;
     }
-    
+
     virtual Backlight* GetBacklight() override {
         static PwmBacklight backlight(DISPLAY_BACKLIGHT_PIN, DISPLAY_BACKLIGHT_OUTPUT_INVERT);
         return &backlight;

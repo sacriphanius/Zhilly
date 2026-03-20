@@ -31,7 +31,8 @@ private:
 #ifdef CONFIG_XIAOZHI_ENABLE_ROTATE_CAMERA_IMAGE
     uint16_t sensor_width_ = 0;
     uint16_t sensor_height_ = 0;
-#endif  // CONFIG_XIAOZHI_ENABLE_ROTATE_CAMERA_IMAGE
+#endif
+
     int video_fd_ = -1;
     bool streaming_on_ = false;
     struct MmapBuffer { void *start = nullptr; size_t length = 0; };
@@ -46,7 +47,7 @@ public:
 
     virtual void SetExplainUrl(const std::string& url, const std::string& token);
     virtual bool Capture();
-    // 翻转控制函数
+
     virtual bool SetHMirror(bool enabled) override;
     virtual bool SetVFlip(bool enabled) override;
     virtual std::string Explain(const std::string& question);

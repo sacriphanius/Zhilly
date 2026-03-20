@@ -27,4 +27,4 @@ private:
     void CheckBatteryStatus();
 };
 
-#endif // ADC_BATTERY_MONITOR_H
+#endif

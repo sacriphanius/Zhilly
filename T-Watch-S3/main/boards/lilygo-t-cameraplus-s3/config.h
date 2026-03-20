@@ -54,4 +54,4 @@
 
 #define AP1511B_GPIO AP1511B_FBC
 
-#endif // _BOARD_CONFIG_H_
+#endif

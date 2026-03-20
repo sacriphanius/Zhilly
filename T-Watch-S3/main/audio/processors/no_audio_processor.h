@@ -32,4 +32,4 @@ private:
     std::atomic<bool> is_running_ = false;
 };
 
-#endif 
+#endif

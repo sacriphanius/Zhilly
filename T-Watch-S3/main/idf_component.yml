@@ -125,3 +125,5 @@ dependencies:
   ## Required IDF version
   idf:
     version: '>=5.5.2'
+  espressif/tinyusb: '*'
+  espressif/esp_tinyusb: '*'

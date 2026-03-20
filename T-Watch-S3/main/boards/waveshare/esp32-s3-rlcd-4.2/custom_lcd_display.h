@@ -5,7 +5,7 @@
 #include "lcd_display.h"
 
 enum ColorSelection {
-    ColorBlack = 0,    
+    ColorBlack = 0,
     ColorWhite = 0xff
 };
 

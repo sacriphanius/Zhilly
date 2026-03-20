@@ -54,7 +54,7 @@ private:
     }
 
     void InitializeCodecI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = I2C_NUM_0,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
@@ -69,7 +69,6 @@ private:
         };
         ESP_ERROR_CHECK(i2c_new_master_bus(&i2c_bus_cfg, &codec_i2c_bus_));
 
-        // Print I2C bus info
         if (i2c_master_probe(codec_i2c_bus_, 0x18, 1000) != ESP_OK) {
             while (true) {
                 ESP_LOGE(TAG, "Failed to probe I2C bus, please check if you have installed the correct firmware");
@@ -79,7 +78,7 @@ private:
     }
 
     void InitializeSsd1306Display() {
-        // SSD1306 config
+
         esp_lcd_panel_io_i2c_config_t io_config = {
             .dev_addr = 0x3C,
             .on_color_trans_done = nullptr,
@@ -110,7 +109,6 @@ private:
         ESP_ERROR_CHECK(esp_lcd_new_panel_ssd1306(panel_io_, &panel_config, &panel_));
         ESP_LOGI(TAG, "SSD1306 driver installed");
 
-        // Reset the display
         ESP_ERROR_CHECK(esp_lcd_panel_reset(panel_));
         if (esp_lcd_panel_init(panel_) != ESP_OK) {
             ESP_LOGE(TAG, "Failed to initialize display");
@@ -118,7 +116,6 @@ private:
             return;
         }
 
-        // Set the display to on
         ESP_LOGI(TAG, "Turning display on");
         ESP_ERROR_CHECK(esp_lcd_panel_disp_on_off(panel_, true));
 
@@ -128,7 +125,7 @@ private:
     void InitializeButtons() {
         boot_button_.OnClick([this]() {
             auto& app = Application::GetInstance();
-            // During startup (before connected), pressing BOOT enters config mode without reboot
+
             if (app.GetDeviceState() == kDeviceStateStarting) {
                 EnterWifiConfigMode();
                 return;
@@ -158,7 +155,7 @@ private:
     }
 
 public:
-    XminiC3Board() : boot_button_(BOOT_BUTTON_GPIO, false, 0, 0, true) {  
+    XminiC3Board() : boot_button_(BOOT_BUTTON_GPIO, false, 0, 0, true) {
         InitializePowerManager();
         InitializePowerSaveTimer();
         InitializeCodecI2c();

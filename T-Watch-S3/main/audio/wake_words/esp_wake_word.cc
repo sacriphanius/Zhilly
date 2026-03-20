@@ -1,7 +1,6 @@
 #include "esp_wake_word.h"
 #include <esp_log.h>
 
-
 #define TAG "EspWakeWord"
 
 EspWakeWord::EspWakeWord() {
@@ -65,7 +64,7 @@ void EspWakeWord::Feed(const std::vector<int16_t>& data) {
     }
 
     std::lock_guard<std::mutex> lock(input_buffer_mutex_);
-    // Check running state inside lock to avoid TOCTOU race with Stop()
+
     if (!running_) {
         return;
     }

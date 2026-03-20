@@ -12,7 +12,6 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 
-// UI Notification
 #include "board.h"
 #include "display.h"
 
@@ -21,7 +20,7 @@
 static const int SCAN_TIMEOUT_MS = 200;
 
 const uint16_t NetworkScanner::TOP_PORTS[] = {
-    21, 22, 23, 25, 53, 80, 110, 111, 135, 139, 143, 443, 445, 993, 995, 
+    21, 22, 23, 25, 53, 80, 110, 111, 135, 139, 143, 443, 445, 993, 995,
     1723, 3306, 3389, 5900, 8080, 8443
 };
 const size_t NetworkScanner::TOP_PORTS_COUNT = sizeof(NetworkScanner::TOP_PORTS) / sizeof(NetworkScanner::TOP_PORTS[0]);
@@ -62,7 +61,6 @@ bool NetworkScanner::GetNetworkInfo(uint32_t& ip, uint32_t& netmask) {
     return true;
 }
 
-// Check port using non-blocking connect mechanism wrapped in select()
 bool NetworkScanner::CheckPort(const std::string& ip_str, uint16_t port, int timeout_ms) {
     struct sockaddr_in dest_addr;
     dest_addr.sin_addr.s_addr = inet_addr(ip_str.c_str());
@@ -74,7 +72,6 @@ bool NetworkScanner::CheckPort(const std::string& ip_str, uint16_t port, int tim
         return false;
     }
 
-    // Set non-blocking
     int flags = fcntl(sock, F_GETFL, 0);
     fcntl(sock, F_SETFL, flags | O_NONBLOCK);
 
@@ -85,7 +82,7 @@ bool NetworkScanner::CheckPort(const std::string& ip_str, uint16_t port, int tim
     }
 
     if (res == 0) {
-        // Connected immediately
+
         close(sock);
         return true;
     }
@@ -119,7 +116,7 @@ void NetworkScanner::CheckPortsBatch(const std::vector<std::string>& ips, const 
     int max_fd = 0;
     fd_set fdset;
     FD_ZERO(&fdset);
-    
+
     struct SocketInfo {
         std::string ip;
         uint16_t port;
@@ -218,13 +215,13 @@ std::vector<HostInfo> NetworkScanner::DiscoverHosts() {
     uint32_t end_ip = ntohl(broadcast_addr) - 1;
 
     if (end_ip - start_ip > 254) {
-        end_ip = start_ip + 254; // Limit to a /24
+        end_ip = start_ip + 254;
+
     }
 
     if (display) display->ShowNotification("Please wait,\nScanning...");
     vTaskDelay(pdMS_TO_TICKS(1500));
 
-    // Clear previous ARP table entries
     etharp_cleanup_netif(net_iface);
 
     char display_buf[64];
@@ -245,32 +242,25 @@ std::vector<HostInfo> NetworkScanner::DiscoverHosts() {
         ip4_addr_t ip_be;
         ip_be.addr = addr.s_addr;
 
-        // Send extremely fast ARP physical layer request
         etharp_request(net_iface, &ip_be);
         table_read_counter++;
 
-        // Give devices micro-time to reply to ARP requests
-        vTaskDelay(pdMS_TO_TICKS(15)); 
+        vTaskDelay(pdMS_TO_TICKS(15));
 
-        // LWIP ARP_TABLE_SIZE is usually 10. Read when filled.
         if (table_read_counter >= 10 || curr == end_ip) {
-            
-            // Sweep ARP table for entries
-            // ARP_TABLE_SIZE is defined in lwip/etharp.h
+
             for (int i = 0; i < ARP_TABLE_SIZE; ++i) {
                 ip4_addr_t *ip_ret;
                 netif *iface_ret;
                 eth_addr *eth_ret;
-                
+
                 if (etharp_get_entry(i, &ip_ret, &iface_ret, &eth_ret)) {
                     if (ip_ret == nullptr || eth_ret == nullptr) continue;
-                    
+
                     std::string found_ip = inet_ntoa(*(in_addr*)&ip_ret->addr);
 
-                    // Validate it's not ourselves and not zero
                     if (ip_ret->addr != my_ip_addr && ip_ret->addr != 0) {
-                        
-                        // Check if already in active_hosts
+
                         bool exists = false;
                         for (const auto& h : active_hosts) {
                             if (h.ip == found_ip) { exists = true; break; }
@@ -279,19 +269,19 @@ std::vector<HostInfo> NetworkScanner::DiscoverHosts() {
                         if (!exists) {
                             HostInfo host;
                             host.ip = found_ip;
-                            
+
                             char mac_buf[18];
                             snprintf(mac_buf, sizeof(mac_buf), "%02X:%02X:%02X:%02X:%02X:%02X",
                                 eth_ret->addr[0], eth_ret->addr[1], eth_ret->addr[2],
                                 eth_ret->addr[3], eth_ret->addr[4], eth_ret->addr[5]);
-                            
+
                             host.mac = mac_buf;
                             host.is_active = true;
                             active_hosts.push_back(host);
 
                             snprintf(display_buf, sizeof(display_buf), "%s\n%s", found_ip.c_str(), mac_buf);
                             if (display) display->ShowNotification(display_buf);
-                            
+
                             vTaskDelay(pdMS_TO_TICKS(1000));
                             ESP_LOGI(TAG, "ARP Found host: %s MAC: %s", found_ip.c_str(), mac_buf);
                         }
@@ -299,7 +289,6 @@ std::vector<HostInfo> NetworkScanner::DiscoverHosts() {
                 }
             }
 
-            // Clear table so new entries can overwrite and not fill up the space limit
             etharp_cleanup_netif(net_iface);
             table_read_counter = 0;
         }
@@ -318,7 +307,8 @@ std::vector<PortInfo> NetworkScanner::ScanPorts(const std::string& target_ip, co
     std::vector<PortInfo> open_ports;
     if (is_scanning_) {
         ESP_LOGW(TAG, "Scan already in progress");
-        return open_ports; // empty
+        return open_ports;
+
     }
 
     auto display = Board::GetInstance().GetDisplay();
@@ -333,30 +323,28 @@ std::vector<PortInfo> NetworkScanner::ScanPorts(const std::string& target_ip, co
 
     std::vector<std::string> batch_ips = {target_ip};
     std::vector<uint16_t> batch_ports;
-    
-    // 8 sockets MAX at once to be safe below 10 limit
-    const int MAX_BATCH_PORTS = 8; 
+
+    const int MAX_BATCH_PORTS = 8;
 
     for (size_t i = 0; i < TOP_PORTS_COUNT && !stop_requested_; ++i) {
         batch_ports.push_back(TOP_PORTS[i]);
-        
+
         if (batch_ports.size() >= MAX_BATCH_PORTS || i == TOP_PORTS_COUNT - 1) {
             std::set<std::string> active_ips;
             std::set<uint16_t> active_ports;
-            
+
             CheckPortsBatch(batch_ips, batch_ports, 400, active_ips, active_ports);
-            
+
             for (uint16_t p : active_ports) {
                 PortInfo pi;
                 pi.port = p;
                 pi.is_open = true;
                 open_ports.push_back(pi);
 
-                // For ports, just output Port %d OPEN!
                 snprintf(display_buf, sizeof(display_buf), "Port %d OPEN!", p);
                 if (display) display->ShowNotification(display_buf);
                 ESP_LOGI(TAG, "Host %s Port %d is OPEN", target_ip.c_str(), p);
-                
+
                 vTaskDelay(pdMS_TO_TICKS(1500));
             }
 
@@ -376,7 +364,7 @@ std::vector<PortInfo> NetworkScanner::ScanPorts(const std::string& target_ip, co
 
 std::string NetworkScanner::ResolveDomain(const std::string& domain) {
     auto display = Board::GetInstance().GetDisplay();
-    
+
     char display_buf[64];
     snprintf(display_buf, sizeof(display_buf), "Resolving:\n%s", domain.c_str());
     if (display) display->ShowNotification(display_buf);
@@ -393,7 +381,7 @@ std::string NetworkScanner::ResolveDomain(const std::string& domain) {
     std::string ip_str = inet_ntoa(*addr_list[0]);
 
     ESP_LOGI(TAG, "Resolved %s to %s", domain.c_str(), ip_str.c_str());
-    
+
     snprintf(display_buf, sizeof(display_buf), "IP Address:\n%s", ip_str.c_str());
     if (display) display->ShowNotification(display_buf);
 

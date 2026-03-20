@@ -25,8 +25,7 @@
 
 #define BOOT_BUTTON_GPIO        GPIO_NUM_0
 
-
-#define RLCD_DC_PIN    GPIO_NUM_5  
+#define RLCD_DC_PIN    GPIO_NUM_5
 #define RLCD_CS_PIN    GPIO_NUM_40
 #define RLCD_SCK_PIN   GPIO_NUM_11
 #define RLCD_MOSI_PIN  GPIO_NUM_12
@@ -43,4 +42,4 @@
 #define DISPLAY_OFFSET_X  0
 #define DISPLAY_OFFSET_Y  0
 
-#endif 
+#endif

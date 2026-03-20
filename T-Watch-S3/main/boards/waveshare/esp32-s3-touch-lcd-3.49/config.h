@@ -54,9 +54,7 @@
 #define DISPLAY_OFFSET_X  0
 #define DISPLAY_OFFSET_Y  0
 
-
 #define DISPLAY_BACKLIGHT_PIN   GPIO_NUM_8
 #define DISPLAY_BACKLIGHT_OUTPUT_INVERT true
 
-
-#endif // _BOARD_CONFIG_H_
+#endif

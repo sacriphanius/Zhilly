@@ -14,7 +14,6 @@
 #define AUDIO_I2S_SPK_GPIO_LRCK GPIO_NUM_16
 #define AUDIO_I2S_SPK_GPIO_CTLR  GPIO_NUM_17
 
-
 #define TOUCH_BUTTON_GPIO       GPIO_NUM_18
 
 #define DISPLAY_SDA_PIN GPIO_NUM_41
@@ -25,4 +24,4 @@
 #define DISPLAY_MIRROR_X true
 #define DISPLAY_MIRROR_Y true
 
-#endif // _BOARD_CONFIG_H_
+#endif

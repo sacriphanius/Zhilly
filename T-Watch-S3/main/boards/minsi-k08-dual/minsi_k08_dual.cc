@@ -1,5 +1,5 @@
 #include "dual_network_board.h"
-//#include "wifi_board.h"
+
 #include "codecs/no_audio_codec.h"
 #include "display/lcd_display.h"
 #include "system_reset.h"
@@ -27,7 +27,7 @@
 
 class MINSI_K08_DUAL : public DualNetworkBoard {
 private:
-    
+
     Button boot_button_;
     Button volume_up_button_;
     Button volume_down_button_;
@@ -38,22 +38,19 @@ private:
     esp_lcd_panel_handle_t panel_ = nullptr;
 
     void InitializePowerManager() {
-        //power_manager_ = new PowerManager(GPIO_NUM_38);
+
         power_manager_ = new PowerManager(GPIO_NUM_3);
         power_manager_->OnChargingStatusChanged([this](bool is_charging) {
             if (is_charging) {
                 power_save_timer_->SetEnabled(false);
             } else {
                 power_save_timer_->SetEnabled(true);
-                //power_save_timer_->SetEnabled(false);
+
             }
         });
     }
 
     void InitializePowerSaveTimer() {
-        /*rtc_gpio_init(GPIO_NUM_21);
-        rtc_gpio_set_direction(GPIO_NUM_21, RTC_GPIO_MODE_OUTPUT_ONLY);
-        rtc_gpio_set_level(GPIO_NUM_21, 1);*/
 
         power_save_timer_ = new PowerSaveTimer(-1, 60, 300);
         power_save_timer_->OnEnterSleepMode([this]() {
@@ -66,15 +63,10 @@ private:
         });
         power_save_timer_->OnShutdownRequest([this]() {
             ESP_LOGI(TAG, "Shutting down");
-            //rtc_gpio_set_level(GPIO_NUM_21, 0);
-            // 启用保持功能，确保睡眠期间电平不变
-            //rtc_gpio_hold_en(GPIO_NUM_21);
-            //esp_lcd_panel_disp_on_off(panel_, false); //关闭显示
-            //esp_deep_sleep_start();
+
         });
         power_save_timer_->SetEnabled(true);
 
-        //power_save_timer_->SetEnabled(false);
     }
 
     void InitializeSpi() {
@@ -91,7 +83,7 @@ private:
     void InitializeLcdDisplay() {
         esp_lcd_panel_io_handle_t panel_io = nullptr;
         esp_lcd_panel_handle_t panel = nullptr;
-        // 液晶屏控制IO初始化
+
         ESP_LOGD(TAG, "Install panel IO");
         esp_lcd_panel_io_spi_config_t io_config = {};
         io_config.cs_gpio_num = DISPLAY_CS_PIN;
@@ -103,7 +95,6 @@ private:
         io_config.lcd_param_bits = 8;
         ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi(SPI3_HOST, &io_config, &panel_io));
 
-        // 初始化液晶屏驱动芯片
         ESP_LOGD(TAG, "Install LCD driver");
         esp_lcd_panel_dev_config_t panel_config = {};
         panel_config.reset_gpio_num = DISPLAY_RST_PIN;
@@ -128,7 +119,7 @@ private:
             auto& app = Application::GetInstance();
             if (GetNetworkType() == NetworkType::WIFI) {
                 if (app.GetDeviceState() == kDeviceStateStarting) {
-                    // cast to WifiBoard
+
                     auto& wifi_board = static_cast<WifiBoard&>(GetCurrentBoard());
                     wifi_board.EnterWifiConfigMode();
                     return;
@@ -178,7 +169,6 @@ private:
         });
     }
 
-    // 物联网初始化，添加对 AI 可见设备
     void InitializeTools() {
         static LampController lamp(LAMP_GPIO);
     }
@@ -228,7 +218,7 @@ public:
         discharging = power_manager_->IsDischarging();
         if (discharging != last_discharging) {
             power_save_timer_->SetEnabled(discharging);
-            //power_save_timer_->SetEnabled(false);
+
             last_discharging = discharging;
         }
         level = power_manager_->GetBatteryLevel();

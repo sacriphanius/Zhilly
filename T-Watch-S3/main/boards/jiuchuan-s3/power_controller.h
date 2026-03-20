@@ -7,14 +7,13 @@
 #include "config.h"
 enum class PowerState {
         ACTIVE,
-        LIGHT_SLEEP, 
+        LIGHT_SLEEP,
         DEEP_SLEEP,
         SHUTDOWN
     };
-    
+
 class PowerController {
 public:
-    
 
     static PowerController& Instance() {
         static PowerController instance;
@@ -24,10 +23,10 @@ public:
     void SetState(PowerState newState) {
         std::lock_guard<std::mutex> lock(mutex_);
         if (currentState_ != newState) {
-            ESP_LOGI("PowerCtrl", "State change: %d -> %d", 
-                    static_cast<int>(currentState_), 
+            ESP_LOGI("PowerCtrl", "State change: %d -> %d",
+                    static_cast<int>(currentState_),
                     static_cast<int>(newState));
-            
+
             currentState_ = newState;
             if (stateChangeCallback_) {
                 stateChangeCallback_(newState);

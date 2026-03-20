@@ -15,33 +15,15 @@
 
 class Blufi {
 public:
-    /**
-     * @brief Get the singleton instance of the Blufi class.
-     */
+
     static Blufi &GetInstance();
 
-    /**
-     * @brief Start WiFi scan for Blufi provisioning
-     * This method intelligently handles WiFi scanning based on current WiFi state:
-     * - If WiFi config mode is active, it uses the existing scan results from WifiConfigurationAp
-     * - Otherwise, it performs a dedicated scan without interfering with normal WiFi operations
-     */
     void start_wifi_scan();
 
-    /**
-     * @brief Initializes the Bluetooth controller, host, and Blufi profile.
-     * This is the main entry point to start the Blufi process.
-     * @return ESP_OK on success, otherwise an error code.
-     */
     esp_err_t init();
 
-    /**
-     * @brief Deinitializes Blufi and the Bluetooth stack.
-     * @return ESP_OK on success, otherwise an error code.
-     */
     esp_err_t deinit();
 
-    // Delete copy constructor and assignment operator for singleton
     Blufi(const Blufi &) = delete;
 
     Blufi &operator=(const Blufi &) = delete;
@@ -53,7 +35,6 @@ private:
 
     ~Blufi();
 
-    // Initialization logic
     static esp_err_t _controller_init();
 
     static esp_err_t _controller_deinit();
@@ -83,14 +64,10 @@ private:
 
     static int _get_softap_conn_num();
 
-    // WiFi scan methods
     void _send_wifi_list();
     void _start_dedicated_wifi_scan();
     static void _wifi_scan_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id,
                                          void *event_data);
-
-    // These C-style functions are registered with ESP-IDF and call the corresponding instance
-    // methods.
 
     static void _event_callback_trampoline(esp_blufi_cb_event_t event, esp_blufi_cb_param_t *param);
 
@@ -109,7 +86,6 @@ private:
     static void _nimble_host_task(void *param);
 #endif
 
-    // Security context, formerly blufi_sec struct
     struct BlufiSecurity {
 #define DH_SELF_PUB_KEY_LEN 128
         uint8_t self_public_key[DH_SELF_PUB_KEY_LEN];
@@ -127,7 +103,6 @@ private:
 
     BlufiSecurity *m_sec;
 
-    // State variables
     wifi_config_t m_sta_config{};
     bool m_ble_is_connected;
     bool m_sta_connected;
@@ -140,7 +115,6 @@ private:
     bool m_sta_is_connecting;
     esp_blufi_extra_info_t m_sta_conn_info{};
 
-    // WiFi scan related
     std::vector<wifi_ap_record_t> m_ap_records;
     bool m_scan_in_progress = false;
     bool m_scan_should_save_ssid = true;

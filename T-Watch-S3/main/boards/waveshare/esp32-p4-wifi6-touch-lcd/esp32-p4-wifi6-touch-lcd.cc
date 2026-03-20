@@ -2,7 +2,7 @@
 #include "codecs/box_audio_codec.h"
 #include "application.h"
 #include "display/lcd_display.h"
-// #include "display/no_display.h"
+
 #include "button.h"
 
 #include "esp_video.h"
@@ -40,13 +40,12 @@ private:
     LcdDisplay *display_;
     EspVideo* camera_ = nullptr;
 
-
     esp_err_t i2c_device_probe(uint8_t addr) {
         return i2c_master_probe(i2c_bus_, addr, 100);
     }
 
     void InitializeCodecI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = I2C_NUM_1,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
@@ -64,7 +63,7 @@ private:
 
     static esp_err_t bsp_enable_dsi_phy_power(void) {
 #if MIPI_DSI_PHY_PWR_LDO_CHAN > 0
-        // Turn on the power for MIPI DSI PHY, so it can go from "No Power" state to "Shutdown" state
+
         static esp_ldo_channel_handle_t phy_pwr_chan = NULL;
         esp_ldo_channel_config_t ldo_cfg = {
             .chan_id = MIPI_DSI_PHY_PWR_LDO_CHAN,
@@ -72,7 +71,7 @@ private:
         };
         esp_ldo_acquire_channel(&ldo_cfg, &phy_pwr_chan);
         ESP_LOGI(TAG, "MIPI DSI PHY Powered on");
-#endif // BSP_MIPI_DSI_PHY_PWR_LDO_CHAN > 0
+#endif
 
         return ESP_OK;
     }
@@ -91,7 +90,7 @@ private:
         esp_lcd_new_dsi_bus(&bus_config, &mipi_dsi_bus);
 
         ESP_LOGI(TAG, "Install MIPI DSI LCD control panel");
-        // we use DBI interface to send LCD commands and parameters
+
         esp_lcd_dbi_io_config_t dbi_config = {
             .virtual_channel = 0,
             .lcd_cmd_bits = 8,
@@ -315,8 +314,8 @@ private:
             tp_io_config.dev_addr = ESP_LCD_TOUCH_IO_I2C_GT911_ADDRESS_BACKUP;
         } else {
             ESP_LOGE(TAG, "Touch panel not found on I2C bus");
-            ESP_LOGE(TAG, "Tried addresses: 0x%02X and 0x%02X", 
-                     ESP_LCD_TOUCH_IO_I2C_GT911_ADDRESS, 
+            ESP_LOGE(TAG, "Tried addresses: 0x%02X and 0x%02X",
+                     ESP_LCD_TOUCH_IO_I2C_GT911_ADDRESS,
                      ESP_LCD_TOUCH_IO_I2C_GT911_ADDRESS_BACKUP);
             return;
         }
@@ -352,7 +351,7 @@ private:
     void InitializeButtons() {
         boot_button_.OnClick([this]() {
             auto& app = Application::GetInstance();
-            // During startup (before connected), pressing BOOT button enters Wi-Fi config mode without reboot
+
             if (app.GetDeviceState() == kDeviceStateStarting) {
                 EnterWifiConfigMode();
                 return;
@@ -374,17 +373,17 @@ public:
 
     virtual AudioCodec* GetAudioCodec() override {
         static BoxAudioCodec audio_codec(
-            i2c_bus_, 
-            AUDIO_INPUT_SAMPLE_RATE, 
+            i2c_bus_,
+            AUDIO_INPUT_SAMPLE_RATE,
             AUDIO_OUTPUT_SAMPLE_RATE,
-            AUDIO_I2S_GPIO_MCLK, 
-            AUDIO_I2S_GPIO_BCLK, 
-            AUDIO_I2S_GPIO_WS, 
-            AUDIO_I2S_GPIO_DOUT, 
+            AUDIO_I2S_GPIO_MCLK,
+            AUDIO_I2S_GPIO_BCLK,
+            AUDIO_I2S_GPIO_WS,
+            AUDIO_I2S_GPIO_DOUT,
             AUDIO_I2S_GPIO_DIN,
-            AUDIO_CODEC_PA_PIN, 
-            AUDIO_CODEC_ES8311_ADDR, 
-            AUDIO_CODEC_ES7210_ADDR, 
+            AUDIO_CODEC_PA_PIN,
+            AUDIO_CODEC_ES8311_ADDR,
+            AUDIO_CODEC_ES7210_ADDR,
             AUDIO_INPUT_REFERENCE);
         return &audio_codec;
     }

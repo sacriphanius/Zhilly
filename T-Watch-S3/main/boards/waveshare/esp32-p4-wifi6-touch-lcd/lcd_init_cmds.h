@@ -1,7 +1,7 @@
 #ifdef CONFIG_BOARD_TYPE_WAVESHARE_ESP32_P4_WIFI6_TOUCH_LCD_4B
-// Leave it blank
+
 #elif CONFIG_BOARD_TYPE_WAVESHARE_ESP32_P4_WIFI6_TOUCH_LCD_7B
-// Leave it blank
+
 #elif CONFIG_BOARD_TYPE_WAVESHARE_ESP32_P4_WIFI6_TOUCH_LCD_3_4C
 static const jd9365_lcd_init_cmd_t lcd_init_cmds[] = {
     {0xE0, (uint8_t[]){0x00}, 1, 0},
@@ -443,10 +443,9 @@ static const jd9365_lcd_init_cmd_t lcd_init_cmds[] = {
 };
 #elif CONFIG_BOARD_TYPE_WAVESHARE_ESP32_P4_WIFI6_TOUCH_LCD_7
 static const ili9881c_lcd_init_cmd_t lcd_init_cmds[] = {
-    // {cmd, { data }, data_size, delay_ms}
-    /**** CMD_Page 3 ****/
+
     {0xFF, (uint8_t[]){0x98, 0x81, 0x03}, 3, 0},
-    // {0x01, (uint8_t []){0x00}, 1, 0},
+
     {0x01, (uint8_t[]){0x00}, 1, 0},
     {0x02, (uint8_t[]){0x00}, 1, 0},
     {0x03, (uint8_t[]){0x73}, 1, 0},
@@ -647,7 +646,6 @@ static const ili9881c_lcd_init_cmd_t lcd_init_cmds[] = {
 
     {0x29, (uint8_t[]){0x00}, 0, 20},
 
-    //============ Gamma END===========
 };
 #elif CONFIG_BOARD_TYPE_WAVESHARE_ESP32_P4_WIFI6_TOUCH_LCD_8
 static const jd9365_lcd_init_cmd_t lcd_init_cmds[] = {
@@ -655,7 +653,7 @@ static const jd9365_lcd_init_cmd_t lcd_init_cmds[] = {
     {0xE1, (uint8_t[]){0x93}, 1, 0},
     {0xE2, (uint8_t[]){0x65}, 1, 0},
     {0xE3, (uint8_t[]){0xF8}, 1, 0},
-    {0x80, (uint8_t[]){0x01}, 1, 0}, // 0X03：4-LANE;0X02：3-LANE;0X01:2-LANE
+    {0x80, (uint8_t[]){0x01}, 1, 0},
 
     {0xE0, (uint8_t[]){0x01}, 1, 0},
     {0x00, (uint8_t[]){0x00}, 1, 0},
@@ -691,8 +689,6 @@ static const jd9365_lcd_init_cmd_t lcd_init_cmds[] = {
     {0x44, (uint8_t[]){0x0F}, 1, 0},
     {0x45, (uint8_t[]){0x28}, 1, 0},
     {0x4B, (uint8_t[]){0x04}, 1, 0},
-
-    //{0x4A, (uint8_t[]){0x35}, 1, 0},//bist
 
     {0x55, (uint8_t[]){0x02}, 1, 0},
     {0x56, (uint8_t[]){0x01}, 1, 0},
@@ -834,8 +830,9 @@ static const jd9365_lcd_init_cmd_t lcd_init_cmds[] = {
     {0x09, (uint8_t[]){0x60}, 1, 0},
     {0x0E, (uint8_t[]){0x2A}, 1, 0},
     {0x36, (uint8_t[]){0x59}, 1, 0},
-    {0x37, (uint8_t[]){0x58}, 1, 0}, // A133
-    {0x2B, (uint8_t[]){0x0F}, 1, 0}, // A133
+    {0x37, (uint8_t[]){0x58}, 1, 0},
+
+    {0x2B, (uint8_t[]){0x0F}, 1, 0},
 
     {0xE0, (uint8_t[]){0x00}, 1, 0},
 
@@ -886,7 +883,6 @@ static const jd9365_lcd_init_cmd_t lcd_init_cmds[] = {
     {0x43, (uint8_t[]){0x1E}, 1, 0},
     {0x44, (uint8_t[]){0x0D}, 1, 0},
     {0x45, (uint8_t[]){0x28}, 1, 0},
-    //{0x4A, (uint8_t[]){0x35}, 1, 0},//bist
 
     {0x55, (uint8_t[]){0x02}, 1, 0},
     {0x57, (uint8_t[]){0x69}, 1, 0},
@@ -1058,8 +1054,9 @@ static const jd9365_lcd_init_cmd_t lcd_init_cmds[] = {
     {0x02, (uint8_t[]){0xB3}, 1, 0},
     {0x09, (uint8_t[]){0x61}, 1, 0},
     {0x0E, (uint8_t[]){0x48}, 1, 0},
-    {0x37, (uint8_t[]){0x58}, 1, 0}, // 全志
-    {0x2B, (uint8_t[]){0x0F}, 1, 0}, // 全志
+    {0x37, (uint8_t[]){0x58}, 1, 0},
+
+    {0x2B, (uint8_t[]){0x0F}, 1, 0},
 
     {0xE0, (uint8_t[]){0x00}, 1, 0},
 

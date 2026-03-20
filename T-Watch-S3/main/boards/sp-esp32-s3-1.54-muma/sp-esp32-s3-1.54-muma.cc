@@ -101,16 +101,17 @@ private:
         power_save_timer_->OnShutdownRequest([this]() {
             ESP_LOGI(TAG, "Shutting down");
             rtc_gpio_set_level(GPIO_NUM_3, 0);
-            // 启用保持功能，确保睡眠期间电平不变
+
             rtc_gpio_hold_en(GPIO_NUM_3);
-            esp_lcd_panel_disp_on_off(panel_, false); //关闭显示
+            esp_lcd_panel_disp_on_off(panel_, false);
+
             esp_deep_sleep_start();
         });
         power_save_timer_->SetEnabled(true);
     }
 
     void InitializeCodecI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = I2C_NUM_0,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
@@ -127,7 +128,7 @@ private:
     }
 
     void InitializeCodecI2c_Touch() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = I2C_NUM_1,
             .sda_io_num = TP_PIN_NUM_TP_SDA,
@@ -148,21 +149,21 @@ private:
         auto touchpad = board.GetTouchpad();
         static bool was_touched = false;
         static int64_t touch_start_time = 0;
-        const int64_t TOUCH_THRESHOLD_MS = 500;  // 触摸时长阈值，超过500ms视为长按
+        const int64_t TOUCH_THRESHOLD_MS = 500;
 
         touchpad->UpdateTouchPoint();
         auto touch_point = touchpad->GetTouchPoint();
-        // 检测触摸开始
+
         if (touch_point.num > 0 && !was_touched) {
             was_touched = true;
-            touch_start_time = esp_timer_get_time() / 1000; // 转换为毫秒
+            touch_start_time = esp_timer_get_time() / 1000;
+
         }
-        // 检测触摸释放
+
         else if (touch_point.num == 0 && was_touched) {
             was_touched = false;
             int64_t touch_duration = (esp_timer_get_time() / 1000) - touch_start_time;
 
-            // 只有短触才触发
             if (touch_duration < TOUCH_THRESHOLD_MS) {
                 auto& app = Application::GetInstance();
                 if (app.GetDeviceState() == kDeviceStateStarting) {
@@ -178,7 +179,6 @@ private:
         ESP_LOGI(TAG, "Init Cst816D");
         cst816d_ = new Cst816d(i2c_bus_, 0x15);
 
-        // 创建定时器，10ms 间隔
         esp_timer_create_args_t timer_args = {
             .callback = touchpad_timer_callback,
             .arg = NULL,
@@ -188,12 +188,14 @@ private:
         };
 
         ESP_ERROR_CHECK(esp_timer_create(&timer_args, &touchpad_timer_));
-        ESP_ERROR_CHECK(esp_timer_start_periodic(touchpad_timer_, 10 * 1000)); // 10ms = 10000us
+        ESP_ERROR_CHECK(esp_timer_start_periodic(touchpad_timer_, 10 * 1000));
+
     }
 
     void EnableLcdCs() {
         if(io_expander_ != NULL) {
-            esp_io_expander_set_level(io_expander_, DISPLAY_SPI_CS_PIN, 0);// 置低 LCD CS
+            esp_io_expander_set_level(io_expander_, DISPLAY_SPI_CS_PIN, 0);
+
         }
     }
 
@@ -211,7 +213,7 @@ private:
     void InitializeSt7789Display() {
         esp_lcd_panel_io_handle_t panel_io = nullptr;
         esp_lcd_panel_handle_t panel = nullptr;
-        // 液晶屏控制IO初始化
+
         ESP_LOGD(TAG, "Install panel IO");
         esp_lcd_panel_io_spi_config_t io_config = {};
         io_config.cs_gpio_num = DISPLAY_SPI_CS_PIN;
@@ -223,7 +225,6 @@ private:
         io_config.lcd_param_bits = 8;
         ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi(SPI3_HOST, &io_config, &panel_io));
 
-        // 初始化液晶屏驱动芯片ST7789
         ESP_LOGD(TAG, "Install LCD driver");
         esp_lcd_panel_dev_config_t panel_config = {};
         panel_config.reset_gpio_num = DISPLAY_SPI_RESET_PIN;
@@ -236,9 +237,6 @@ private:
         ESP_ERROR_CHECK(esp_lcd_panel_swap_xy(panel, DISPLAY_SWAP_XY));
         ESP_ERROR_CHECK(esp_lcd_panel_mirror(panel, DISPLAY_MIRROR_X, DISPLAY_MIRROR_Y));
         ESP_ERROR_CHECK(esp_lcd_panel_invert_color(panel, true));
-
-        // uint8_t data_0xBB[] = { 0x3F };
-        // esp_lcd_panel_io_tx_param(panel_io, 0xBB, data_0xBB, sizeof(data_0xBB));
 
         uint8_t data_0xBB[] = { 0x38 };
         esp_lcd_panel_io_tx_param(panel_io, 0xBB, data_0xBB, sizeof(data_0xBB));

@@ -22,8 +22,8 @@
 class atk_dnesp32s3_box0  : public WifiBoard {
 private:
     i2c_master_bus_handle_t i2c_bus_;
-    Button right_button_;   
-    Button left_button_;    
+    Button right_button_;
+    Button left_button_;
     Button middle_button_;
     LcdDisplay* display_;
     PowerSaveTimer* power_save_timer_;
@@ -49,8 +49,8 @@ private:
         gpio_init_struct.pin_bit_mask = (1ull << CODEC_PWR_PIN) | (1ull << SYS_POW_PIN);
         gpio_config(&gpio_init_struct);
 
-        gpio_set_level(CODEC_PWR_PIN, 1); 
-        gpio_set_level(SYS_POW_PIN, 1); 
+        gpio_set_level(CODEC_PWR_PIN, 1);
+        gpio_set_level(SYS_POW_PIN, 1);
 
         gpio_config_t chg_init_struct = {0};
 
@@ -77,7 +77,7 @@ private:
         esp_timer_create_args_t wake_display_timer_args = {
             .callback = [](void *arg) {
                 atk_dnesp32s3_box0* self = static_cast<atk_dnesp32s3_box0*>(arg);
-                if (self->LcdStatus_ == kDevicelcdbacklightOff && Application::GetInstance().GetDeviceState() == kDeviceStateListening 
+                if (self->LcdStatus_ == kDevicelcdbacklightOff && Application::GetInstance().GetDeviceState() == kDeviceStateListening
                     && self->wake_status_ == kDeviceWaitWake) {
 
                     if (self->power_sleep_ == kDeviceNeutralSleep) {
@@ -87,7 +87,7 @@ private:
                     self->GetBacklight()->RestoreBrightness();
                     self->wake_status_ = kDeviceAwakened;
                     self->LcdStatus_ = kDevicelcdbacklightOn;
-                } else if (self->power_sleep_ == kDeviceNeutralSleep && Application::GetInstance().GetDeviceState() == kDeviceStateListening 
+                } else if (self->power_sleep_ == kDeviceNeutralSleep && Application::GetInstance().GetDeviceState() == kDeviceStateListening
                          && self->LcdStatus_ != kDevicelcdbacklightOff && self->wake_status_ == kDeviceAwakened) {
                     self->power_save_timer_->WakeUp();
                     self->power_sleep_ = kDeviceNoSleep;
@@ -104,7 +104,7 @@ private:
                             esp_timer_stop(self->power_manager_->timer_handle_);
                             gpio_set_level(CHG_CTRL_PIN, 0);
                             vTaskDelay(pdMS_TO_TICKS(100));
-                            gpio_set_level(SYS_POW_PIN, 0);     
+                            gpio_set_level(SYS_POW_PIN, 0);
                             vTaskDelay(pdMS_TO_TICKS(100));
                         }
                     }
@@ -162,7 +162,6 @@ private:
         power_save_timer_->SetEnabled(true);
     }
 
-    // Initialize I2C peripheral
     void InitializeI2c() {
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = (i2c_port_t)I2C_NUM_0,
@@ -179,7 +178,6 @@ private:
         ESP_ERROR_CHECK(i2c_new_master_bus(&i2c_bus_cfg, &i2c_bus_));
     }
 
-    // Initialize spi peripheral
     void InitializeSpi() {
         spi_bus_config_t buscfg = {};
         buscfg.mosi_io_num = LCD_MOSI_PIN;
@@ -237,7 +235,7 @@ private:
                     XiaozhiStatus_ = kDevice_Distributionnetwork;
                 } else if (power_status_ == kDeviceBatterySupply && LcdStatus_ != kDevicelcdbacklightOff) {
                     Application::GetInstance().StartListening();
-                    GetBacklight()->SetBrightness(0);   
+                    GetBacklight()->SetBrightness(0);
                     XiaozhiStatus_ = kDevice_Exit_Sleep;
                 } else if (power_status_ == kDeviceTypecSupply && LcdStatus_ == kDevicelcdbacklightOn && Application::GetInstance().GetDeviceState() != kDeviceStateStarting) {
                     Application::GetInstance().StartListening();
@@ -313,11 +311,11 @@ private:
         panel_config.bits_per_pixel = 16;
         panel_config.data_endian = LCD_RGB_DATA_ENDIAN_BIG,
         esp_lcd_new_panel_st7789(panel_io, &panel_config, &panel);
-        
+
         esp_lcd_panel_reset(panel);
         esp_lcd_panel_invert_color(panel, true);
         esp_lcd_panel_init(panel);
-        esp_lcd_panel_swap_xy(panel, DISPLAY_SWAP_XY); 
+        esp_lcd_panel_swap_xy(panel, DISPLAY_SWAP_XY);
         esp_lcd_panel_mirror(panel, DISPLAY_MIRROR_X, DISPLAY_MIRROR_Y);
 
         display_ = new SpiLcdDisplay(panel_io, panel,
@@ -341,17 +339,17 @@ public:
 
     virtual AudioCodec* GetAudioCodec() override {
         static Es8311AudioCodec audio_codec(
-            i2c_bus_, 
-            I2C_NUM_0, 
-            AUDIO_INPUT_SAMPLE_RATE, 
+            i2c_bus_,
+            I2C_NUM_0,
+            AUDIO_INPUT_SAMPLE_RATE,
             AUDIO_OUTPUT_SAMPLE_RATE,
-            GPIO_NUM_NC, 
-            AUDIO_I2S_GPIO_BCLK, 
-            AUDIO_I2S_GPIO_WS, 
-            AUDIO_I2S_GPIO_DOUT, 
+            GPIO_NUM_NC,
+            AUDIO_I2S_GPIO_BCLK,
+            AUDIO_I2S_GPIO_WS,
+            AUDIO_I2S_GPIO_DOUT,
             AUDIO_I2S_GPIO_DIN,
-            GPIO_NUM_NC, 
-            AUDIO_CODEC_ES8311_ADDR, 
+            GPIO_NUM_NC,
+            AUDIO_CODEC_ES8311_ADDR,
             false);
         return &audio_codec;
     }

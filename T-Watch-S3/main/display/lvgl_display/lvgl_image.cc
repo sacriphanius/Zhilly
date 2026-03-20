@@ -8,7 +8,6 @@
 
 #define TAG "LvglImage"
 
-
 LvglRawImage::LvglRawImage(void* data, size_t size) {
     bzero(&image_dsc_, sizeof(image_dsc_));
     image_dsc_.data_size = size;

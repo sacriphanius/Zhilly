@@ -32,4 +32,4 @@
 #define DISPLAY_OFFSET_Y  0
 #define DISPLAY_BACKLIGHT_OUTPUT_INVERT false
 #define DISPLAY_SPI_MODE 2
-#endif // _BOARD_CONFIG_H_
+#endif

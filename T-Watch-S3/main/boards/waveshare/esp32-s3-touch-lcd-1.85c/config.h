@@ -4,8 +4,6 @@
 #include <driver/gpio.h>
 #include <driver/spi_master.h>
 
-
-
 #define BOOT_BUTTON_GPIO        GPIO_NUM_0
 
 #ifdef CONFIG_VERSION_1_0
@@ -28,7 +26,7 @@
 #define AUDIO_I2S_GPIO_MCLK         GPIO_NUM_2
 #define AUDIO_I2S_GPIO_BCLK         GPIO_NUM_48
 #define AUDIO_I2S_GPIO_WS           GPIO_NUM_38
-#define AUDIO_I2S_GPIO_DIN          GPIO_NUM_39 
+#define AUDIO_I2S_GPIO_DIN          GPIO_NUM_39
 #define AUDIO_I2S_GPIO_DOUT         GPIO_NUM_47
 #define AUDIO_CODEC_PA_PIN          GPIO_NUM_15
 #define AUDIO_INPUT_REFERENCE       true
@@ -37,10 +35,8 @@
 
 #endif
 
-
-
-#define I2C_SCL_IO          GPIO_NUM_10       
-#define I2C_SDA_IO          GPIO_NUM_11        
+#define I2C_SCL_IO          GPIO_NUM_10
+#define I2C_SDA_IO          GPIO_NUM_11
 
 #define I2C_ADDRESS         ESP_IO_EXPANDER_I2C_TCA9554_ADDRESS_000
 
@@ -86,5 +82,4 @@
         .max_transfer_sz = max_trans_sz,                                          \
     }
 
-
-#endif // _BOARD_CONFIG_H_
+#endif

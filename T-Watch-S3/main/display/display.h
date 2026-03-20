@@ -40,7 +40,7 @@ public:
     virtual Theme* GetTheme() { return current_theme_; }
     virtual void UpdateStatusBar(bool update_all = false);
     virtual void SetPowerSaveMode(bool on);
-    virtual void SetupUI() { 
+    virtual void SetupUI() {
         setup_ui_called_ = true;
     }
 
@@ -51,7 +51,7 @@ public:
 protected:
     int width_ = 0;
     int height_ = 0;
-    bool setup_ui_called_ = false;  // Track if SetupUI() has been called
+    bool setup_ui_called_ = false;
 
     Theme* current_theme_ = nullptr;
 
@@ -59,7 +59,6 @@ protected:
     virtual bool Lock(int timeout_ms = 0) = 0;
     virtual void Unlock() = 0;
 };
-
 
 class DisplayLockGuard {
 public:

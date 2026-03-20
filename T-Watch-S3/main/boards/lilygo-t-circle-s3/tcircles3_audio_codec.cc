@@ -12,9 +12,12 @@ Tcircles3AudioCodec::Tcircles3AudioCodec(int input_sample_rate, int output_sampl
     gpio_num_t mic_bclk, gpio_num_t mic_ws, gpio_num_t mic_data,
     gpio_num_t spkr_bclk, gpio_num_t spkr_lrclk, gpio_num_t spkr_data,
     bool input_reference) {
-    duplex_ = true;                             // 是否双工
-    input_reference_ = input_reference;         // 是否使用参考输入，实现回声消除
-    input_channels_ = input_reference_ ? 2 : 1; // 输入通道数
+    duplex_ = true;
+
+    input_reference_ = input_reference;
+
+    input_channels_ = input_reference_ ? 2 : 1;
+
     input_sample_rate_ = input_sample_rate;
     output_sample_rate_ = output_sample_rate;
 
@@ -45,11 +48,12 @@ Tcircles3AudioCodec::~Tcircles3AudioCodec() {
 
 void Tcircles3AudioCodec::CreateVoiceHardware(gpio_num_t mic_bclk, gpio_num_t mic_ws, gpio_num_t mic_data,
     gpio_num_t spkr_bclk, gpio_num_t spkr_lrclk, gpio_num_t spkr_data) {
-    
+
     i2s_chan_config_t mic_chan_config = I2S_CHANNEL_DEFAULT_CONFIG(i2s_port_t(0), I2S_ROLE_MASTER);
-    mic_chan_config.auto_clear = true; // Auto clear the legacy data in the DMA buffer
+    mic_chan_config.auto_clear = true;
+
     i2s_chan_config_t spkr_chan_config = I2S_CHANNEL_DEFAULT_CONFIG(i2s_port_t(1), I2S_ROLE_MASTER);
-    spkr_chan_config.auto_clear = true; // Auto clear the legacy data in the DMA buffer
+    spkr_chan_config.auto_clear = true;
 
     ESP_ERROR_CHECK(i2s_new_channel(&mic_chan_config, NULL, &rx_handle_));
     ESP_ERROR_CHECK(i2s_new_channel(&spkr_chan_config, &tx_handle_, NULL));
@@ -59,7 +63,7 @@ void Tcircles3AudioCodec::CreateVoiceHardware(gpio_num_t mic_bclk, gpio_num_t mi
             .sample_rate_hz = (uint32_t)output_sample_rate_,
             .clk_src = I2S_CLK_SRC_DEFAULT,
             .mclk_multiple = I2S_MCLK_MULTIPLE_256,
-            #ifdef   I2S_HW_VERSION_2    
+            #ifdef   I2S_HW_VERSION_2
                 .ext_clk_freq_hz = 0,
             #endif
         },
@@ -83,7 +87,7 @@ void Tcircles3AudioCodec::CreateVoiceHardware(gpio_num_t mic_bclk, gpio_num_t mi
             .sample_rate_hz = static_cast<uint32_t>(11025),
             .clk_src = I2S_CLK_SRC_DEFAULT,
             .mclk_multiple = I2S_MCLK_MULTIPLE_256,
-            #ifdef   I2S_HW_VERSION_2    
+            #ifdef   I2S_HW_VERSION_2
                 .ext_clk_freq_hz = 0,
             #endif
         },

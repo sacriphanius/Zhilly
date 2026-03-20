@@ -8,7 +8,7 @@
 #define BLINK_INFINITE -1
 
 CircularStrip::CircularStrip(gpio_num_t gpio, uint16_t max_leds) : max_leds_(max_leds) {
-    // If the gpio is not connected, you should use NoLed class
+
     assert(gpio != GPIO_NUM_NC);
 
     colors_.resize(max_leds_);
@@ -20,7 +20,7 @@ CircularStrip::CircularStrip(gpio_num_t gpio, uint16_t max_leds) : max_leds_(max
     strip_config.led_model = LED_MODEL_WS2812;
 
     led_strip_rmt_config_t rmt_config = {};
-    rmt_config.resolution_hz = 10 * 1000 * 1000; // 10MHz
+    rmt_config.resolution_hz = 10 * 1000 * 1000;
 
     ESP_ERROR_CHECK(led_strip_new_rmt_device(&strip_config, &rmt_config, &led_strip_));
     led_strip_clear(led_strip_);
@@ -47,7 +47,6 @@ CircularStrip::~CircularStrip() {
         led_strip_del(led_strip_);
     }
 }
-
 
 void CircularStrip::SetAllColor(StripColor color) {
     std::lock_guard<std::mutex> lock(mutex_);
@@ -183,7 +182,7 @@ void CircularStrip::StartStripTask(int interval_ms, std::function<void()> cb) {
 
     std::lock_guard<std::mutex> lock(mutex_);
     esp_timer_stop(strip_timer_);
-    
+
     strip_callback_ = cb;
     esp_timer_start_periodic(strip_timer_, interval_ms * 1000);
 }

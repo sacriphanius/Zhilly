@@ -5,7 +5,7 @@
 #include <driver/uart.h>
 #include <driver/spi_master.h>
 
-#define AUDIO_INPUT_SAMPLE_RATE  24000   
+#define AUDIO_INPUT_SAMPLE_RATE  24000
 #define AUDIO_OUTPUT_SAMPLE_RATE 24000
 #define AUDIO_INPUT_REFERENCE    true
 
@@ -85,4 +85,4 @@
         .max_transfer_sz = max_trans_sz,                                          \
     }
 
-#endif // _BOARD_CONFIG_H_
+#endif

@@ -44,7 +44,7 @@ private:
     void UnApplyPartition();
     static bool FindPartition(Assets* assets);
     static bool LoadSrmodelsFromIndex(Assets* assets, cJSON* root = nullptr);
-  
+
     class AssetStrategy {
     public:
         virtual ~AssetStrategy() = default;
@@ -53,7 +53,7 @@ private:
         virtual void UnApplyPartition(Assets* assets) = 0;
         virtual bool GetAssetData(Assets* assets, const std::string& name, void*& ptr, size_t& size) = 0;
     };
-    
+
     class LvglStrategy : public AssetStrategy {
     public:
         bool Apply(Assets* assets) override;
@@ -67,7 +67,7 @@ private:
         const char* mmap_root_ = nullptr;
         bool checksum_valid_ = false;
     };
-    
+
     class EmoteStrategy : public AssetStrategy {
     public:
         bool Apply(Assets* assets) override;
@@ -75,8 +75,7 @@ private:
         void UnApplyPartition(Assets* assets) override;
         bool GetAssetData(Assets* assets, const std::string& name, void*& ptr, size_t& size) override;
     };
-    
-    // Strategy instance
+
     std::unique_ptr<AssetStrategy> strategy_;
 
 protected:

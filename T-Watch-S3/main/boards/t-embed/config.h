@@ -5,7 +5,6 @@
 
 #define BOARD_NAME "T-Embed"
 
-// Display
 #define DISPLAY_WIDTH 170
 #define DISPLAY_HEIGHT 320
 #define DISPLAY_MIRROR_X true
@@ -20,7 +19,6 @@
 #define DISPLAY_BACKLIGHT_PIN GPIO_NUM_21
 #define DISPLAY_BACKLIGHT_OUTPUT_INVERT false
 
-// Audio
 #define AUDIO_INPUT_SAMPLE_RATE 16000
 #define AUDIO_OUTPUT_SAMPLE_RATE 16000
 
@@ -31,12 +29,10 @@
 #define AUDIO_I2S_SPK_WS GPIO_NUM_40
 #define AUDIO_I2S_SPK_DOUT GPIO_NUM_7
 
-// I2C
 #define I2C_SDA_PIN GPIO_NUM_8
 #define I2C_SCL_PIN GPIO_NUM_18
 
-// Buttons
 #define BOOT_BUTTON_GPIO GPIO_NUM_0
 #define USER_BUTTON_GPIO GPIO_NUM_6
 
-#endif // _CONFIG_H_
+#endif

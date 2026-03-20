@@ -33,7 +33,7 @@ private:
                 power_save_timer_->SetEnabled(false);
             } else {
                 power_save_timer_->SetEnabled(true);
-            } 
+            }
         });
     }
     void InitializePowerSaveTimer() {
@@ -44,19 +44,20 @@ private:
         power_save_timer_ = new PowerSaveTimer(-1, 60, 300);
         power_save_timer_->OnEnterSleepMode([this]() {
             GetDisplay()->SetPowerSaveMode(true);
-            GetBacklight()->SetBrightness(1); 
+            GetBacklight()->SetBrightness(1);
         });
         power_save_timer_->OnExitSleepMode([this]() {
             GetDisplay()->SetPowerSaveMode(false);
-            GetBacklight()->RestoreBrightness(); 
+            GetBacklight()->RestoreBrightness();
         });
         power_save_timer_->OnShutdownRequest([this]() {
             ESP_LOGI(TAG, "Shutting down");
             rtc_gpio_set_level(GPIO_NUM_1, 0);
-            // 启用保持功能，确保睡眠期间电平不变
+
             rtc_gpio_hold_en(GPIO_NUM_1);
-            esp_lcd_panel_disp_on_off(panel_, false); //关闭显示
-            esp_deep_sleep_start(); 
+            esp_lcd_panel_disp_on_off(panel_, false);
+
+            esp_deep_sleep_start();
         });
         power_save_timer_->SetEnabled(true);
     }
@@ -73,7 +74,7 @@ private:
 
     void InitializeLcdDisplay() {
         esp_lcd_panel_io_handle_t panel_io = nullptr;
-        // 液晶屏控制IO初始化
+
         ESP_LOGD(TAG, "Install panel_ IO");
         esp_lcd_panel_io_spi_config_t io_config = {};
         io_config.cs_gpio_num = DISPLAY_CS_PIN;
@@ -85,7 +86,6 @@ private:
         io_config.lcd_param_bits = 8;
         ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi(SPI3_HOST, &io_config, &panel_io));
 
-        // 初始化液晶屏驱动芯片
         ESP_LOGD(TAG, "Install LCD driver");
         esp_lcd_panel_dev_config_t panel_config = {};
         panel_config.reset_gpio_num = DISPLAY_RST_PIN;
@@ -108,7 +108,7 @@ private:
                 EnterWifiConfigMode();
                 return;
             }
-            app.ToggleChatState(); 
+            app.ToggleChatState();
         });
     }
 

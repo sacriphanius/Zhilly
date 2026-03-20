@@ -3,8 +3,10 @@
 
 #include <driver/gpio.h>
 
-#define Right_Pitch_Pin GPIO_NUM_5  // 旋转
-#define Right_Roll_Pin GPIO_NUM_4   // 推杆
+#define Right_Pitch_Pin GPIO_NUM_5
+
+#define Right_Roll_Pin GPIO_NUM_4
+
 #define Left_Pitch_Pin GPIO_NUM_7
 #define Left_Roll_Pin GPIO_NUM_15
 #define Body_Pin GPIO_NUM_6
@@ -48,4 +50,4 @@
 #define BOOT_BUTTON_GPIO GPIO_NUM_0
 
 #define ELECTRON_BOT_VERSION "2.0.4"
-#endif  // _BOARD_CONFIG_H_
+#endif

@@ -3,11 +3,9 @@
 
 #include <driver/gpio.h>
 
-// 音频配置
 #define AUDIO_INPUT_SAMPLE_RATE  16000
 #define AUDIO_OUTPUT_SAMPLE_RATE 24000
 
-// 使用 Simplex I2S 模式
 #define AUDIO_I2S_METHOD_SIMPLEX
 
 #define AUDIO_I2S_MIC_GPIO_WS   GPIO_NUM_17
@@ -17,10 +15,9 @@
 #define AUDIO_I2S_SPK_GPIO_BCLK GPIO_NUM_39
 #define AUDIO_I2S_SPK_GPIO_LRCK GPIO_NUM_38
 
-// 按钮配置
 #define BOOT_BUTTON_GPIO        GPIO_NUM_0
 #define TOUCH_BUTTON_GPIO       GPIO_NUM_14
-// OLED显示屏配置 (SSD1306 128x64)
+
 #define DISPLAY_SDA_PIN GPIO_NUM_12
 #define DISPLAY_SCL_PIN GPIO_NUM_13
 #define DISPLAY_WIDTH   128
@@ -28,13 +25,14 @@
 #define DISPLAY_MIRROR_X false
 #define DISPLAY_MIRROR_Y false
 
-// 机器狗舵机配置 - 四条腿
-#define LEFT_FRONT_LEG_PIN  GPIO_NUM_47  // 左前腿
-#define LEFT_REAR_LEG_PIN   GPIO_NUM_21 // 左后腿
-#define RIGHT_FRONT_LEG_PIN GPIO_NUM_9   // 右前腿
-#define RIGHT_REAR_LEG_PIN  GPIO_NUM_10 // 右后腿
+#define LEFT_FRONT_LEG_PIN  GPIO_NUM_47
 
-// EDA机器狗版本
+#define LEFT_REAR_LEG_PIN   GPIO_NUM_21
+
+#define RIGHT_FRONT_LEG_PIN GPIO_NUM_9
+
+#define RIGHT_REAR_LEG_PIN  GPIO_NUM_10
+
 #define EDA_ROBOT_PRO_VERSION "1.0.0"
 
-#endif // _BOARD_CONFIG_H_
+#endif

@@ -21,7 +21,6 @@
 #define RESET_NVS_BUTTON_GPIO     GPIO_NUM_NC
 #define RESET_FACTORY_BUTTON_GPIO GPIO_NUM_NC
 
-/* DFRobot Camera pins */
 #define PWDN_GPIO_NUM       GPIO_NUM_NC
 #define RESET_GPIO_NUM      GPIO_NUM_NC
 #define XCLK_GPIO_NUM       GPIO_NUM_5
@@ -39,7 +38,6 @@
 #define SIOD_GPIO_NUM       GPIO_NUM_8
 #define SIOC_GPIO_NUM       GPIO_NUM_9
 
-/* Camera pins */
 #define CAMERA_PIN_PWDN     PWDN_GPIO_NUM
 #define CAMERA_PIN_RESET    RESET_GPIO_NUM
 #define CAMERA_PIN_XCLK     XCLK_GPIO_NUM
@@ -60,4 +58,4 @@
 
 #define XCLK_FREQ_HZ 20000000
 
-#endif  // _BOARD_CONFIG_H_
+#endif

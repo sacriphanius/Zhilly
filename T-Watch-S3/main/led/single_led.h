@@ -35,4 +35,4 @@ private:
     void SetColor(uint8_t r, uint8_t g, uint8_t b);
 };
 
-#endif // _SINGLE_LED_H_
+#endif

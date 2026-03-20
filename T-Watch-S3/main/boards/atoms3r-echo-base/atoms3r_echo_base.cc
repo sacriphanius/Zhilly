@@ -25,10 +25,14 @@
 class Pi4ioe : public I2cDevice {
 public:
     Pi4ioe(i2c_master_bus_handle_t i2c_bus, uint8_t addr) : I2cDevice(i2c_bus, addr) {
-        WriteReg(PI4IOE_REG_IO_PP, 0x00); // Set to high-impedance
-        WriteReg(PI4IOE_REG_IO_PULLUP, 0xFF); // Enable pull-up
-        WriteReg(PI4IOE_REG_IO_DIR, 0x6E); // Set input=0, output=1
-        WriteReg(PI4IOE_REG_IO_OUT, 0xFF); // Set outputs to 1
+        WriteReg(PI4IOE_REG_IO_PP, 0x00);
+
+        WriteReg(PI4IOE_REG_IO_PULLUP, 0xFF);
+
+        WriteReg(PI4IOE_REG_IO_DIR, 0x6E);
+
+        WriteReg(PI4IOE_REG_IO_OUT, 0xFF);
+
     }
 
     void SetSpeakerMute(bool mute) {
@@ -39,18 +43,19 @@ public:
 class Lp5562 : public I2cDevice {
 public:
     Lp5562(i2c_master_bus_handle_t i2c_bus, uint8_t addr) : I2cDevice(i2c_bus, addr) {
-        WriteReg(0x00, 0B01000000); // Set chip_en to 1
-        WriteReg(0x08, 0B00000001); // Enable internal clock
-        WriteReg(0x70, 0B00000000); // Configure all LED outputs to be controlled from I2C registers
+        WriteReg(0x00, 0B01000000);
 
-        // PWM clock frequency 558 Hz
+        WriteReg(0x08, 0B00000001);
+
+        WriteReg(0x70, 0B00000000);
+
         auto data = ReadReg(0x08);
         data = data | 0B01000000;
         WriteReg(0x08, data);
     }
 
     void SetBrightness(uint8_t brightness) {
-        // Map 0~100 to 0~255
+
         brightness = brightness * 255 / 100;
         WriteReg(0x0E, brightness);
     }
@@ -73,7 +78,7 @@ private:
 };
 
 static const gc9a01_lcd_init_cmd_t gc9107_lcd_init_cmds[] = {
-    //  {cmd, { data }, data_size, delay_ms}
+
     {0xfe, (uint8_t[]){0x00}, 0, 0},
     {0xef, (uint8_t[]){0x00}, 0, 0},
     {0xb0, (uint8_t[]){0xc0}, 1, 0},
@@ -112,7 +117,7 @@ private:
     bool is_echo_base_connected_ = false;
 
     void InitializeI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = I2C_NUM_1,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
@@ -126,7 +131,7 @@ private:
             },
         };
         ESP_ERROR_CHECK(i2c_new_master_bus(&i2c_bus_cfg, &i2c_bus_));
-        
+
         i2c_bus_cfg.i2c_port = I2C_NUM_0;
         i2c_bus_cfg.sda_io_num = GPIO_NUM_45;
         i2c_bus_cfg.scl_io_num = GPIO_NUM_0;
@@ -166,26 +171,23 @@ private:
         if (is_echo_base_connected_) {
             return;
         }
-        
-        // Pop error page
+
         InitializeLp5562();
         InitializeSpi();
         InitializeGc9107Display();
         InitializeButtons();
         GetBacklight()->SetBrightness(100);
-        
-        // Ensure UI is set up before displaying error
+
         display_->SetupUI();
-        
+
         display_->SetStatus(Lang::Strings::ERROR);
         display_->SetEmotion("triangle_exclamation");
         display_->SetChatMessage("system", "Echo Base\nnot connected");
-        
+
         while (1) {
             ESP_LOGE(TAG, "Atomic Echo Base is disconnected");
             vTaskDelay(pdMS_TO_TICKS(1000));
 
-            // Rerun detection
             I2cDetect();
             if (is_echo_base_connected_) {
                 vTaskDelay(pdMS_TO_TICKS(500));
@@ -236,7 +238,7 @@ private:
         io_config.lcd_cmd_bits = 8;
         io_config.lcd_param_bits = 8;
         ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi(SPI3_HOST, &io_config, &io_handle));
-    
+
         ESP_LOGI(TAG, "Install GC9A01 panel driver");
         esp_lcd_panel_handle_t panel_handle = NULL;
         gc9a01_vendor_config_t gc9107_vendor_config = {
@@ -244,15 +246,17 @@ private:
             .init_cmds_size = sizeof(gc9107_lcd_init_cmds) / sizeof(gc9a01_lcd_init_cmd_t),
         };
         esp_lcd_panel_dev_config_t panel_config = {};
-        panel_config.reset_gpio_num = GPIO_NUM_48; // Set to -1 if not use
+        panel_config.reset_gpio_num = GPIO_NUM_48;
+
         panel_config.rgb_endian = LCD_RGB_ENDIAN_BGR;
-        panel_config.bits_per_pixel = 16; // Implemented by LCD command `3Ah` (16/18)
+        panel_config.bits_per_pixel = 16;
+
         panel_config.vendor_config = &gc9107_vendor_config;
 
         ESP_ERROR_CHECK(esp_lcd_new_panel_gc9a01(io_handle, &panel_config, &panel_handle));
         ESP_ERROR_CHECK(esp_lcd_panel_reset(panel_handle));
         ESP_ERROR_CHECK(esp_lcd_panel_init(panel_handle));
-        ESP_ERROR_CHECK(esp_lcd_panel_disp_on_off(panel_handle, true)); 
+        ESP_ERROR_CHECK(esp_lcd_panel_disp_on_off(panel_handle, true));
 
         display_ = new SpiLcdDisplay(io_handle, panel_handle,
                                     DISPLAY_WIDTH, DISPLAY_HEIGHT, DISPLAY_OFFSET_X, DISPLAY_OFFSET_Y, DISPLAY_MIRROR_X, DISPLAY_MIRROR_Y, DISPLAY_SWAP_XY);
@@ -284,17 +288,17 @@ public:
 
     virtual AudioCodec* GetAudioCodec() override {
         static Es8311AudioCodec audio_codec(
-            i2c_bus_, 
-            I2C_NUM_1, 
-            AUDIO_INPUT_SAMPLE_RATE, 
+            i2c_bus_,
+            I2C_NUM_1,
+            AUDIO_INPUT_SAMPLE_RATE,
             AUDIO_OUTPUT_SAMPLE_RATE,
-            AUDIO_I2S_GPIO_MCLK, 
-            AUDIO_I2S_GPIO_BCLK, 
-            AUDIO_I2S_GPIO_WS, 
-            AUDIO_I2S_GPIO_DOUT, 
+            AUDIO_I2S_GPIO_MCLK,
+            AUDIO_I2S_GPIO_BCLK,
+            AUDIO_I2S_GPIO_WS,
+            AUDIO_I2S_GPIO_DOUT,
             AUDIO_I2S_GPIO_DIN,
-            AUDIO_CODEC_GPIO_PA, 
-            AUDIO_CODEC_ES8311_ADDR, 
+            AUDIO_CODEC_GPIO_PA,
+            AUDIO_CODEC_ES8311_ADDR,
             false);
         return &audio_codec;
     }

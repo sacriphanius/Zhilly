@@ -143,7 +143,7 @@ private:
             ledc_stop(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL, 0);
             camera_type_ = OTTO_CAMERA_NONE;
         } else {
-            // 根据 PID 判断摄像头类型
+
             if (detected_pid == OV2640_PID_1 || detected_pid == OV2640_PID_2) {
                 camera_type_ = OTTO_CAMERA_OV2640;
                 ESP_LOGI(TAG, "摄像头类型: OV2640 (PID=0x%04X)", detected_pid);
@@ -285,7 +285,6 @@ private:
 
             camera_ = new EspVideo(video_config);
 
-            // 根据摄像头类型设置不同的翻转参数
             switch (camera_type_) {
                 case OTTO_CAMERA_OV3660:
                     camera_->SetVFlip(true);
@@ -330,18 +329,18 @@ public:
           has_camera_(false),
           camera_type_(OTTO_CAMERA_NONE) {
 #if OTTO_HARDWARE_VERSION == OTTO_VERSION_AUTO
-        // 自动检测硬件版本（同时检测摄像头类型）
+
         has_camera_ = DetectHardwareVersion();
         ESP_LOGI(TAG, "自动检测硬件版本: %s", has_camera_ ? "摄像头版" : "无摄像头版");
 #elif OTTO_HARDWARE_VERSION == OTTO_VERSION_CAMERA
-        // 强制使用摄像头版本，但仍检测具体摄像头类型
+
         has_camera_ = DetectHardwareVersion();
         if (!has_camera_) {
-            // 检测失败时仍使用摄像头配置，但不知道具体类型
+
             has_camera_ = true;
             camera_type_ = OTTO_CAMERA_UNKNOWN;
             ESP_LOGW(TAG, "强制使用摄像头版本配置，但未能检测到摄像头类型");
-            // 初始化 I2C 总线用于摄像头
+
             i2c_master_bus_config_t i2c_bus_cfg = {
                 .i2c_port = I2C_NUM_0,
                 .sda_io_num = CAMERA_VERSION_CONFIG.i2c_sda_pin,
@@ -360,7 +359,7 @@ public:
             ESP_LOGI(TAG, "强制使用摄像头版本配置");
         }
 #elif OTTO_HARDWARE_VERSION == OTTO_VERSION_NO_CAMERA
-        // 强制使用无摄像头版本
+
         has_camera_ = false;
         camera_type_ = OTTO_CAMERA_NONE;
         ESP_LOGI(TAG, "强制使用无摄像头版本配置");

@@ -1,8 +1,6 @@
 #ifndef _BOARD_CONFIG_H_
 #define _BOARD_CONFIG_H_
 
-// M5Stack CoreS3 Board configuration
-
 #include <driver/gpio.h>
 
 #define AUDIO_INPUT_REFERENCE    true
@@ -39,14 +37,14 @@
 #define DISPLAY_BACKLIGHT_PIN GPIO_NUM_NC
 #define DISPLAY_BACKLIGHT_OUTPUT_INVERT true
 
-
-
-/* Camera pins */
 #define CAMERA_PIN_PWDN GPIO_NUM_NC
 #define CAMERA_PIN_RESET GPIO_NUM_NC
-#define CAMERA_PIN_XCLK  GPIO_NUM_NC // 像素时钟 (固定由 20MHz 外部晶振输入) 
-#define CAMERA_PIN_SIOD GPIO_NUM_NC  // 串行时钟 Using existing I2C port
-#define CAMERA_PIN_SIOC GPIO_NUM_NC  // 串行时钟 Using existing I2C port
+#define CAMERA_PIN_XCLK  GPIO_NUM_NC
+
+#define CAMERA_PIN_SIOD GPIO_NUM_NC
+
+#define CAMERA_PIN_SIOC GPIO_NUM_NC
+
 #define CAMERA_PIN_D0 GPIO_NUM_39
 #define CAMERA_PIN_D1 GPIO_NUM_40
 #define CAMERA_PIN_D2 GPIO_NUM_41
@@ -61,6 +59,4 @@
 
 #define XCLK_FREQ_HZ 20000000
 
- 
-
-#endif // _BOARD_CONFIG_H_
+#endif

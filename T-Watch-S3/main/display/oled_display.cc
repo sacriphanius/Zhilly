@@ -26,7 +26,7 @@ OledDisplay::OledDisplay(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_handl
     auto text_font = std::make_shared<LvglBuiltInFont>(&BUILTIN_TEXT_FONT);
     auto icon_font = std::make_shared<LvglBuiltInFont>(&BUILTIN_ICON_FONT);
     auto large_icon_font = std::make_shared<LvglBuiltInFont>(&font_awesome_30_1);
-    
+
     auto dark_theme = new LvglTheme("dark");
     dark_theme->set_text_font(text_font);
     dark_theme->set_icon_font(icon_font);
@@ -76,18 +76,17 @@ OledDisplay::OledDisplay(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_handl
         return;
     }
 
-    // Note: SetupUI() should be called by Application::Initialize(), not in constructor
-    // to ensure lvgl objects are created after the display is fully initialized.
 }
 
 void OledDisplay::SetupUI() {
-    // Prevent duplicate calls - if already called, return early
+
     if (setup_ui_called_) {
         ESP_LOGW(TAG, "SetupUI() called multiple times, skipping duplicate call");
         return;
     }
-    
-    Display::SetupUI();  // Mark SetupUI as called
+
+    Display::SetupUI();
+
     if (height_ == 64) {
         SetupUI_128x64();
     } else {
@@ -149,7 +148,6 @@ void OledDisplay::SetChatMessage(const char* role, const char* content) {
         return;
     }
 
-    // Replace all newlines with spaces
     std::string content_str = content;
     std::replace(content_str.begin(), content_str.end(), '\n', ' ');
 
@@ -177,7 +175,6 @@ void OledDisplay::SetupUI_128x64() {
     lv_obj_set_style_text_font(screen, text_font, 0);
     lv_obj_set_style_text_color(screen, lv_color_black(), 0);
 
-    /* Container */
     container_ = lv_obj_create(screen);
     lv_obj_set_size(container_, LV_HOR_RES, LV_VER_RES);
     lv_obj_set_flex_flow(container_, LV_FLEX_FLOW_COLUMN);
@@ -185,7 +182,6 @@ void OledDisplay::SetupUI_128x64() {
     lv_obj_set_style_border_width(container_, 0, 0);
     lv_obj_set_style_pad_row(container_, 0, 0);
 
-    /* Layer 1: Top bar - for status icons */
     top_bar_ = lv_obj_create(container_);
     lv_obj_set_size(top_bar_, LV_HOR_RES, 16);
     lv_obj_set_style_radius(top_bar_, 0, 0);
@@ -216,16 +212,17 @@ void OledDisplay::SetupUI_128x64() {
     lv_label_set_text(battery_label_, "");
     lv_obj_set_style_text_font(battery_label_, icon_font, 0);
 
-    /* Layer 2: Status bar - for center text labels */
     status_bar_ = lv_obj_create(screen);
     lv_obj_set_size(status_bar_, LV_HOR_RES, 16);
     lv_obj_set_style_radius(status_bar_, 0, 0);
-    lv_obj_set_style_bg_opa(status_bar_, LV_OPA_TRANSP, 0);  // Transparent background
+    lv_obj_set_style_bg_opa(status_bar_, LV_OPA_TRANSP, 0);
+
     lv_obj_set_style_border_width(status_bar_, 0, 0);
     lv_obj_set_style_pad_all(status_bar_, 0, 0);
     lv_obj_set_scrollbar_mode(status_bar_, LV_SCROLLBAR_MODE_OFF);
-    lv_obj_set_style_layout(status_bar_, LV_LAYOUT_NONE, 0);  // Use absolute positioning
-    lv_obj_align(status_bar_, LV_ALIGN_TOP_MID, 0, 0);  // Overlap with top_bar_
+    lv_obj_set_style_layout(status_bar_, LV_LAYOUT_NONE, 0);
+
+    lv_obj_align(status_bar_, LV_ALIGN_TOP_MID, 0, 0);
 
     notification_label_ = lv_label_create(status_bar_);
     lv_obj_set_width(notification_label_, LV_HOR_RES);
@@ -241,7 +238,6 @@ void OledDisplay::SetupUI_128x64() {
     lv_label_set_text(status_label_, Lang::Strings::INITIALIZING);
     lv_obj_align(status_label_, LV_ALIGN_CENTER, 0, 0);
 
-    /* Content */
     content_ = lv_obj_create(container_);
     lv_obj_set_scrollbar_mode(content_, LV_SCROLLBAR_MODE_OFF);
     lv_obj_set_style_radius(content_, 0, 0);
@@ -276,7 +272,6 @@ void OledDisplay::SetupUI_128x64() {
     lv_obj_set_width(chat_message_label_, width_ - 32);
     lv_obj_set_style_pad_top(chat_message_label_, 14, 0);
 
-    // Start scrolling subtitle after a delay
     static lv_anim_t a;
     lv_anim_init(&a);
     lv_anim_set_delay(&a, 1000);
@@ -308,7 +303,6 @@ void OledDisplay::SetupUI_128x32() {
     auto screen = lv_screen_active();
     lv_obj_set_style_text_font(screen, text_font, 0);
 
-    /* Container */
     container_ = lv_obj_create(screen);
     lv_obj_set_size(container_, LV_HOR_RES, LV_VER_RES);
     lv_obj_set_flex_flow(container_, LV_FLEX_FLOW_ROW);
@@ -316,7 +310,6 @@ void OledDisplay::SetupUI_128x32() {
     lv_obj_set_style_border_width(container_, 0, 0);
     lv_obj_set_style_pad_column(container_, 0, 0);
 
-    /* Emotion label on the left side */
     content_ = lv_obj_create(container_);
     lv_obj_set_size(content_, 32, 32);
     lv_obj_set_style_pad_all(content_, 0, 0);
@@ -328,7 +321,6 @@ void OledDisplay::SetupUI_128x32() {
     lv_label_set_text(emotion_label_, FONT_AWESOME_MICROCHIP_AI);
     lv_obj_center(emotion_label_);
 
-    /* Right side */
     side_bar_ = lv_obj_create(container_);
     lv_obj_set_size(side_bar_, width_ - 32, 32);
     lv_obj_set_flex_flow(side_bar_, LV_FLEX_FLOW_COLUMN);
@@ -337,7 +329,6 @@ void OledDisplay::SetupUI_128x32() {
     lv_obj_set_style_radius(side_bar_, 0, 0);
     lv_obj_set_style_pad_row(side_bar_, 0, 0);
 
-    /* Status bar */
     status_bar_ = lv_obj_create(side_bar_);
     lv_obj_set_size(status_bar_, width_ - 32, 16);
     lv_obj_set_style_radius(status_bar_, 0, 0);
@@ -375,7 +366,6 @@ void OledDisplay::SetupUI_128x32() {
     lv_label_set_long_mode(chat_message_label_, LV_LABEL_LONG_SCROLL_CIRCULAR);
     lv_label_set_text(chat_message_label_, "");
 
-    // Start scrolling subtitle after a delay
     static lv_anim_t a;
     lv_anim_init(&a);
     lv_anim_set_delay(&a, 1000);

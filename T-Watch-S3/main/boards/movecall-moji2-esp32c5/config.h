@@ -1,8 +1,6 @@
 #ifndef _BOARD_CONFIG_H_
 #define _BOARD_CONFIG_H_
 
-// Movecall Moji 2 configuration
-
 #include <driver/gpio.h>
 
 enum PowerSupply {
@@ -52,7 +50,6 @@ enum PowerSupply {
 #define DISPLAY_QSPI_D3_PIN         GPIO_NUM_6
 #define DISPLAY_QSPI_CS_PIN         GPIO_NUM_3
 
-
 #define DISPLAY_SPI_SCLK_HZ         (40 * 1000 * 1000)
 
 #define MOJI2_ST77916_PANEL_BUS_QSPI_CONFIG(sclk, d0, d1, d2, d3, max_trans_sz) \
@@ -65,4 +62,4 @@ enum PowerSupply {
         .max_transfer_sz = max_trans_sz,                                          \
     }
 
-#endif // _BOARD_CONFIG_H_
+#endif

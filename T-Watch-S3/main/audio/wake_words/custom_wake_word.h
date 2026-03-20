@@ -39,7 +39,6 @@ private:
         std::string action;
     };
 
-    // multinet 相关成员变量
     esp_mn_iface_t* multinet_ = nullptr;
     model_iface_data_t* multinet_model_data_ = nullptr;
     srmodel_list_t *models_ = nullptr;
@@ -48,7 +47,7 @@ private:
     int duration_ = 3000;
     float threshold_ = 0.2;
     std::deque<Command> commands_;
- 
+
     std::function<void(const std::string& wake_word)> wake_word_detected_callback_;
     AudioCodec* codec_ = nullptr;
     std::string last_detected_wake_word_;

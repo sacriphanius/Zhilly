@@ -28,29 +28,29 @@
 class Pmic : public Axp2101 {
 public:
     Pmic(i2c_master_bus_handle_t i2c_bus, uint8_t addr) : Axp2101(i2c_bus, addr) {
-        WriteReg(0x22, 0b110); // PWRON > OFFLEVEL as POWEROFF Source enable
-        WriteReg(0x27, 0x10);  // hold 4s to power off
+        WriteReg(0x22, 0b110);
 
-        // Disable All DCs but DC1
+        WriteReg(0x27, 0x10);
+
         WriteReg(0x80, 0x01);
-        // Disable All LDOs
+
         WriteReg(0x90, 0x00);
         WriteReg(0x91, 0x00);
 
-        // Set DC1 to 3.3V
         WriteReg(0x82, (3300 - 1500) / 100);
 
-        // Set ALDO1 to 3.3V
         WriteReg(0x92, (3300 - 500) / 100);
 
-        // Enable ALDO1(MIC)
         WriteReg(0x90, 0x01);
 
-        WriteReg(0x64, 0x02); // CV charger voltage setting to 4.1V
+        WriteReg(0x64, 0x02);
 
-        WriteReg(0x61, 0x02); // set Main battery precharge current to 50mA
-        WriteReg(0x62, 0x08); // set Main battery charger current to 400mA ( 0x08-200mA, 0x09-300mA, 0x0A-400mA )
-        WriteReg(0x63, 0x01); // set Main battery term charge current to 25mA
+        WriteReg(0x61, 0x02);
+
+        WriteReg(0x62, 0x08);
+
+        WriteReg(0x63, 0x01);
+
     }
 };
 
@@ -59,7 +59,7 @@ public:
 #define LCD_OPCODE_WRITE_COLOR (0x32ULL)
 
 static const co5300_lcd_init_cmd_t vendor_specific_init[] = {
-    // set display to qspi mode
+
     {0xFE, (uint8_t[]){0x20}, 1, 0},
     {0x19, (uint8_t[]){0x10}, 1, 0},
     {0x1C, (uint8_t[]){0xA0}, 1, 0},
@@ -77,7 +77,6 @@ static const co5300_lcd_init_cmd_t vendor_specific_init[] = {
     {0x29, NULL, 0, 0},
 };
 
-// 在waveshare_amoled_1_75类之前添加新的显示类
 class CustomLcdDisplay : public SpiLcdDisplay {
 public:
     static void rounder_event_cb(lv_event_t* e) {
@@ -88,10 +87,9 @@ public:
         uint16_t y1 = area->y1;
         uint16_t y2 = area->y2;
 
-        // round the start of coordinate down to the nearest 2M number
         area->x1 = (x1 >> 1) << 1;
         area->y1 = (y1 >> 1) << 1;
-        // round the end of coordinate up to the nearest 2N+1 number
+
         area->x2 = ((x2 >> 1) << 1) + 1;
         area->y2 = ((y2 >> 1) << 1) + 1;
     }
@@ -107,12 +105,11 @@ public:
                      bool swap_xy)
         : SpiLcdDisplay(io_handle, panel_handle,
                         width, height, offset_x, offset_y, mirror_x, mirror_y, swap_xy) {
-        // Note: UI customization should be done in SetupUI(), not in constructor
-        // to ensure lvgl objects are created before accessing them
+
     }
 
     virtual void SetupUI() override {
-        // Call parent SetupUI() first to create all lvgl objects
+
         SpiLcdDisplay::SetupUI();
 
         DisplayLockGuard lock(this);
@@ -159,13 +156,13 @@ private:
         power_save_timer_->OnExitSleepMode([this]() {
             GetDisplay()->SetPowerSaveMode(false);
             GetBacklight()->RestoreBrightness(); });
-        power_save_timer_->OnShutdownRequest([this](){ 
+        power_save_timer_->OnShutdownRequest([this](){
             pmic_->PowerOff(); });
         power_save_timer_->SetEnabled(true);
     }
 
     void InitializeCodecI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = I2C_NUM_0,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
@@ -227,7 +224,6 @@ private:
         esp_lcd_panel_io_handle_t panel_io = nullptr;
         esp_lcd_panel_handle_t panel = nullptr;
 
-        // 液晶屏控制IO初始化
         ESP_LOGD(TAG, "Install panel IO");
         esp_lcd_panel_io_spi_config_t io_config = CO5300_PANEL_IO_QSPI_CONFIG(
             EXAMPLE_PIN_NUM_LCD_CS,
@@ -235,7 +231,6 @@ private:
             nullptr);
         ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi(SPI2_HOST, &io_config, &panel_io));
 
-        // 初始化液晶屏驱动芯片
         ESP_LOGD(TAG, "Install LCD driver");
         const co5300_vendor_config_t vendor_config = {
             .init_cmds = &vendor_specific_init[0],
@@ -293,7 +288,6 @@ private:
         ESP_LOGI(TAG, "Touch panel initialized successfully");
     }
 
-    // 初始化工具
     void InitializeTools() {
         auto &mcp_server = McpServer::GetInstance();
         mcp_server.AddTool("self.system.reconfigure_wifi",
@@ -322,17 +316,17 @@ public:
 
     virtual AudioCodec* GetAudioCodec() override {
         static BoxAudioCodec audio_codec(
-            i2c_bus_, 
-            AUDIO_INPUT_SAMPLE_RATE, 
+            i2c_bus_,
+            AUDIO_INPUT_SAMPLE_RATE,
             AUDIO_OUTPUT_SAMPLE_RATE,
-            AUDIO_I2S_GPIO_MCLK, 
-            AUDIO_I2S_GPIO_BCLK, 
-            AUDIO_I2S_GPIO_WS, 
-            AUDIO_I2S_GPIO_DOUT, 
+            AUDIO_I2S_GPIO_MCLK,
+            AUDIO_I2S_GPIO_BCLK,
+            AUDIO_I2S_GPIO_WS,
+            AUDIO_I2S_GPIO_DOUT,
             AUDIO_I2S_GPIO_DIN,
-            AUDIO_CODEC_PA_PIN, 
-            AUDIO_CODEC_ES8311_ADDR, 
-            AUDIO_CODEC_ES7210_ADDR, 
+            AUDIO_CODEC_PA_PIN,
+            AUDIO_CODEC_ES8311_ADDR,
+            AUDIO_CODEC_ES7210_ADDR,
             AUDIO_INPUT_REFERENCE);
         return &audio_codec;
     }

@@ -38,7 +38,7 @@ public:
         tp_.num = read_buffer_[5] & 0x0F;
         tp_.x = (static_cast<int>(read_buffer_[1]) << 4) | (read_buffer_[3] & 0xF0);
         tp_.y = (static_cast<int>(read_buffer_[2]) << 4) | (read_buffer_[3] & 0x0F);
-        // ESP_LOGI(TAG, "Touch num: %d x: %d y: %d", tp_.num,tp_.x,tp_.y);
+
     }
 
     const TouchPoint_t &GetTouchPoint() {
@@ -57,12 +57,15 @@ public:
         uint8_t chip_id = ReadReg(0x14);
         ESP_LOGI(TAG, "Get sy6970 chip ID: 0x%02X", (chip_id & 0B00111000));
 
-        WriteReg(0x00,0B00001000); // Disable ILIM pin
-        WriteReg(0x02,0B11011101); // Enable ADC measurement function
-        WriteReg(0x07,0B10001101); // Disable watchdog timer feeding function
+        WriteReg(0x00,0B00001000);
+
+        WriteReg(0x02,0B11011101);
+
+        WriteReg(0x07,0B10001101);
 
         #ifdef CONFIG_BOARD_TYPE_LILYGO_T_DISPLAY_S3_PRO_MVSRLORA_NO_BATTERY
-        WriteReg(0x09,0B01100100); // Disable BATFET when battery is not needed
+        WriteReg(0x09,0B01100100);
+
         #endif
     }
 };
@@ -90,7 +93,7 @@ private:
     }
 
     void InitI2c(){
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_config = {
             .i2c_port = I2C_NUM_0,
             .sda_io_num = TOUCH_I2C_SDA_PIN,
@@ -135,13 +138,13 @@ private:
         while (1) {
             touchpad->UpdateTouchPoint();
             if (touchpad->GetTouchPoint().num > 0){
-                // On press
+
                 if (!was_touched) {
                     was_touched = true;
                     Application::GetInstance().ToggleChatState();
                 }
             }
-            // On release
+
             else if (was_touched) {
                 was_touched = false;
             }
@@ -269,7 +272,7 @@ public:
         }
         WifiBoard::SetPowerSaveLevel(level);
     }
-    
+
     virtual Backlight* GetBacklight() override {
         static PwmBacklight backlight(DISPLAY_BACKLIGHT_PIN, DISPLAY_BACKLIGHT_OUTPUT_INVERT);
         return &backlight;

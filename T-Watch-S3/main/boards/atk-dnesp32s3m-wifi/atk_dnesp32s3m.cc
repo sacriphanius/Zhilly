@@ -28,7 +28,7 @@ private:
     LcdDisplay* display_;
 
     void InitializeI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = (i2c_port_t)I2C_NUM_0,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
@@ -44,7 +44,6 @@ private:
         ESP_ERROR_CHECK(i2c_new_master_bus(&i2c_bus_cfg, &i2c_bus_));
     }
 
-    // Initialize spi peripheral
     void InitializeSpi() {
         spi_bus_config_t buscfg = {};
         buscfg.mosi_io_num = LCD_MOSI_PIN;
@@ -102,12 +101,10 @@ private:
             GetDisplay()->ShowNotification(Lang::Strings::MUTED);
         });
 
-        //不插耳机
         phone_button_.OnPressDown([this]() {
             gpio_set_level(SPK_EN_PIN, 1);
         });
 
-        //插入耳机
         phone_button_.OnPressUp([this]() {
             gpio_set_level(SPK_EN_PIN, 0);
         });
@@ -117,7 +114,7 @@ private:
     void InitializeSt7735Display() {
         esp_lcd_panel_io_handle_t panel_io = nullptr;
         esp_lcd_panel_handle_t panel = nullptr;
-        // 液晶屏控制IO初始化
+
         ESP_LOGD(TAG, "Install panel IO");
         esp_lcd_panel_io_spi_config_t io_config = {};
         io_config.cs_gpio_num = LCD_CS_PIN;
@@ -129,7 +126,6 @@ private:
         io_config.lcd_param_bits = 8;
         ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi(SPI2_HOST, &io_config, &panel_io));
 
-        // 初始化液晶屏驱动芯片
         ESP_LOGD(TAG, "Install LCD driver");
         esp_lcd_panel_dev_config_t panel_config = {};
         panel_config.reset_gpio_num = LCD_RST_PIN;
@@ -138,7 +134,6 @@ private:
         panel_config.data_endian = LCD_RGB_DATA_ENDIAN_BIG;
         ESP_ERROR_CHECK(esp_lcd_new_panel_st7789(panel_io, &panel_config, &panel));
 
-        //使能功放引脚
         gpio_config_t io_conf;
         io_conf.intr_type = GPIO_INTR_DISABLE;
         io_conf.mode = GPIO_MODE_OUTPUT;
@@ -148,7 +143,6 @@ private:
         gpio_config(&io_conf);
         gpio_set_level(SPK_EN_PIN, 0);
 
-        //检测耳机是否插入，插入时为高电平
         io_conf.intr_type = GPIO_INTR_DISABLE;
         io_conf.mode = GPIO_MODE_INPUT;
         io_conf.pin_bit_mask = (1ULL << PHONE_CK_PIN);
@@ -156,7 +150,6 @@ private:
         io_conf.pull_up_en = GPIO_PULLUP_ENABLE;
         gpio_config(&io_conf);
 
-        //耳机插入
         if (gpio_get_level(PHONE_CK_PIN)) {
             gpio_set_level(SPK_EN_PIN, 1);
         }
@@ -170,7 +163,7 @@ private:
         esp_lcd_panel_io_tx_param(panel_io, 0xe1, data1, 16);
 
         esp_lcd_panel_invert_color(panel, true);
-        esp_lcd_panel_swap_xy(panel, DISPLAY_SWAP_XY); 
+        esp_lcd_panel_swap_xy(panel, DISPLAY_SWAP_XY);
         esp_lcd_panel_mirror(panel, DISPLAY_MIRROR_X, DISPLAY_MIRROR_Y);
 
         display_ = new SpiLcdDisplay(panel_io, panel,
@@ -178,10 +171,10 @@ private:
     }
 
 public:
-    atk_dnesp32s3m_wifi() : 
+    atk_dnesp32s3m_wifi() :
         boot_button_(BOOT_BUTTON_GPIO),
         volume_up_button_(VOLUME_UP_BUTTON_GPIO),
-        volume_down_button_(VOLUME_DOWN_BUTTON_GPIO), 
+        volume_down_button_(VOLUME_DOWN_BUTTON_GPIO),
         phone_button_(PHONE_CK_PIN, true) {
         InitializeI2c();
         InitializeSpi();
@@ -199,16 +192,16 @@ public:
 
     virtual AudioCodec* GetAudioCodec() override {
         static Es8388AudioCodec audio_codec(
-            i2c_bus_, 
-            I2C_NUM_0, 
-            AUDIO_INPUT_SAMPLE_RATE, 
+            i2c_bus_,
+            I2C_NUM_0,
+            AUDIO_INPUT_SAMPLE_RATE,
             AUDIO_OUTPUT_SAMPLE_RATE,
-            AUDIO_I2S_GPIO_MCLK, 
-            AUDIO_I2S_GPIO_BCLK, 
-            AUDIO_I2S_GPIO_WS, 
-            AUDIO_I2S_GPIO_DOUT, 
+            AUDIO_I2S_GPIO_MCLK,
+            AUDIO_I2S_GPIO_BCLK,
+            AUDIO_I2S_GPIO_WS,
+            AUDIO_I2S_GPIO_DOUT,
             AUDIO_I2S_GPIO_DIN,
-            GPIO_NUM_NC, 
+            GPIO_NUM_NC,
             AUDIO_CODEC_ES8388_ADDR
         );
         return &audio_codec;

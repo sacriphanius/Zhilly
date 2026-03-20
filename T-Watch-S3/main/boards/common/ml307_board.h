@@ -5,7 +5,6 @@
 #include <at_modem.h>
 #include "board.h"
 
-
 class Ml307Board : public Board {
 protected:
     std::unique_ptr<AtModem> modem_;
@@ -16,10 +15,8 @@ protected:
 
     virtual std::string GetBoardJson() override;
 
-    // Internal helper to trigger network event callback
     void OnNetworkEvent(NetworkEvent event, const std::string& data = "");
-    
-    // Network initialization task (runs in FreeRTOS task)
+
     static void NetworkTaskEntry(void* arg);
     void NetworkTask();
 
@@ -35,4 +32,4 @@ public:
     virtual std::string GetDeviceStatusJson() override;
 };
 
-#endif // ML307_BOARD_H
+#endif

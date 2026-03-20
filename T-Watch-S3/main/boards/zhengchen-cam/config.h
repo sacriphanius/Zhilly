@@ -31,11 +31,11 @@
 #define DISPLAY_MIRROR_Y false
 #define DISPLAY_SWAP_XY true
 
-#define DISPLAY_WIDTH_1  240 
-#define DISPLAY_HEIGHT_1  320 
+#define DISPLAY_WIDTH_1  240
+#define DISPLAY_HEIGHT_1  320
 #define DISPLAY_MIRROR_X_1 false
-#define DISPLAY_MIRROR_Y_1 false 
-#define DISPLAY_SWAP_XY_1 false 
+#define DISPLAY_MIRROR_Y_1 false
+#define DISPLAY_SWAP_XY_1 false
 
 #define DISPLAY_OFFSET_X  0
 #define DISPLAY_OFFSET_Y  0
@@ -43,8 +43,6 @@
 #define DISPLAY_BACKLIGHT_PIN GPIO_NUM_42
 #define DISPLAY_BACKLIGHT_OUTPUT_INVERT true
 
-
-/* Camera pins */
 #define CAMERA_PIN_PWDN -1
 #define CAMERA_PIN_RESET -1
 #define CAMERA_PIN_XCLK 17
@@ -65,4 +63,4 @@
 
 #define XCLK_FREQ_HZ 24000000
 
-#endif // _BOARD_CONFIG_H_
+#endif

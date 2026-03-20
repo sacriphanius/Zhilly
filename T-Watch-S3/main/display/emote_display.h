@@ -28,7 +28,6 @@ public:
 
     void RefreshAll();
 
-    // Get emote handle for internal use
     emote_handle_t GetEmoteHandle() const { return emote_handle_; }
 
 private:
@@ -39,4 +38,4 @@ private:
 
 };
 
-} // namespace emote
+}

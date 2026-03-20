@@ -11,7 +11,8 @@
 #ifdef CONFIG_XIAOZHI_ENABLE_CAMERA_DEBUG_MODE
 #undef LOG_LOCAL_LEVEL
 #define LOG_LOCAL_LEVEL MAX(CONFIG_LOG_DEFAULT_LEVEL, ESP_LOG_DEBUG)
-#endif  // CONFIG_XIAOZHI_ENABLE_CAMERA_DEBUG_MODE
+#endif
+
 #include <esp_log.h>
 
 #ifdef CONFIG_XIAOZHI_ENABLE_HARDWARE_JPEG_DECODER
@@ -191,13 +192,13 @@ static esp_err_t decode_with_hardware_jpeg(const uint8_t* src, size_t src_len, u
     }
 
     if (header_info.sample_method == JPEG_DOWN_SAMPLING_GRAY) {
-        // convert GRAY8 to RGB565
+
         uint32_t i = header_info.width * header_info.height;
         do {
             --i;
             uint8_t r = (out_buf[i] >> 3) & 0x1F;
             uint8_t g = (out_buf[i] >> 2) & 0x3F;
-            // b is same as r
+
             uint16_t rgb565 = (r << 11) | (g << 5) | r;
             out_buf[2 * i + 1] = (rgb565 >> 8) & 0xFF;
             out_buf[2 * i] = rgb565 & 0xFF;
@@ -240,13 +241,14 @@ jpeg_hw_dec_failed:
     *stride = 0;
     return ret;
 }
-#endif  // CONFIG_XIAOZHI_ENABLE_HARDWARE_JPEG_DECODER
+#endif
 
 esp_err_t jpeg_to_image(const uint8_t* src, size_t src_len, uint8_t** out, size_t* out_len, size_t* width,
                         size_t* height, size_t* stride) {
 #ifdef CONFIG_XIAOZHI_ENABLE_CAMERA_DEBUG_MODE
     esp_log_level_set(TAG, ESP_LOG_DEBUG);
-#endif  // CONFIG_XIAOZHI_ENABLE_CAMERA_DEBUG_MODE
+#endif
+
     if (src == NULL || src_len == 0 || out == NULL || out_len == NULL || width == NULL || height == NULL ||
         stride == NULL) {
         ESP_LOGE(TAG, "Invalid parameters");
@@ -258,7 +260,7 @@ esp_err_t jpeg_to_image(const uint8_t* src, size_t src_len, uint8_t** out, size_
         return ret;
     }
     ESP_LOGW(TAG, "Failed to decode with hardware JPEG, fallback to software decoder");
-    // Fallback to esp_new_jpeg
+
 #endif
     return decode_with_new_jpeg(src, src_len, out, out_len, width, height, stride);
 }

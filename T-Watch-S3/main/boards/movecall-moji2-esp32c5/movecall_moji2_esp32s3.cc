@@ -250,7 +250,7 @@ private:
     }
 
     void InitializeCodecI2c() {
-        // Initialize I2C peripheral
+
         i2c_master_bus_config_t i2c_bus_cfg = {
             .i2c_port = I2C_NUM_0,
             .sda_io_num = AUDIO_CODEC_I2C_SDA_PIN,
@@ -266,7 +266,6 @@ private:
         ESP_ERROR_CHECK(i2c_new_master_bus(&i2c_bus_cfg, &codec_i2c_bus_));
     }
 
-    // SPI初始化
     void InitializeSpi() {
         ESP_LOGI(TAG, "Initialize SPI bus");
         const spi_bus_config_t bus_config = MOJI2_ST77916_PANEL_BUS_QSPI_CONFIG(DISPLAY_QSPI_SCLK_PIN,
@@ -278,18 +277,16 @@ private:
         ESP_ERROR_CHECK(spi_bus_initialize(DISPLAY_QSPI_HOST, &bus_config, SPI_DMA_CH_AUTO));
     }
 
-    // St77916 初始化
     void InitializeSt77916Display() {
         ESP_LOGI(TAG, "Init St77916 display");
         esp_lcd_panel_io_handle_t panel_io = nullptr;
         esp_lcd_panel_handle_t panel = nullptr;
         ESP_LOGI(TAG, "Install panel IO");
-        
+
         esp_lcd_panel_io_spi_config_t io_config = ST77916_PANEL_IO_QSPI_CONFIG(DISPLAY_QSPI_CS_PIN, NULL, NULL);
-        // io_config.pclk_hz = DISPLAY_SPI_SCLK_HZ;
+
         ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi((esp_lcd_spi_bus_handle_t)DISPLAY_QSPI_HOST, &io_config, &panel_io));
 
-    
         ESP_LOGI(TAG, "Install St77916 panel driver");
         st77916_vendor_config_t vendor_config = {
             .init_cmds = lcd_init_cmds,
@@ -319,7 +316,7 @@ private:
     void InitializeButtons() {
         boot_button_.OnClick([this]() {
             auto& app = Application::GetInstance();
-            // During startup (before connected), pressing BOOT enters config mode without reboot
+
             if (app.GetDeviceState() == kDeviceStateStarting) {
                 EnterWifiConfigMode();
                 return;
@@ -349,7 +346,7 @@ private:
     }
 
 public:
-    MovecallMoji2ESP32C5() : boot_button_(BOOT_BUTTON_GPIO) {  
+    MovecallMoji2ESP32C5() : boot_button_(BOOT_BUTTON_GPIO) {
         InitializeCodecI2c();
         InitializePowerSaveTimer();
         InitializeBatteryMonitor();
@@ -368,7 +365,7 @@ public:
     virtual Display* GetDisplay() override {
         return display_;
     }
-    
+
     virtual Backlight* GetBacklight() override {
         static PwmBacklight backlight(DISPLAY_BACKLIGHT_PIN, DISPLAY_BACKLIGHT_OUTPUT_INVERT);
         return &backlight;

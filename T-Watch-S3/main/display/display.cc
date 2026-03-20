@@ -35,7 +35,6 @@ void Display::ShowNotification(const char* notification, int duration_ms) {
 void Display::UpdateStatusBar(bool update_all) {
 }
 
-
 void Display::SetEmotion(const char* emotion) {
     ESP_LOGW(TAG, "SetEmotion: %s", emotion);
 }
@@ -46,7 +45,7 @@ void Display::SetChatMessage(const char* role, const char* content) {
 }
 
 void Display::ClearChatMessages() {
-    // Default empty implementation, override in subclasses if needed
+
 }
 
 void Display::SetTheme(Theme* theme) {

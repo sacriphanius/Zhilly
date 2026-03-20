@@ -37,4 +37,4 @@
 #define DISPLAY_OFFSET_Y 1
 #define DISPLAY_BACKLIGHT_OUTPUT_INVERT false
 
-#endif // _BOARD_CONFIG_H_
+#endif

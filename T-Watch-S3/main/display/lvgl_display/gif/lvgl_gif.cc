@@ -18,7 +18,6 @@ LvglGif::LvglGif(const lv_img_dsc_t* img_dsc)
         return;
     }
 
-    // Setup LVGL image descriptor
     memset(&img_dsc_, 0, sizeof(img_dsc_));
     img_dsc_.header.magic = LV_IMAGE_HEADER_MAGIC;
     img_dsc_.header.flags = LV_IMAGE_FLAGS_MODIFIABLE;
@@ -29,7 +28,6 @@ LvglGif::LvglGif(const lv_img_dsc_t* img_dsc)
     img_dsc_.data = gif_->canvas;
     img_dsc_.data_size = gif_->width * gif_->height * 4;
 
-    // Render first frame
     if (gif_->canvas) {
         gd_render_frame(gif_, gif_->canvas);
     }
@@ -38,12 +36,10 @@ LvglGif::LvglGif(const lv_img_dsc_t* img_dsc)
     ESP_LOGD(TAG, "GIF loaded from image descriptor: %dx%d", gif_->width, gif_->height);
 }
 
-// Destructor
 LvglGif::~LvglGif() {
     Cleanup();
 }
 
-// LvglImage interface implementation
 const lv_img_dsc_t* LvglGif::image_dsc() const {
     if (!loaded_) {
         return nullptr;
@@ -51,7 +47,6 @@ const lv_img_dsc_t* LvglGif::image_dsc() const {
     return &img_dsc_;
 }
 
-// Animation control methods
 void LvglGif::Start() {
     if (!loaded_ || !gif_) {
         ESP_LOGW(TAG, "GIF not loaded, cannot start");
@@ -67,14 +62,14 @@ void LvglGif::Start() {
 
     if (timer_) {
         playing_ = true;
-        loop_waiting_ = false;  // Reset loop waiting state
+        loop_waiting_ = false;
+
         last_call_ = lv_tick_get();
         lv_timer_resume(timer_);
         lv_timer_reset(timer_);
-        
-        // Render first frame
+
         NextFrame();
-        
+
         ESP_LOGD(TAG, "GIF animation started");
     }
 }
@@ -106,12 +101,11 @@ void LvglGif::Stop() {
         lv_timer_pause(timer_);
     }
 
-    // Reset loop waiting state
     loop_waiting_ = false;
 
     if (gif_) {
         gd_rewind(gif_);
-        // Render first frame without advancing
+
         if (gif_->canvas) {
             gd_render_frame(gif_, gif_->canvas);
         }
@@ -174,19 +168,17 @@ void LvglGif::NextFrame() {
         return;
     }
 
-    // Check if we're in loop wait state (only for infinite loop GIFs with delay)
     if (loop_waiting_) {
         uint32_t wait_elapsed = lv_tick_elaps(loop_wait_start_);
         if (wait_elapsed < loop_delay_ms_) {
-            // Still waiting for loop delay
+
             return;
         }
-        // Loop delay completed, continue playing
+
         loop_waiting_ = false;
         ESP_LOGD(TAG, "Loop delay completed, continuing GIF");
     }
 
-    // Check if enough time has passed for the next frame
     uint32_t elapsed = lv_tick_elaps(last_call_);
     if (elapsed < gif_->gce.delay * 10) {
         return;
@@ -194,13 +186,11 @@ void LvglGif::NextFrame() {
 
     last_call_ = lv_tick_get();
 
-    // Save file position before getting next frame to detect loop
     uint32_t pos_before = gif_->f_rw_p;
 
-    // Get next frame
     int has_next = gd_get_frame(gif_);
     if (has_next == 0) {
-        // Animation truly finished (non-infinite loop)
+
         playing_ = false;
         if (timer_) {
             lv_timer_pause(timer_);
@@ -209,22 +199,17 @@ void LvglGif::NextFrame() {
         return;
     }
 
-    // Detect loop by checking if file position jumped back (rewound to start)
-    // This works for looping GIFs regardless of when loop_count is set
     if (loop_delay_ms_ > 0 && gif_->f_rw_p < pos_before) {
-        // File position decreased, meaning GIF looped back to beginning
-        // Start waiting before rendering this frame
+
         loop_waiting_ = true;
         loop_wait_start_ = lv_tick_get();
         ESP_LOGD(TAG, "GIF completed one cycle, waiting %lu ms before next loop", loop_delay_ms_);
         return;
     }
 
-    // Render current frame
     if (gif_->canvas) {
         gd_render_frame(gif_, gif_->canvas);
-        
-        // Call frame callback if set
+
         if (frame_callback_) {
             frame_callback_();
         }
@@ -232,13 +217,12 @@ void LvglGif::NextFrame() {
 }
 
 void LvglGif::Cleanup() {
-    // Stop and delete timer
+
     if (timer_) {
         lv_timer_delete(timer_);
         timer_ = nullptr;
     }
 
-    // Close GIF decoder
     if (gif_) {
         gd_close_gif(gif_);
         gif_ = nullptr;
@@ -246,7 +230,6 @@ void LvglGif::Cleanup() {
 
     playing_ = false;
     loaded_ = false;
-    
-    // Clear image descriptor
+
     memset(&img_dsc_, 0, sizeof(img_dsc_));
 }

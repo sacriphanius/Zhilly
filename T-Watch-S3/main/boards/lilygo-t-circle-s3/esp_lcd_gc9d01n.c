@@ -33,8 +33,10 @@ typedef struct{
     int x_gap;
     int y_gap;
     uint8_t fb_bits_per_pixel;
-    uint8_t madctl_val; // save current value of LCD_CMD_MADCTL register
-    uint8_t colmod_val; // save current value of LCD_CMD_COLMOD register
+    uint8_t madctl_val;
+
+    uint8_t colmod_val;
+
     const gc9d01n_lcd_init_cmd_t *init_cmds;
     uint16_t init_cmds_size;
 } gc9d01n_panel_t;
@@ -81,13 +83,15 @@ esp_err_t esp_lcd_new_panel_gc9d01n(const esp_lcd_panel_io_handle_t io, const es
 #endif
 
     switch (panel_dev_config->bits_per_pixel){
-    case 16: // RGB565
+    case 16:
+
         gc9d01n->colmod_val = 0x55;
         gc9d01n->fb_bits_per_pixel = 16;
         break;
-    case 18: // RGB666
+    case 18:
+
         gc9d01n->colmod_val = 0x66;
-        // each color component (R/G/B) should occupy the 6 high bits of a byte, which means 3 full bytes are required for a pixel
+
         gc9d01n->fb_bits_per_pixel = 24;
         break;
     default:
@@ -118,9 +122,6 @@ esp_err_t esp_lcd_new_panel_gc9d01n(const esp_lcd_panel_io_handle_t io, const es
     *ret_panel = &(gc9d01n->base);
     ESP_LOGD(TAG, "new gc9d01n panel @%p", gc9d01n);
 
-    // ESP_LOGI(TAG, "LCD panel create success, version: %d.%d.%d", ESP_LCD_GC9D01N_VER_MAJOR, ESP_LCD_GC9D01N_VER_MINOR,
-    //          ESP_LCD_GC9D01N_VER_PATCH);
-
     return ESP_OK;
 
 err:
@@ -148,24 +149,24 @@ static esp_err_t panel_gc9d01n_reset(esp_lcd_panel_t *panel){
     gc9d01n_panel_t *gc9d01n = __containerof(panel, gc9d01n_panel_t, base);
     esp_lcd_panel_io_handle_t io = gc9d01n->io;
 
-    // perform hardware reset
     if (gc9d01n->reset_gpio_num >= 0){
         gpio_set_level(gc9d01n->reset_gpio_num, gc9d01n->reset_level);
         vTaskDelay(pdMS_TO_TICKS(10));
         gpio_set_level(gc9d01n->reset_gpio_num, !gc9d01n->reset_level);
         vTaskDelay(pdMS_TO_TICKS(10));
     }
-    else{ // perform software reset
+    else{
+
         ESP_RETURN_ON_ERROR(esp_lcd_panel_io_tx_param(io, LCD_CMD_SWRESET, NULL, 0), TAG, "send command failed");
-        vTaskDelay(pdMS_TO_TICKS(20)); // spec, wait at least 5ms before sending new command
+        vTaskDelay(pdMS_TO_TICKS(20));
+
     }
 
     return ESP_OK;
 }
 
 static const gc9d01n_lcd_init_cmd_t vendor_specific_init_default[] = {
-    //  {cmd, { data }, data_size, delay_ms}
-    // Enable Inter Register
+
     {0xFE, (uint8_t[]){0x00}, 0, 0},
     {0xEF, (uint8_t[]){0x00}, 0, 0},
     {0x80, (uint8_t[]){0xFF}, 1, 0},
@@ -209,7 +210,6 @@ static const gc9d01n_lcd_init_cmd_t vendor_specific_init_default[] = {
     {0xF2, (uint8_t[]){0x53, 0x15, 0x0A, 0x04, 0x00, 0x3A}, 6, 0},
     {0xF3, (uint8_t[]){0x52, 0xA4, 0x7F, 0x33, 0x34, 0xDF}, 6, 0},
 
-    // {0x20, (uint8_t[]){0x00}, 0, 0},
     {0x36, (uint8_t[]){0x00}, 1, 0},
     {0x11, (uint8_t[]){0x00}, 0, 200},
     {0x29, (uint8_t[]){0x00}, 0, 0},
@@ -220,7 +220,6 @@ static esp_err_t panel_gc9d01n_init(esp_lcd_panel_t *panel){
     gc9d01n_panel_t *gc9d01n = __containerof(panel, gc9d01n_panel_t, base);
     esp_lcd_panel_io_handle_t io = gc9d01n->io;
 
-    // LCD goes into sleep mode and display will be turned off after power on reset, exit sleep mode first
     ESP_RETURN_ON_ERROR(esp_lcd_panel_io_tx_param(io, LCD_CMD_SLPOUT, NULL, 0), TAG, "send command failed");
     vTaskDelay(pdMS_TO_TICKS(100));
     ESP_RETURN_ON_ERROR(esp_lcd_panel_io_tx_param(io, LCD_CMD_MADCTL, (uint8_t[]){gc9d01n->madctl_val,},1),TAG, "send command failed");
@@ -238,7 +237,7 @@ static esp_err_t panel_gc9d01n_init(esp_lcd_panel_t *panel){
 
     bool is_cmd_overwritten = false;
     for (int i = 0; i < init_cmds_size; i++){
-        // Check if the command has been used or conflicts with the internal
+
         switch (init_cmds[i].cmd){
         case LCD_CMD_MADCTL:
             is_cmd_overwritten = true;
@@ -275,10 +274,9 @@ static esp_err_t panel_gc9d01n_draw_bitmap(esp_lcd_panel_t *panel, int x_start, 
     y_start += gc9d01n->y_gap;
     y_end += gc9d01n->y_gap;
 
-    // define an area of frame memory where MCU can access
     ESP_RETURN_ON_ERROR(esp_lcd_panel_io_tx_param(io, LCD_CMD_CASET, (uint8_t[]){(x_start >> 8) & 0xFF,x_start & 0xFF,((x_end - 1) >> 8) & 0xFF,(x_end - 1) & 0xFF,},4),TAG, "send command failed");
     ESP_RETURN_ON_ERROR(esp_lcd_panel_io_tx_param(io, LCD_CMD_RASET, (uint8_t[]){(y_start >> 8) & 0xFF,y_start & 0xFF,((y_end - 1) >> 8) & 0xFF,(y_end - 1) & 0xFF,},4),TAG, "send command failed");
-    // transfer frame buffer
+
     size_t len = (x_end - x_start) * (y_end - y_start) * gc9d01n->fb_bits_per_pixel / 8;
     ESP_RETURN_ON_ERROR(esp_lcd_panel_io_tx_color(io, LCD_CMD_RAMWR, color_data, len), TAG, "send color failed");
 

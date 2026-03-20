@@ -27,12 +27,11 @@
 #define TAG "M5StackTab5Board"
 
 #define AUDIO_CODEC_ES8388_ADDR ES8388_CODEC_DEFAULT_ADDR
-#define LCD_MIPI_DSI_PHY_PWR_LDO_CHAN       3  // LDO_VO3 is connected to VDD_MIPI_DPHY
+#define LCD_MIPI_DSI_PHY_PWR_LDO_CHAN       3
+
 #define LCD_MIPI_DSI_PHY_PWR_LDO_VOLTAGE_MV 2500
 #define ST7123_TOUCH_I2C_ADDRESS            0x55
 
-
-// PI4IO registers
 #define PI4IO_REG_CHIP_RESET 0x01
 #define PI4IO_REG_IO_DIR     0x03
 #define PI4IO_REG_OUT_SET    0x05
@@ -44,7 +43,6 @@
 #define PI4IO_REG_INT_MASK   0x11
 #define PI4IO_REG_IRQ_STA    0x13
 
-// Bit manipulation macros
 #define setbit(x, bit)  ((x) |= (1U << (bit)))
 #define clrbit(x, bit)  ((x) &= ~(1U << (bit)))
 
@@ -53,13 +51,20 @@ public:
     Pi4ioe1(i2c_master_bus_handle_t i2c_bus, uint8_t addr) : I2cDevice(i2c_bus, addr) {
         WriteReg(PI4IO_REG_CHIP_RESET, 0xFF);
         uint8_t data = ReadReg(PI4IO_REG_CHIP_RESET);
-        WriteReg(PI4IO_REG_IO_DIR, 0b01111111);      // 0: input 1: output
-        WriteReg(PI4IO_REG_OUT_H_IM, 0b00000000);    // 使用到的引脚关闭 High-Impedance
-        WriteReg(PI4IO_REG_PULL_SEL, 0b01111111);    // pull up/down select, 0 down, 1 up
-        WriteReg(PI4IO_REG_PULL_EN, 0b01111111);     // pull up/down enable, 0 disable, 1 enable
-        WriteReg(PI4IO_REG_IN_DEF_STA, 0b10000000);  // P1, P7 默认高电平
-        WriteReg(PI4IO_REG_INT_MASK, 0b01111111);    // P7 中断使能 0 enable, 1 disable
-        WriteReg(PI4IO_REG_OUT_SET, 0b01110110);     // Output Port Register P1(SPK_EN), P2(EXT5V_EN), P4(LCD_RST), P5(TP_RST), P6(CAM)RST 输出高电平
+        WriteReg(PI4IO_REG_IO_DIR, 0b01111111);
+
+        WriteReg(PI4IO_REG_OUT_H_IM, 0b00000000);
+
+        WriteReg(PI4IO_REG_PULL_SEL, 0b01111111);
+
+        WriteReg(PI4IO_REG_PULL_EN, 0b01111111);
+
+        WriteReg(PI4IO_REG_IN_DEF_STA, 0b10000000);
+
+        WriteReg(PI4IO_REG_INT_MASK, 0b01111111);
+
+        WriteReg(PI4IO_REG_OUT_SET, 0b01110110);
+
     }
 
     uint8_t ReadOutSet() { return ReadReg(PI4IO_REG_OUT_SET); }
@@ -71,13 +76,20 @@ public:
     Pi4ioe2(i2c_master_bus_handle_t i2c_bus, uint8_t addr) : I2cDevice(i2c_bus, addr) {
         WriteReg(PI4IO_REG_CHIP_RESET, 0xFF);
         uint8_t data = ReadReg(PI4IO_REG_CHIP_RESET);
-        WriteReg(PI4IO_REG_IO_DIR, 0b10111001);      // 0: input 1: output
-        WriteReg(PI4IO_REG_OUT_H_IM, 0b00000110);    // 使用到的引脚关闭 High-Impedance
-        WriteReg(PI4IO_REG_PULL_SEL, 0b10111001);    // pull up/down select, 0 down, 1 up
-        WriteReg(PI4IO_REG_PULL_EN, 0b11111001);     // pull up/down enable, 0 disable, 1 enable
-        WriteReg(PI4IO_REG_IN_DEF_STA, 0b01000000);  // P6 默认高电平
-        WriteReg(PI4IO_REG_INT_MASK, 0b10111111);    // P6 中断使能 0 enable, 1 disable
-        WriteReg(PI4IO_REG_OUT_SET, 0b10001001);     // Output Port Register P0(WLAN_PWR_EN), P3(USB5V_EN), P7(CHG_EN) 输出高电平
+        WriteReg(PI4IO_REG_IO_DIR, 0b10111001);
+
+        WriteReg(PI4IO_REG_OUT_H_IM, 0b00000110);
+
+        WriteReg(PI4IO_REG_PULL_SEL, 0b10111001);
+
+        WriteReg(PI4IO_REG_PULL_EN, 0b11111001);
+
+        WriteReg(PI4IO_REG_IN_DEF_STA, 0b01000000);
+
+        WriteReg(PI4IO_REG_INT_MASK, 0b10111111);
+
+        WriteReg(PI4IO_REG_OUT_SET, 0b10001001);
+
     }
 
     uint8_t ReadOutSet() { return ReadReg(PI4IO_REG_OUT_SET); }
@@ -159,14 +171,13 @@ private:
 
     void InitializeGt911TouchPad() {
         ESP_LOGI(TAG, "Init GT911");
- 
-        /* Initialize Touch Panel */
+
         ESP_LOGI(TAG, "Initialize touch IO (I2C)");
         const esp_lcd_touch_config_t tp_cfg = {
             .x_max = DISPLAY_WIDTH,
             .y_max = DISPLAY_HEIGHT,
-            .rst_gpio_num = GPIO_NUM_NC, 
-            .int_gpio_num = TOUCH_INT_GPIO, 
+            .rst_gpio_num = GPIO_NUM_NC,
+            .int_gpio_num = TOUCH_INT_GPIO,
             .levels = {
                 .reset = 0,
                 .interrupt = 0,
@@ -179,7 +190,8 @@ private:
         };
         esp_lcd_panel_io_handle_t tp_io_handle = NULL;
         esp_lcd_panel_io_i2c_config_t tp_io_config = ESP_LCD_TOUCH_IO_I2C_GT911_CONFIG();
-        tp_io_config.dev_addr = ESP_LCD_TOUCH_IO_I2C_GT911_ADDRESS_BACKUP; // 更改 GT911 地址 
+        tp_io_config.dev_addr = ESP_LCD_TOUCH_IO_I2C_GT911_ADDRESS_BACKUP;
+
         tp_io_config.scl_speed_hz = 100000;
         esp_lcd_new_panel_io_i2c(i2c_bus_, &tp_io_config, &tp_io_handle);
         esp_lcd_touch_new_i2c_gt911(tp_io_handle, &tp_cfg, &touch_);
@@ -202,7 +214,8 @@ private:
         esp_lcd_dsi_bus_config_t bus_config = {
             .bus_id = 0,
             .num_data_lanes = 2,
-            .lane_bit_rate_mbps = 900, // 900MHz
+            .lane_bit_rate_mbps = 900,
+
         };
         ESP_ERROR_CHECK(esp_lcd_new_dsi_bus(&bus_config, &mipi_dsi_bus));
 
@@ -266,15 +279,13 @@ private:
         esp_lcd_panel_io_handle_t io = NULL;
         esp_lcd_panel_handle_t disp_panel = NULL;
         esp_lcd_dsi_bus_handle_t mipi_dsi_bus = NULL;
-        
-        // Declare all config structures at the top to avoid goto issues
-        // Initialize with memset to avoid any initialization syntax that might confuse the compiler
+
         esp_lcd_dsi_bus_config_t bus_config;
         esp_lcd_dbi_io_config_t dbi_config;
         esp_lcd_dpi_panel_config_t dpi_config;
         st7123_vendor_config_t vendor_config;
         esp_lcd_panel_dev_config_t lcd_dev_config;
-        
+
         memset(&bus_config, 0, sizeof(bus_config));
         memset(&dbi_config, 0, sizeof(dbi_config));
         memset(&dpi_config, 0, sizeof(dpi_config));
@@ -283,10 +294,11 @@ private:
 
         ESP_ERROR_CHECK(bsp_enable_dsi_phy_power());
 
-        /* create MIPI DSI bus first, it will initialize the DSI PHY as well */
         bus_config.bus_id = 0;
-        bus_config.num_data_lanes = 2;  // ST7123 uses 2 data lanes
-        bus_config.lane_bit_rate_mbps = 965;  // ST7123 lane bitrate
+        bus_config.num_data_lanes = 2;
+
+        bus_config.lane_bit_rate_mbps = 965;
+
         ret = esp_lcd_new_dsi_bus(&bus_config, &mipi_dsi_bus);
         if (ret != ESP_OK) {
             ESP_LOGE(TAG, "New DSI bus init failed");
@@ -294,10 +306,12 @@ private:
         }
 
         ESP_LOGI(TAG, "Install MIPI DSI LCD control panel for ST7123");
-        // we use DBI interface to send LCD commands and parameters
+
         dbi_config.virtual_channel = 0;
-        dbi_config.lcd_cmd_bits = 8;  // according to the LCD spec
-        dbi_config.lcd_param_bits = 8;  // according to the LCD spec
+        dbi_config.lcd_cmd_bits = 8;
+
+        dbi_config.lcd_param_bits = 8;
+
         ret = esp_lcd_new_panel_io_dbi(mipi_dsi_bus, &dbi_config, &io);
         if (ret != ESP_OK) {
             ESP_LOGE(TAG, "New panel IO failed");
@@ -307,7 +321,8 @@ private:
         ESP_LOGI(TAG, "Install LCD driver of ST7123");
         dpi_config.virtual_channel = 0;
         dpi_config.dpi_clk_src = MIPI_DSI_DPI_CLK_SRC_DEFAULT;
-        dpi_config.dpi_clock_freq_mhz = 70;  // ST7123 DPI clock frequency
+        dpi_config.dpi_clock_freq_mhz = 70;
+
         dpi_config.pixel_format = LCD_COLOR_PIXEL_FORMAT_RGB565;
         dpi_config.num_fbs = 1;
         dpi_config.video_timing.h_size = 720;
@@ -332,7 +347,6 @@ private:
         lcd_dev_config.bits_per_pixel = 24;
         lcd_dev_config.vendor_config = &vendor_config;
 
-        // 使用实际的 ST7123 驱动函数
         ret = esp_lcd_new_panel_st7123(io, &lcd_dev_config, &disp_panel);
         if (ret != ESP_OK) {
             ESP_LOGE(TAG, "New LCD panel ST7123 failed");
@@ -379,8 +393,7 @@ private:
 
     void InitializeSt7123TouchPad() {
         ESP_LOGI(TAG, "Init ST7123 Touch");
-        
-        /* Initialize Touch Panel */
+
         ESP_LOGI(TAG, "Initialize touch IO (I2C)");
         const esp_lcd_touch_config_t tp_cfg = {
             .x_max = 720,
@@ -411,9 +424,9 @@ private:
     }
 
     void InitializeDisplay() {
-        // after tp reset, wait for 100ms to ensure the I2C bus is stable
+
         vTaskDelay(pdMS_TO_TICKS(100));
-        // 检测 ST7123 触摸屏 (I2C地址 0x55)
+
         esp_err_t ret = i2c_master_probe(i2c_bus_, ST7123_TOUCH_I2C_ADDRESS, 200);
         if (ret == ESP_OK) {
             ESP_LOGI(TAG, "Detected ST7123 at 0x%02X, initializing ST7123 display", ST7123_TOUCH_I2C_ADDRESS);
@@ -433,7 +446,8 @@ private:
 #if CONFIG_CAMERA_XCLK_USE_ESP_CLOCK_ROUTER
         if (esp_cam_sensor_xclk_allocate(ESP_CAM_SENSOR_XCLK_ESP_CLOCK_ROUTER, &xclk_handle) == ESP_OK) {
             cam_xclk_config.esp_clock_router_cfg.xclk_pin = CAMERA_MCLK;
-            cam_xclk_config.esp_clock_router_cfg.xclk_freq_hz = 12000000; // 12MHz
+            cam_xclk_config.esp_clock_router_cfg.xclk_freq_hz = 12000000;
+
             (void)esp_cam_sensor_xclk_start(xclk_handle, &cam_xclk_config);
         }
 #elif CONFIG_CAMERA_XCLK_USE_LEDC
@@ -441,7 +455,8 @@ private:
             cam_xclk_config.ledc_cfg.timer = LEDC_TIMER_0;
             cam_xclk_config.ledc_cfg.clk_cfg = LEDC_AUTO_CLK;
             cam_xclk_config.ledc_cfg.channel = LEDC_CHANNEL_0;
-            cam_xclk_config.ledc_cfg.xclk_freq_hz = 12000000; // 12MHz
+            cam_xclk_config.ledc_cfg.xclk_freq_hz = 12000000;
+
             cam_xclk_config.ledc_cfg.xclk_pin = CAMERA_MCLK;
             (void)esp_cam_sensor_xclk_start(xclk_handle, &cam_xclk_config);
         }
@@ -471,7 +486,8 @@ public:
         InitializeI2c();
         I2cDetect();
         InitializePi4ioe();
-        InitializeDisplay();  // Auto-detect and initialize display + touch
+        InitializeDisplay();
+
         InitializeCamera();
         InitializeButtons();
         SetChargeQcEn(true);
@@ -482,17 +498,17 @@ public:
     }
 
     virtual AudioCodec* GetAudioCodec() override {
-        static Tab5AudioCodec audio_codec(i2c_bus_, 
-                                        AUDIO_INPUT_SAMPLE_RATE, 
+        static Tab5AudioCodec audio_codec(i2c_bus_,
+                                        AUDIO_INPUT_SAMPLE_RATE,
                                         AUDIO_OUTPUT_SAMPLE_RATE,
-                                        AUDIO_I2S_GPIO_MCLK, 
-                                        AUDIO_I2S_GPIO_BCLK, 
+                                        AUDIO_I2S_GPIO_MCLK,
+                                        AUDIO_I2S_GPIO_BCLK,
                                         AUDIO_I2S_GPIO_WS,
-                                        AUDIO_I2S_GPIO_DOUT, 
-                                        AUDIO_I2S_GPIO_DIN, 
+                                        AUDIO_I2S_GPIO_DOUT,
+                                        AUDIO_I2S_GPIO_DIN,
                                         AUDIO_CODEC_PA_PIN,
-                                        AUDIO_CODEC_ES8388_ADDR, 
-                                        AUDIO_CODEC_ES7210_ADDR, 
+                                        AUDIO_CODEC_ES8388_ADDR,
+                                        AUDIO_CODEC_ES7210_ADDR,
                                         AUDIO_INPUT_REFERENCE);
         return &audio_codec;
     }
@@ -510,12 +526,12 @@ public:
         return &backlight;
     }
 
-    // BSP power control functions
     void SetChargeQcEn(bool en) {
         if (pi4ioe2_) {
             uint8_t value = pi4ioe2_->ReadOutSet();
             if (en) {
-                clrbit(value, 5);  // P5 = CHG_QC_EN (低电平使能)
+                clrbit(value, 5);
+
             } else {
                 setbit(value, 5);
             }
@@ -527,7 +543,8 @@ public:
         if (pi4ioe2_) {
             uint8_t value = pi4ioe2_->ReadOutSet();
             if (en) {
-                setbit(value, 7);  // P7 = CHG_EN
+                setbit(value, 7);
+
             } else {
                 clrbit(value, 7);
             }
@@ -539,7 +556,8 @@ public:
         if (pi4ioe2_) {
             uint8_t value = pi4ioe2_->ReadOutSet();
             if (en) {
-                setbit(value, 3);  // P3 = USB5V_EN
+                setbit(value, 3);
+
             } else {
                 clrbit(value, 3);
             }
@@ -551,7 +569,8 @@ public:
         if (pi4ioe1_) {
             uint8_t value = pi4ioe1_->ReadOutSet();
             if (en) {
-                setbit(value, 2);  // P2 = EXT5V_EN
+                setbit(value, 2);
+
             } else {
                 clrbit(value, 2);
             }
@@ -560,6 +579,4 @@ public:
     }
 };
 
-
 DECLARE_BOARD(M5StackTab5Board);
-

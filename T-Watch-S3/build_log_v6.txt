@@ -1,0 +1,19 @@
+Executing action: all (aliases: build)
+Running ninja in directory /home/sacriphanius/Masaüstü/xiaozhieyes/Zhilly/T-Watch-S3/build
+Executing "ninja all"...
+[1/4] cd /home/sacriphanius/Masaüstü/xiaozhieyes/Zhilly/T-Watch-S3/build/esp-idf/esptool_py && /home/sacriphanius/.espressif/python_env/idf5.5_py3.11_env/bin/python /home/sacriphanius/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /home/sacriphanius/Masaüstü/xiaozhieyes/Zhilly/T-Watch-S3/build/partition_table/partition-table.bin /home/sacriphanius/Masaüstü/xiaozhieyes/Zhilly/T-Watch-S3/build/xiaozhi.bin
+xiaozhi.bin binary size 0x27e210 bytes. Smallest app partition is 0x3f0000 bytes. 0x171df0 bytes (37%) free.
+[2/4] Performing build step for 'bootloader'
+[1/1] cd /home/sacriphanius/Masaüstü/xiaozhieyes/Zhilly/T-Watch-S3/build/bootloader/esp-idf/esptool_py && /home/sacriphanius/.espressif/python_env/idf5.5_py3.11_env/bin/python /home/sacriphanius/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x0 /home/sacriphanius/Masaüstü/xiaozhieyes/Zhilly/T-Watch-S3/build/bootloader/bootloader.bin
+Bootloader binary size 0x4050 bytes. 0x3fb0 bytes (50%) free.
+[3/4] No install step for 'bootloader'
+[4/4] Completed 'bootloader'
+
+Project build complete. To flash, run:
+ idf.py flash
+or
+ idf.py -p PORT flash
+or
+ python -m esptool --chip esp32s3 -b 460800 --before default_reset --after hard_reset write_flash --flash_mode dio --flash_size 16MB --flash_freq 80m 0x0 build/bootloader/bootloader.bin 0x8000 build/partition_table/partition-table.bin 0xd000 build/ota_data_initial.bin 0x20000 build/xiaozhi.bin 0x800000 build/generated_assets.bin
+or from the "/home/sacriphanius/Masaüstü/xiaozhieyes/Zhilly/T-Watch-S3/build" directory
+ python -m esptool --chip esp32s3 -b 460800 --before default_reset --after hard_reset write_flash "@flash_args"
